@@ -38,8 +38,7 @@ public abstract class SerializableObject implements DBObject
             Object obj = field.get(this);
 
             if ((field.getType() == String.class) && (sf.encode()) && (obj != null))
-                fieldList.add(new Pair<>(sf.name(),
-                        Base64.getEncoder().encodeToString(obj.toString().getBytes())));
+                fieldList.add(new Pair<>(sf.name(), new String(Base64.getEncoder().encode(obj.toString().getBytes()))));
             else
                 fieldList.add(new Pair<>(sf.name(), obj));
 

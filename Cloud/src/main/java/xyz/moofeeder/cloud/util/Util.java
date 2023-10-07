@@ -33,5 +33,11 @@ public class Util
 
         return strBuilder.toString();
     }
+
+    public static void criticalExit()
+    {
+        System.exit(-1);
+    }
 }
+
 

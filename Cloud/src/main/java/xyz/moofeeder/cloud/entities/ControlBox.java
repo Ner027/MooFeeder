@@ -1,6 +1,8 @@
 package xyz.moofeeder.cloud.entities;
 
+import kotlin.Pair;
 import xyz.moofeeder.cloud.enums.SerializableFieldType;
+import xyz.moofeeder.cloud.security.Encryption;
 
 import java.lang.reflect.Field;
 
@@ -38,19 +40,9 @@ public class ControlBox extends SerializableObject
         return m_name;
     }
 
-    public String getPasswordSalt()
-    {
-        return m_passwordSalt;
-    }
-
     public String getUsername()
     {
         return m_username;
-    }
-
-    public String getPassword()
-    {
-        return m_password;
     }
 
     public int getNofConnections()
@@ -83,10 +75,22 @@ public class ControlBox extends SerializableObject
         if ((password.length() < 8) || (password.length() > 32))
             return false;
 
-        m_password = password;
+        Pair<String, String> encodedPassword = Encryption.encodePassword(password);
+
+        m_passwordSalt = encodedPassword.getFirst();
+        m_password = encodedPassword.getSecond();
 
         return true;
     }
+
+    public boolean checkAccess(String rawPassword)
+    {
+        if (m_id < 0)
+            return false;
+
+        return Encryption.checkPassword(rawPassword, m_passwordSalt, m_password);
+    }
+
 
     @Override
     public String getInsertionQueryName()
@@ -103,6 +107,6 @@ public class ControlBox extends SerializableObject
     @Override
     public String getLoadQueryName(String fieldName)
     {
-        return "GetControlBox_" + fieldName;
+        return "GetControlBoxBy_" + fieldName;
     }
 }

@@ -34,10 +34,8 @@ public class MappedStatement
                 m_map.put(parameterName.toString(), paramCount++);
             }
 
-            if (!isNamedParameter)
-                continue;
-
-            parameterName.append(c);
+            if (isNamedParameter)
+                parameterName.append(c);
         }
 
         //If isNamedParameter is true, it means one of the named parameters wasn't encapsulated properly

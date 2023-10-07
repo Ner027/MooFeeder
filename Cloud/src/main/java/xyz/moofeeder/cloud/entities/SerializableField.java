@@ -15,5 +15,4 @@ public @interface SerializableField
     SerializableFieldType type();
 
     boolean encode() default false;
-
 }

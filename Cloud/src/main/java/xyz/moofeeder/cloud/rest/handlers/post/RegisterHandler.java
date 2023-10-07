@@ -2,17 +2,20 @@ package xyz.moofeeder.cloud.rest.handlers.post;
 
 import io.javalin.http.Context;
 import io.javalin.http.HandlerType;
+import org.apache.commons.logging.Log;
 import org.jetbrains.annotations.NotNull;
-import xyz.moofeeder.cloud.data.DataManager;
+import org.slf4j.event.Level;
 import xyz.moofeeder.cloud.entities.ControlBox;
-import xyz.moofeeder.cloud.enums.RegisterForbiddenCause;
 import xyz.moofeeder.cloud.rest.exceptions.RegisterForbidden;
 import xyz.moofeeder.cloud.rest.handlers.IHandler;
+
+import java.util.logging.Logger;
 
 import static xyz.moofeeder.cloud.enums.RegisterForbiddenCause.*;
 
 public class RegisterHandler implements IHandler
 {
+    private final Logger m_logger = Logger.getLogger(getClass().getName());
     @Override
     public void handle(@NotNull Context ctx) throws Exception
     {
@@ -37,15 +40,20 @@ public class RegisterHandler implements IHandler
             throw new RegisterForbidden(403, USER_EXISTS.getValue());
         }
 
-        controlBox.setUsername(username);
-        controlBox.setPassword(password);
+
+        if (!controlBox.setUsername(username))
+        {
+            System.out.println("Username invalid!");
+            throw new RegisterForbidden(403, INVALID_PASSWORD.getValue());
+        }
+
+        if (!controlBox.setPassword(password))
+        {
+            System.out.println("Password invalid!");
+            throw new RegisterForbidden(403, INVALID_USER.getValue());
+        }
+
         controlBox.insert();
-
-        controlBox = new ControlBox();
-
-        controlBox.load("username", username);
-        System.out.println(controlBox.getUsername());
-        System.out.println(controlBox.getPassword());
     }
 
     @Override
