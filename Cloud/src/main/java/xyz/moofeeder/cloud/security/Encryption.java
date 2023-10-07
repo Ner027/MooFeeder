@@ -3,6 +3,7 @@ package xyz.moofeeder.cloud.security;
 import kotlin.Pair;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import xyz.moofeeder.cloud.util.Util;
+import xyz.moofeeder.cloud.util.Consts;
 
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -11,9 +12,12 @@ import java.util.logging.Logger;
 
 public class Encryption
 {
-    private static final int m_saltLen = 16;
-    private static final Argon2PasswordEncoder m_encoder =
-            new Argon2PasswordEncoder(m_saltLen, 32, 4, 1024, 8);
+    private static final Argon2PasswordEncoder m_encoder = new Argon2PasswordEncoder(
+            Consts.saltLen,
+            Consts.sessionTokenLen,
+            Consts.encryptionMaxCores,
+            Consts.encryptionMaxMemory,
+            Consts.encryptionMaxRuns);
     private static final SecureRandom m_rng = new SecureRandom();
     private static final String m_pepper = System.getenv("KEY_PEPPER");
     private static final Logger m_logger = Logger.getLogger(Encryption.class.getName());
@@ -27,7 +31,7 @@ public class Encryption
         }
 
         //Generate random salt
-        byte[] saltBytes = new byte[m_saltLen];
+        byte[] saltBytes = new byte[Consts.saltLen];
         m_rng.nextBytes(saltBytes);
         String saltString = new String(saltBytes, StandardCharsets.US_ASCII);
 

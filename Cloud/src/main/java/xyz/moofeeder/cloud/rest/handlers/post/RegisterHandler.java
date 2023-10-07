@@ -2,6 +2,8 @@ package xyz.moofeeder.cloud.rest.handlers.post;
 
 import io.javalin.http.Context;
 import io.javalin.http.HandlerType;
+import io.javalin.http.HttpResponseException;
+import io.javalin.http.HttpStatus;
 import org.apache.commons.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.event.Level;
@@ -23,10 +25,10 @@ public class RegisterHandler implements IHandler
         String password = ctx.formParam("password");
 
         if (username == null)
-            throw new RegisterForbidden(403, INVALID_USER.getValue());
+            throw new RegisterForbidden(INVALID_USER);
 
         if (password == null)
-            throw new RegisterForbidden(403, INVALID_PASSWORD.getValue());
+            throw new RegisterForbidden(INVALID_PASSWORD);
 
         System.out.println("Starting register of new Control Box with user: " + username + " and password: " + password);
 
@@ -34,26 +36,33 @@ public class RegisterHandler implements IHandler
 
         controlBox.load("username", username);
 
-        if (controlBox.getId() != -1)
+        if (controlBox.getId() > 0)
         {
             System.out.println("User already exists!");
-            throw new RegisterForbidden(403, USER_EXISTS.getValue());
+            throw new RegisterForbidden(USER_EXISTS);
         }
-
 
         if (!controlBox.setUsername(username))
         {
             System.out.println("Username invalid!");
-            throw new RegisterForbidden(403, INVALID_PASSWORD.getValue());
+            throw new RegisterForbidden(INVALID_PASSWORD);
         }
 
         if (!controlBox.setPassword(password))
         {
             System.out.println("Password invalid!");
-            throw new RegisterForbidden(403, INVALID_USER.getValue());
+            throw new RegisterForbidden(INVALID_USER);
         }
 
-        controlBox.insert();
+        try
+        {
+            controlBox.insert();
+            ctx.status(HttpStatus.CREATED);
+        }
+        catch (Exception e)
+        {
+            throw new HttpResponseException(HttpStatus.INTERNAL_SERVER_ERROR.getCode());
+        }
     }
 
     @Override

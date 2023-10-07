@@ -3,8 +3,11 @@ package xyz.moofeeder.cloud.entities;
 import kotlin.Pair;
 import xyz.moofeeder.cloud.enums.SerializableFieldType;
 import xyz.moofeeder.cloud.security.Encryption;
+import xyz.moofeeder.cloud.util.Consts;
+import xyz.moofeeder.cloud.util.Util;
 
 import java.lang.reflect.Field;
+import java.sql.SQLException;
 
 public class ControlBox extends SerializableObject
 {
@@ -27,6 +30,13 @@ public class ControlBox extends SerializableObject
 
     public String getSessionToken()
     {
+        return m_sessionToken;
+    }
+
+    public String refreshSessionToken() throws SQLException, IllegalAccessException
+    {
+        m_sessionToken = Util.generateRandomString(Consts.sessionTokenLen);
+        update();
         return m_sessionToken;
     }
 

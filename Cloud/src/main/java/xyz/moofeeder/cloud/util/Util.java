@@ -3,12 +3,17 @@ package xyz.moofeeder.cloud.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.security.SecureRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class Util
 {
+    private static final String m_validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    private static final int m_validCharsLen = m_validChars.length();
+    private static final SecureRandom m_rng = new SecureRandom();
+
     /**
      * Returns a string built from lines read from an input reader
      * @param _reader Reader to try and read the string from
@@ -29,6 +34,20 @@ public class Util
         {
             Logger.getLogger(Util.class.getName()).log(Level.WARNING, "Failed to close a buffered reader!", e);
         }
+
+        return strBuilder.toString();
+    }
+
+    public static int generateRandomInt(int lowerBound, int upperBound)
+    {
+        return m_rng.nextInt(lowerBound, upperBound);
+    }
+    public static String generateRandomString(int len)
+    {
+        StringBuilder strBuilder = new StringBuilder();
+
+        for (int i = 0; i < len; i++)
+            strBuilder.append(m_validChars.charAt(generateRandomInt(0, m_validCharsLen)));
 
         return strBuilder.toString();
     }
