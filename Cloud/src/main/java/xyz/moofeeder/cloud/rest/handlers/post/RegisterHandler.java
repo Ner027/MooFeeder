@@ -6,6 +6,7 @@ import io.javalin.http.HttpResponseException;
 import io.javalin.http.HttpStatus;
 import org.apache.commons.logging.Log;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 import org.slf4j.event.Level;
 import xyz.moofeeder.cloud.entities.ControlBox;
 import xyz.moofeeder.cloud.rest.exceptions.RegisterForbidden;
@@ -56,8 +57,14 @@ public class RegisterHandler implements IHandler
 
         try
         {
+            controlBox.refreshSessionToken();
             controlBox.insert();
+
             ctx.status(HttpStatus.CREATED);
+            JSONObject jObj = new JSONObject();
+            jObj.put("session_token", controlBox.getSessionToken());
+            ctx.json(jObj.toString());
+            ctx.status(HttpStatus.ACCEPTED);
         }
         catch (Exception e)
         {

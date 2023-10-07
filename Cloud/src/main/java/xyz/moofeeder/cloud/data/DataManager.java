@@ -24,12 +24,12 @@ public class DataManager
      *----------------------------------------------------------------------------------------------------------------*/
 
     /**
-     * @return Returns true if database was initialized correctly, otherwise returns false
      * @apiNote Initializes the database
      */
-    public static boolean initDatabase()
+    public static void initDatabase()
     {
-        return insertData("InitDatabase");
+        insertData("InitControlBoxTable");
+        //insertData("InitFeedingStationTable");
     }
 
     /**
