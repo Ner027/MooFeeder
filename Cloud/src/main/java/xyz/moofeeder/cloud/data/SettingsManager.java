@@ -10,10 +10,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 public class SettingsManager
 {
+    /*-----------------------------------------------------------------------------------------------------------------*
+     *  Private Variables
+     *----------------------------------------------------------------------------------------------------------------*/
+
     private static SettingsManager m_instance;
     private final HashMap<String,String> m_data = new HashMap<>();
-    private final Logger m_logger = Logger.getLogger(getClass().getName());
+    private final Logger m_logger = Logger.getLogger(SettingsManager.class.getName());
 
+    /*-----------------------------------------------------------------------------------------------------------------*
+     *  Public Methods
+     *----------------------------------------------------------------------------------------------------------------*/
+
+    /**
+     * @apiNote Creates or returns a singleton of type SettingsManager
+     * @return Returns a singleton instance of a SettingsManager Object
+     */
     public static SettingsManager getInstance()
     {
         if (m_instance == null)
@@ -22,6 +34,27 @@ public class SettingsManager
         return m_instance;
     }
 
+    /**
+     * @apiNote Returns a property loaded from the config file
+     * @param key Name of the property to retrieve
+     * @return String containing the loaded property
+     * @throws RuntimeException If a property with name "key" is not found
+     */
+    public String getProperty(String key)
+    {
+        String obj = m_data.get(key);
+
+        if (obj == null)
+            throw new RuntimeException("Key not found!");
+
+        return obj;
+    }
+
+    /**
+     * @apiNote Constructor for the SettingsManager Class
+     * @implNote The config file is loaded when the object is created, the Singleton mechanism already ensures this
+     * only runs once
+     */
     private SettingsManager()
     {
         File file = new File("/home/andre/config.json");
@@ -31,26 +64,29 @@ public class SettingsManager
         {
             try
             {
+                //Try to create a new file to write the default config file to
                 if (!file.createNewFile())
                 {
-                    m_logger.log(Level.SEVERE,  "Failed to create a new config file!");
-                    System.exit(-1);
+                    //If unable to create said file, log errors to the user and stop execution
+                    m_logger.log(Level.SEVERE,  "Failed to create a new config file! Maybe check file permissions");
+                    Util.criticalExit();
                 }
 
+                //If able to create the new config file, open a file stream on it
                 FileWriter fileWriter = new FileWriter(file);
-
                 InputStream inputStream = getClass().getResourceAsStream("/defaults/defaultConfig.json");
 
+                //Check if the default config file is present on the resources folder
                 if (inputStream == null)
                 {
-                    if (!file.delete())
-                        m_logger.log(Level.WARNING, "Unable to delete temporary config file! Maybe try to delete it yourself!");
+                    //If not exit execution
                     m_logger.log(Level.SEVERE,  "Couldn't find default config file!");
-                    System.exit(-1);
+                    Util.criticalExit();
                 }
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 
+                //Write to the newly created config file the default config
                 fileWriter.write(Util.stringFromReader(inputStreamReader));
                 inputStreamReader.close();
                 fileWriter.close();
@@ -58,8 +94,11 @@ public class SettingsManager
             catch (IOException e)
             {
                 m_logger.log(Level.SEVERE, "Couldn't create a new settings file!", e);
-                System.exit(-1);
+                Util.criticalExit();
             }
+
+            m_logger.log(Level.INFO, "Default configuration file generated! Please change it and restart!");
+            System.exit(0);
         }
 
         //If the system was able to open the settings file, get the JSON data and parse it accordingly
@@ -79,29 +118,9 @@ public class SettingsManager
                 }
             });
         }
-        catch (FileNotFoundException e)
-        {
-            m_logger.log(Level.SEVERE, "Unable to find the settings file!", e);
-            System.exit(-1);
-        }
-        catch (JSONException e)
+        catch (JSONException | FileNotFoundException e)
         {
             m_logger.log(Level.WARNING, "Invalid JSON Format!", e);
-            System.exit(-1);
         }
-
-    }
-
-    public String getProperty(String _key)
-    {
-        String obj = m_data.get(_key);
-
-        if (obj == null)
-        {
-            m_logger.log(Level.SEVERE, "Property " + _key + " not found! Please check your config file");
-            System.exit(-1);
-        }
-
-        return obj;
     }
 }

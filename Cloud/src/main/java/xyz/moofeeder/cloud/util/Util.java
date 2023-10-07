@@ -3,7 +3,6 @@ package xyz.moofeeder.cloud.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;

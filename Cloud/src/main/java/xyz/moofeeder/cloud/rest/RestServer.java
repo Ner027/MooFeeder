@@ -5,6 +5,7 @@ import jakarta.annotation.Nonnull;
 import xyz.moofeeder.cloud.data.SettingsManager;
 import xyz.moofeeder.cloud.rest.handlers.IHandler;
 import xyz.moofeeder.cloud.rest.handlers.post.RegisterHandler;
+import xyz.moofeeder.cloud.util.Util;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,10 +27,10 @@ public class RestServer
             serverPort = Integer.parseInt(SettingsManager.getInstance().getProperty("rest_port"));
             m_server = Javalin.create().start(serverPort);
         }
-        catch (NumberFormatException e)
+        catch (RuntimeException e)
         {
-            m_logger.log(Level.SEVERE, "Rest Port supplied in a wrong format!", e);
-            System.exit(-1);
+            m_logger.log(Level.SEVERE, "Unable to acquire Rest Port from config file!", e);
+            Util.criticalExit();
         }
     }
     public static RestServer getInstance()
