@@ -7,20 +7,25 @@ public class FeedingStation extends SerializableObject
 {
     @SerializableField(name = "id", type = SerializableFieldType.ENCODE)
     private final long m_id;
+    @JsonField(name = "name")
     @SerializableField(name = "name", type = SerializableFieldType.ENC_DEC, encode = true)
     private String m_name;
+    @JsonField(name = "desc")
     @SerializableField(name = "description", type = SerializableFieldType.ENC_DEC, encode = true)
     private String m_description;
+    @JsonField(name = "hw_id")
     @SerializableField(name = "hw_id", type = SerializableFieldType.ENC_DEC, encode = true)
     private String m_hwId;
     @SerializableField(name = "parent_id", type = SerializableFieldType.ENC_DEC)
     private long m_parent;
+    @JsonField(name = "nof_calves")
     @SerializableField(name = "nof_calves", type = SerializableFieldType.ENC_DEC)
     private int m_nofCalves;
 
     public FeedingStation()
     {
         m_id = -1;
+        m_parent = -1;
     }
 
     public boolean setName(String name)

@@ -45,8 +45,7 @@ public class ChangeStationHandler implements IHandler
             JSONObject jObj = new JSONObject();
             jObj.put("updates", updateCount);
             ctx.json(jObj.toString());
-
-            System.out.println("Altered feeding station, set name to: " + name + " and description to " + desc);
+            Util.log(   "Altered feeding station, set name to: " + name + " and description to " + desc);
         }
         catch (Exception e)
         {

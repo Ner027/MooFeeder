@@ -35,7 +35,7 @@ public class DeleteStationHandler implements IHandler
             if (!feedingStation.delete("id"))
                 throw new HttpResponseException(HttpStatus.INTERNAL_SERVER_ERROR.getCode());
 
-            System.out.println("Deleted station with HwId: " + hwId);
+            Util.log("Deleted station with HwId: " + hwId);
 
             ctx.status(HttpStatus.OK);
         }

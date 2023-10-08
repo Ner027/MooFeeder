@@ -6,6 +6,7 @@ import xyz.moofeeder.cloud.data.DataManager;
 import xyz.moofeeder.cloud.enums.RequestErrorCause;
 import xyz.moofeeder.cloud.rest.exceptions.RequestException;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -20,6 +21,7 @@ public class Util
     private static final String m_validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     private static final int m_validCharsLen = m_validChars.length();
     private static final SecureRandom m_rng = new SecureRandom();
+    private static final Logger m_debugLogger = Logger.getLogger("DEBUG");
 
     /**
      * Returns a string built from lines read from an input reader
@@ -76,6 +78,10 @@ public class Util
 
         return id;
     }
+    public static void log(String src)
+    {
+        System.out.println(src);
+    }
     public static String b64Encode(String src)
     {
         return new String(Base64.getEncoder().encode(src.getBytes()));
@@ -89,6 +95,7 @@ public class Util
     {
         System.exit(-1);
     }
+
 }
 
 

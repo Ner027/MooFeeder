@@ -1,6 +1,7 @@
 package xyz.moofeeder.cloud.entities;
 
 import kotlin.Pair;
+import org.json.JSONObject;
 import xyz.moofeeder.cloud.data.DataManager;
 import xyz.moofeeder.cloud.data.MappedStatement;
 import xyz.moofeeder.cloud.enums.SerializableFieldType;
@@ -19,6 +20,52 @@ import java.util.Objects;
  */
 public abstract class SerializableObject implements DBObject
 {
+    public int loadFromJson(JSONObject jObject) throws IllegalAccessException
+    {
+        int serializableFields = 0;
+
+        for (Field field : getClass().getDeclaredFields())
+        {
+            if (!field.isAnnotationPresent(JsonField.class))
+                continue;
+
+            JsonField jf = field.getAnnotationsByType(JsonField.class)[0];
+            serializableFields++;
+
+            if (!jObject.has(jf.name()))
+                continue;
+
+            if (!field.canAccess(this))
+                field.setAccessible(true);
+
+            field.set(this, jObject.get(jf.name()));
+
+            serializableFields--;
+        }
+
+        return serializableFields;
+    }
+
+    public JSONObject dumpToJson() throws IllegalAccessException
+    {
+        JSONObject jObject = new JSONObject();
+
+        for (Field field : getClass().getDeclaredFields())
+        {
+            if (!field.isAnnotationPresent(JsonField.class))
+                continue;
+
+            JsonField jf = field.getAnnotationsByType(JsonField.class)[0];
+
+            if (!field.canAccess(this))
+                field.setAccessible(true);
+
+            jObject.put(jf.name(), field.get(this));
+        }
+
+        return jObject;
+    }
+
     /**
      * @apiNote Inserts this object into the database
      * @throws IllegalAccessException If illegal access to a field occurs this exception is thrown
@@ -41,32 +88,9 @@ public abstract class SerializableObject implements DBObject
         mStat.getPreparedStatement(getFields(false)).execute();
     }
 
-    /**
-     * @apiNote Loads an object from the database using id to identify it
-     * @param fieldName Name of the field used to identify the object
-     * @param id Value of the field used to identify the object
-     * @return Returns the number of serializable fields loaded from the database
-     * @throws IllegalAccessException If illegal access to a field occurs this exception is thrown
-     * @throws SQLException If an SQL error occurs this exception is thrown
-     */
-    public int load(String fieldName, Object id) throws SQLException, IllegalAccessException
+    public int loadFromSet(ResultSet set) throws SQLException, IllegalAccessException
     {
         int serializedFields = 0;
-
-        //Create a prepared statement using the correct load query
-        PreparedStatement pStat = DataManager.getRawPreparedStatement(getLoadQueryName(fieldName));
-
-        //If the field used for identifying the object is encoded make sure the parameter set is also encoded
-        if (isFieldEncoded(fieldName))
-            pStat.setObject(1, Base64.getEncoder().encodeToString(id.toString().getBytes()));
-        else
-            pStat.setObject(1, id);
-
-        ResultSet set = pStat.executeQuery();
-
-        //If no fields were retrieved from the database return the number of fields loaded, in this case 0
-        if (!set.next())
-            return 0;
 
         //Iterate all the fields in this class
         for (Field field : getClass().getDeclaredFields())
@@ -100,6 +124,34 @@ public abstract class SerializableObject implements DBObject
         }
 
         return serializedFields;
+    }
+
+    /**
+     * @apiNote Loads an object from the database using id to identify it
+     * @param fieldName Name of the field used to identify the object
+     * @param id Value of the field used to identify the object
+     * @return Returns the number of serializable fields loaded from the database
+     * @throws IllegalAccessException If illegal access to a field occurs this exception is thrown
+     * @throws SQLException If an SQL error occurs this exception is thrown
+     */
+    public int load(String fieldName, Object id) throws SQLException, IllegalAccessException
+    {
+        //Create a prepared statement using the correct load query
+        PreparedStatement pStat = DataManager.getRawPreparedStatement(getLoadQueryName(fieldName));
+
+        //If the field used for identifying the object is encoded make sure the parameter set is also encoded
+        if (isFieldEncoded(fieldName))
+            pStat.setObject(1, Base64.getEncoder().encodeToString(id.toString().getBytes()));
+        else
+            pStat.setObject(1, id);
+
+        ResultSet set = pStat.executeQuery();
+
+        //If no fields were retrieved from the database return the number of fields loaded, in this case 0
+        if (!set.next())
+            return 0;
+
+        return loadFromSet(set);
     }
 
     /**

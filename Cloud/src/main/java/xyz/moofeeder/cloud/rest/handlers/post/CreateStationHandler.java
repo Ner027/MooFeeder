@@ -5,14 +5,12 @@ import io.javalin.http.HandlerType;
 import io.javalin.http.HttpResponseException;
 import io.javalin.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
-import xyz.moofeeder.cloud.data.DataManager;
 import xyz.moofeeder.cloud.entities.FeedingStation;
 import xyz.moofeeder.cloud.enums.RequestErrorCause;
 import xyz.moofeeder.cloud.rest.exceptions.RequestException;
 import xyz.moofeeder.cloud.rest.handlers.IHandler;
 import xyz.moofeeder.cloud.util.Util;
 
-import java.rmi.server.UID;
 import java.sql.SQLException;
 
 public class CreateStationHandler implements IHandler
@@ -30,7 +28,7 @@ public class CreateStationHandler implements IHandler
 
         FeedingStation feedingStation = getFeedingStation(hwId, name, id);
 
-        System.out.println("Creating a new feeding station with name: " + name + " and HwId: " + hwId + " for ControlBox with id: " + id);
+        Util.log("Creating a new feeding station with name: " + name + " and HwId: " + hwId + " for ControlBox with id: " + id);
 
         try
         {

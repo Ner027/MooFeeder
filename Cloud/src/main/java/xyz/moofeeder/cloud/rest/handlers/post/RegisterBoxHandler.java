@@ -26,7 +26,7 @@ public class RegisterBoxHandler implements IHandler
         Util.validateString(username, HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_USER);
         Util.validateString(password, HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_PASSWORD);
 
-        System.out.println("Starting register of new Control Box with user: " + username + " and password: " + password);
+        Util.log("Starting register of new Control Box with user: " + username + " and password: " + password);
 
         ControlBox controlBox = new ControlBox();
 
@@ -34,19 +34,19 @@ public class RegisterBoxHandler implements IHandler
 
         if (controlBox.getId() > 0)
         {
-            System.out.println("User already exists!");
+            Util.log("User already exists!");
             throw new RequestException(HttpStatus.FORBIDDEN, RequestErrorCause.USER_EXISTS);
         }
 
         if (!controlBox.setUsername(username))
         {
-            System.out.println("Username invalid!");
+            Util.log("Username invalid!");
             throw new RequestException(HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_USER);
         }
 
         if (!controlBox.setPassword(password))
         {
-            System.out.println("Password invalid!");
+            Util.log("Password invalid!");
             throw new RequestException(HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_PASSWORD);
         }
 

@@ -90,6 +90,23 @@ public class DataManager
         return getConnection().prepareStatement(QueryUtil.getQuery(qName));
     }
 
+    /**
+     * @apiNote Created a prepared statement with defined parameters
+     * @param qName Name of the SQL Query to prepare
+     * @param params Variable argument parameters to set on the prepared statement
+     * @return Returns a prepared statement created from qName and configured with params
+     * @throws SQLException If an error occurs while trying to create the statement
+     */
+    public static PreparedStatement prepareStatement(String qName, Object... params) throws SQLException
+    {
+        PreparedStatement pStat = getRawPreparedStatement(qName);
+
+        for (int i = 0; i < params.length; i++)
+            pStat.setObject(i + 1, params[i]);
+
+        return pStat;
+    }
+
     /*-----------------------------------------------------------------------------------------------------------------*
      * Private Methods
      *----------------------------------------------------------------------------------------------------------------*/
@@ -121,23 +138,5 @@ public class DataManager
         }
 
         return m_connection;
-    }
-
-
-    /**
-     * @apiNote Created a prepared statement with defined parameters
-     * @param qName Name of the SQL Query to prepare
-     * @param params Variable argument parameters to set on the prepared statement
-     * @return Returns a prepared statement created from qName and configured with params
-     * @throws SQLException If an error occurs while trying to create the statement
-     */
-    private static PreparedStatement prepareStatement(String qName, Object... params) throws SQLException
-    {
-        PreparedStatement pStat = getRawPreparedStatement(qName);
-
-        for (int i = 0; i < params.length; i++)
-            pStat.setObject(i + 1, params[i]);
-
-        return pStat;
     }
 }

@@ -12,7 +12,8 @@ public enum RequestErrorCause
     INVALID_ST_NAME         (7),
     INVALID_HWID            (8),
     STATION_NOT_FOUND       (9),
-    STATION_EXISTS          (10);
+    STATION_EXISTS          (10),
+    INVALID_PHY_ID          (11);
 
 
     private final int m_value;

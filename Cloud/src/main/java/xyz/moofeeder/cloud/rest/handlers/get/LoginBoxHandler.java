@@ -33,7 +33,7 @@ public class LoginBoxHandler implements IHandler
         if (!controlBox.checkAccess(password))
             throw new RequestException(HttpStatus.UNAUTHORIZED, RequestErrorCause.WRONG_PASSWORD);
 
-        System.out.println("User " + username + " logged in successfully");
+        Util.log("User " + username + " logged in successfully");
 
         try
         {
