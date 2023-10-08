@@ -1,0 +1,1 @@
+drop * from feeding_station_data where

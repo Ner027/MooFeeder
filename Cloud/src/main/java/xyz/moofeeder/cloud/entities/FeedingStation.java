@@ -1,15 +1,14 @@
 package xyz.moofeeder.cloud.entities;
 
 import xyz.moofeeder.cloud.enums.SerializableFieldType;
+import xyz.moofeeder.cloud.util.Consts;
 
 public class FeedingStation extends SerializableObject
 {
     @SerializableField(name = "id", type = SerializableFieldType.ENCODE)
-    private final String m_id;
-
+    private final long m_id;
     @SerializableField(name = "name", type = SerializableFieldType.ENC_DEC, encode = true)
     private String m_name;
-
     @SerializableField(name = "description", type = SerializableFieldType.ENC_DEC, encode = true)
     private String m_description;
     @SerializableField(name = "hw_id", type = SerializableFieldType.ENC_DEC, encode = true)
@@ -21,24 +20,64 @@ public class FeedingStation extends SerializableObject
 
     public FeedingStation()
     {
-        m_id = null;
+        m_id = -1;
     }
 
+    public boolean setName(String name)
+    {
+        if ((name.length() < 4) || name.length() > 32)
+             return false;
+
+        this.m_name = name;
+
+        return true;
+    }
+
+    public boolean setParentId(long parentId)
+    {
+        if (parentId < 0)
+            return false;
+
+        m_parent = parentId;
+
+        return true;
+    }
+
+    public boolean setHwId(String hwId)
+    {
+        if (hwId.length() != Consts.hwIdLen)
+            return false;
+
+        this.m_hwId = hwId;
+
+        return true;
+    }
+
+    public long getId()
+    {
+        return m_id;
+    }
     @Override
     public String getInsertionQueryName()
     {
         return "InsertFeedingStation";
     }
-
     @Override
     public String getUpdateQueryName()
     {
-        return null;
+        return "UpdateFeedingStation";
     }
 
     @Override
     public String getLoadQueryName(String fieldName)
     {
-        return null;
+        return "GetFeedingStationBy_" + fieldName;
     }
+
+    @Override
+    public String getDeleteQueryName(String fieldName)
+    {
+        return "DeleteFeedingStationBy_" + fieldName;
+    }
+
 }

@@ -29,7 +29,7 @@ public class DataManager
     public static void initDatabase()
     {
         insertData("InitControlBoxTable");
-        //insertData("InitFeedingStationTable");
+        insertData("InitFeedingStationTable");
     }
 
     /**
@@ -50,6 +50,32 @@ public class DataManager
             m_logger.log(Level.WARNING, "Unable to execute an SQL Request!", e);
             return false;
         }
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getData(Class<T> type, String qName, String colName, Object... params)
+    {
+        try
+        {
+            PreparedStatement pStat = prepareStatement(qName, params);
+
+            ResultSet set = pStat.executeQuery();
+
+            while (set.next())
+            {
+                Object obj = set.getObject(colName);
+
+                if (type.isInstance(obj))
+                    return (T) obj;
+            }
+        }
+        catch (SQLException e)
+        {
+            m_logger.log(Level.WARNING, "Unable to execute query!", e);
+        }
+
+        return null;
     }
 
     /**

@@ -119,4 +119,10 @@ public class ControlBox extends SerializableObject
     {
         return "GetControlBoxBy_" + fieldName;
     }
+
+    @Override
+    public String getDeleteQueryName(String fieldName)
+    {
+        return null;
+    }
 }

@@ -14,7 +14,7 @@ public class Encryption
 {
     private static final Argon2PasswordEncoder m_encoder = new Argon2PasswordEncoder(
             Consts.saltLen,
-            Consts.sessionTokenLen,
+            Consts.hashLen,
             Consts.encryptionMaxCores,
             Consts.encryptionMaxMemory,
             Consts.encryptionMaxRuns);

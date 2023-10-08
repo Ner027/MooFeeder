@@ -4,9 +4,9 @@ import io.javalin.Javalin;
 import jakarta.annotation.Nonnull;
 import xyz.moofeeder.cloud.data.SettingsManager;
 import xyz.moofeeder.cloud.rest.handlers.IHandler;
-import xyz.moofeeder.cloud.rest.handlers.get.LoginHandler;
-import xyz.moofeeder.cloud.rest.handlers.post.CreateHandler;
-import xyz.moofeeder.cloud.rest.handlers.post.RegisterHandler;
+import xyz.moofeeder.cloud.rest.handlers.get.LoginBoxHandler;
+import xyz.moofeeder.cloud.rest.handlers.post.CreateStationHandler;
+import xyz.moofeeder.cloud.rest.handlers.post.RegisterBoxHandler;
 import xyz.moofeeder.cloud.util.Util;
 
 import java.util.logging.Level;
@@ -53,8 +53,8 @@ public class RestServer
         if (m_initComplete)
             return;
 
-        addHandler(new RegisterHandler());
-        addHandler(new LoginHandler());
-        addHandler(new CreateHandler());
+        addHandler(new RegisterBoxHandler());
+        addHandler(new LoginBoxHandler());
+        addHandler(new CreateStationHandler());
     }
 }

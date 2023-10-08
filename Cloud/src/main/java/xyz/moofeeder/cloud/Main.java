@@ -1,4 +1,5 @@
 package xyz.moofeeder.cloud;
+import com.github.javafaker.Faker;
 import xyz.moofeeder.cloud.data.DataManager;
 import xyz.moofeeder.cloud.rest.RestServer;
 import java.util.logging.Logger;

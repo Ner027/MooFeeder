@@ -1,9 +1,15 @@
 package xyz.moofeeder.cloud.util;
 
+import io.javalin.http.HttpStatus;
+import org.bouncycastle.util.encoders.Base64Encoder;
+import xyz.moofeeder.cloud.enums.RequestErrorCause;
+import xyz.moofeeder.cloud.rest.exceptions.RequestException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -52,6 +58,20 @@ public class Util
         return strBuilder.toString();
     }
 
+    public static void validateString(String src, HttpStatus status, RequestErrorCause cause) throws RequestException
+    {
+        if ((src == null) || src.isEmpty())
+            throw new RequestException(status, cause);
+    }
+    public static String b64Encode(String src)
+    {
+        return new String(Base64.getEncoder().encode(src.getBytes()));
+    }
+
+    public static String b64Decode(String src)
+    {
+        return new String(Base64.getDecoder().decode(src));
+    }
     public static void criticalExit()
     {
         System.exit(-1);

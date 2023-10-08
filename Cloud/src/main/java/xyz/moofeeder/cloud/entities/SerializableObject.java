@@ -101,6 +101,20 @@ public abstract class SerializableObject implements DBObject
         return serializedFields;
     }
 
+    /**
+     * @apiNote Deletes the current object from the database
+     * @param fieldName Name of the field to identify the object
+     * @param id Value of the field used to identify the object
+     * @return Returns true if any change was made to the database otherwise returns false
+     * @throws SQLException If something goes wrong while preparing the SQL statement
+     */
+    public boolean delete(String fieldName, Object id) throws SQLException
+    {
+        //Prepare a statement using the delete query
+        PreparedStatement pStat = DataManager.getRawPreparedStatement(getDeleteQueryName(fieldName));
+        return pStat.execute();
+    }
+
     /*-----------------------------------------------------------------------------------------------------------------*
      * Private Methods
      *----------------------------------------------------------------------------------------------------------------*/

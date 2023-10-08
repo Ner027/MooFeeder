@@ -20,4 +20,5 @@ public interface DBObject
      * @return String containing the query name
      */
     String getLoadQueryName(String fieldName);
+    String getDeleteQueryName(String fieldName);
 }
