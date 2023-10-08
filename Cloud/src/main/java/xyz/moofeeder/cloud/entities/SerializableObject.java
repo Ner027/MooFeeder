@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @apiNote Objects that need to be serialized have to extend this class
@@ -104,15 +105,23 @@ public abstract class SerializableObject implements DBObject
     /**
      * @apiNote Deletes the current object from the database
      * @param fieldName Name of the field to identify the object
-     * @param id Value of the field used to identify the object
      * @return Returns true if any change was made to the database otherwise returns false
      * @throws SQLException If something goes wrong while preparing the SQL statement
+     * @throws IllegalAccessException If the field used to identify the object is not accessible
      */
-    public boolean delete(String fieldName, Object id) throws SQLException
+    public boolean delete(String fieldName) throws SQLException, IllegalAccessException
     {
+        Object value = getFieldValueByName(fieldName);
+
+        if (value == null)
+            return false;
+
         //Prepare a statement using the delete query
         PreparedStatement pStat = DataManager.getRawPreparedStatement(getDeleteQueryName(fieldName));
-        return pStat.execute();
+        pStat.setObject(1, value);
+        pStat.execute();
+
+        return pStat.getUpdateCount() > 0;
     }
 
     /*-----------------------------------------------------------------------------------------------------------------*
@@ -183,5 +192,30 @@ public abstract class SerializableObject implements DBObject
 
         //If no field with name "fieldName" was found returns false
         return false;
+    }
+
+    /**
+     * @apiNote Retrieves a field value by its annotation name
+     * @param fieldName Name of the field to retrieve
+     * @return An object containing the field value if found, or null if something goes wrong or no field was found
+     * @throws IllegalAccessException If illegal access to the field occurs an exception is thrown
+     */
+    private Object getFieldValueByName(String fieldName) throws IllegalAccessException
+    {
+        for (Field field : getClass().getDeclaredFields())
+        {
+            if (!field.isAnnotationPresent(SerializableField.class))
+                continue;
+
+            if (field.getAnnotationsByType(SerializableField.class)[0].name().equals(fieldName))
+            {
+                if (!field.canAccess(this))
+                    field.setAccessible(true);
+
+                return field.get(this);
+            }
+        }
+
+        return null;
     }
 }

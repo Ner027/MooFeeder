@@ -2,6 +2,7 @@ package xyz.moofeeder.cloud.util;
 
 import io.javalin.http.HttpStatus;
 import org.bouncycastle.util.encoders.Base64Encoder;
+import xyz.moofeeder.cloud.data.DataManager;
 import xyz.moofeeder.cloud.enums.RequestErrorCause;
 import xyz.moofeeder.cloud.rest.exceptions.RequestException;
 
@@ -62,6 +63,18 @@ public class Util
     {
         if ((src == null) || src.isEmpty())
             throw new RequestException(status, cause);
+    }
+
+    public static long validateToken(String sessionToken)
+    {
+        Util.validateString(sessionToken, HttpStatus.UNAUTHORIZED, RequestErrorCause.INVALID_TOKEN);
+
+        Long id = DataManager.getData(Long.class, "ValidateSessionToken", "id", sessionToken);
+
+        if (id == null)
+            throw new RequestException(HttpStatus.UNAUTHORIZED, RequestErrorCause.TOKEN_EXPIRED);
+
+        return id;
     }
     public static String b64Encode(String src)
     {

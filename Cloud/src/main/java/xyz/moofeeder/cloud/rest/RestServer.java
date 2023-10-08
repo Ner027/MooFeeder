@@ -5,7 +5,9 @@ import jakarta.annotation.Nonnull;
 import xyz.moofeeder.cloud.data.SettingsManager;
 import xyz.moofeeder.cloud.rest.handlers.IHandler;
 import xyz.moofeeder.cloud.rest.handlers.get.LoginBoxHandler;
+import xyz.moofeeder.cloud.rest.handlers.patch.ChangeStationHandler;
 import xyz.moofeeder.cloud.rest.handlers.post.CreateStationHandler;
+import xyz.moofeeder.cloud.rest.handlers.post.DeleteStationHandler;
 import xyz.moofeeder.cloud.rest.handlers.post.RegisterBoxHandler;
 import xyz.moofeeder.cloud.util.Util;
 
@@ -56,5 +58,7 @@ public class RestServer
         addHandler(new RegisterBoxHandler());
         addHandler(new LoginBoxHandler());
         addHandler(new CreateStationHandler());
+        addHandler(new DeleteStationHandler());
+        addHandler(new ChangeStationHandler());
     }
 }

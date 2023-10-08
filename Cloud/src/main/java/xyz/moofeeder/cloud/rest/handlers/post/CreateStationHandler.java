@@ -13,6 +13,7 @@ import xyz.moofeeder.cloud.rest.handlers.IHandler;
 import xyz.moofeeder.cloud.util.Util;
 
 import java.rmi.server.UID;
+import java.sql.SQLException;
 
 public class CreateStationHandler implements IHandler
 {
@@ -23,31 +24,11 @@ public class CreateStationHandler implements IHandler
         String hwId = ctx.formParam("hwId");
         String sessionToken = ctx.formParam("sessionToken");
 
+        long id = Util.validateToken(sessionToken);
         Util.validateString(name, HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_ST_NAME);
         Util.validateString(hwId, HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_HWID);
-        Util.validateString(sessionToken, HttpStatus.UNAUTHORIZED, RequestErrorCause.INVALID_TOKEN);
 
-        Long id = DataManager.getData(Long.class, "ValidateSessionToken", "id", sessionToken);
-
-        if (id == null)
-            throw new RequestException(HttpStatus.UNAUTHORIZED, RequestErrorCause.TOKEN_EXPIRED);
-
-        FeedingStation feedingStation = new FeedingStation();
-        feedingStation.load("hw_id", hwId);
-
-        if (feedingStation.getId() > 0)
-            throw new RequestException(HttpStatus.FORBIDDEN, RequestErrorCause.STATION_EXISTS);
-
-        feedingStation = new FeedingStation();
-
-        if (!feedingStation.setName(name))
-            throw new RequestException(HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_ST_NAME);
-
-        if (!feedingStation.setHwId(hwId))
-            throw new RequestException(HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_HWID);
-
-        if (!feedingStation.setParentId(id))
-            throw new RequestException(HttpStatus.FORBIDDEN, RequestErrorCause.TOKEN_EXPIRED);
+        FeedingStation feedingStation = getFeedingStation(hwId, name, id);
 
         System.out.println("Creating a new feeding station with name: " + name + " and HwId: " + hwId + " for ControlBox with id: " + id);
 
@@ -73,5 +54,26 @@ public class CreateStationHandler implements IHandler
     public String getPath()
     {
         return "/station/create";
+    }
+
+    private static FeedingStation getFeedingStation(String hwId, String name, long id) throws SQLException, IllegalAccessException
+    {
+        FeedingStation feedingStation = new FeedingStation();
+        feedingStation.load("hw_id", hwId);
+
+        if (feedingStation.getId() > 0)
+            throw new RequestException(HttpStatus.FORBIDDEN, RequestErrorCause.STATION_EXISTS);
+
+        feedingStation = new FeedingStation();
+
+        if (!feedingStation.setName(name))
+            throw new RequestException(HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_ST_NAME);
+
+        if (!feedingStation.setHwId(hwId))
+            throw new RequestException(HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_HWID);
+
+        if (!feedingStation.setParentId(id))
+            throw new RequestException(HttpStatus.FORBIDDEN, RequestErrorCause.TOKEN_EXPIRED);
+        return feedingStation;
     }
 }

@@ -1,1 +1,1 @@
-drop * from feeding_station_data where
+delete from feeding_station_data where id = ?

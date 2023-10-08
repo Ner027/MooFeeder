@@ -13,8 +13,6 @@ public class ControlBox extends SerializableObject
 {
     @SerializableField(name = "id", type = SerializableFieldType.ENCODE)
     private final long m_id;
-    @SerializableField(name = "nof_connections", type = SerializableFieldType.ENC_DEC)
-    private int m_nofConnections;
     @SerializableField(name = "session_token", type = SerializableFieldType.ENC_DEC)
     private String m_sessionToken;
     @SerializableField(name = "name", type = SerializableFieldType.ENC_DEC)
@@ -53,21 +51,6 @@ public class ControlBox extends SerializableObject
     public String getUsername()
     {
         return m_username;
-    }
-
-    public int getNofConnections()
-    {
-        return m_nofConnections;
-    }
-
-    public boolean setNofConnections(int nofConnections)
-    {
-        if (nofConnections < 0)
-            return false;
-
-        m_nofConnections = nofConnections;
-
-        return true;
     }
 
     public boolean setUsername(String username)

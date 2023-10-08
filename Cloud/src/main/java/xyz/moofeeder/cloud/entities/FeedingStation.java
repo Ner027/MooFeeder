@@ -25,10 +25,32 @@ public class FeedingStation extends SerializableObject
 
     public boolean setName(String name)
     {
+        if (name == null)
+            return false;
+
+        if (name.equals(m_name))
+            return false;
+
         if ((name.length() < 4) || name.length() > 32)
              return false;
 
         this.m_name = name;
+
+        return true;
+    }
+
+    public boolean setDescription(String desc)
+    {
+        if (desc == null)
+            return false;
+
+        if (desc.equals(m_description))
+            return false;
+
+        if (desc.length() > 64)
+            return false;
+
+        this.m_description = desc;
 
         return true;
     }
