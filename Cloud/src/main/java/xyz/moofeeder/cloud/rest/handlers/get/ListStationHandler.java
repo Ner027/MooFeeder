@@ -29,7 +29,6 @@ public class ListStationHandler implements IHandler
 
         ResultSet set = pStat.executeQuery();
 
-        FeedingStation feedingStation = new FeedingStation();
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
 
@@ -37,6 +36,7 @@ public class ListStationHandler implements IHandler
         {
             try
             {
+                FeedingStation feedingStation = new FeedingStation();
                 feedingStation.loadFromSet(set);
                 jsonArray.put(feedingStation.dumpToJson());
             }

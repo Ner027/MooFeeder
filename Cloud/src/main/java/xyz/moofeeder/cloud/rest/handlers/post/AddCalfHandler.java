@@ -18,8 +18,6 @@ public class AddCalfHandler implements IHandler
 
         Util.validateToken(sessionToken);
         Util.validateString(phyId, HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_PHY_ID);
-
-
     }
     @Override
     public HandlerType getType()
