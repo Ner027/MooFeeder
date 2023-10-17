@@ -1,9 +1,33 @@
-<mxfile host="Electron" modified="2023-10-17T01:25:39.126Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.0.2 Chrome/114.0.5735.289 Electron/25.8.4 Safari/537.36" etag="UqXPW3K-jul2SbrIs7Xn" version="22.0.2" type="device">
+<mxfile host="Electron" modified="2023-10-17T01:45:37.717Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.0.2 Chrome/114.0.5735.289 Electron/25.8.4 Safari/537.36" etag="9wGygT4ZBBHg4lfJQoEu" version="22.0.2" type="device">
   <diagram name="Page-1" id="71b2FrJPfIM__oIZdsdz">
-    <mxGraphModel dx="2004" dy="1203" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="2358" dy="1415" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="af_pnGvFz1MDpZ3YgOPd-1" value="CSerializableObject" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="160" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="af_pnGvFz1MDpZ3YgOPd-4" value="+ loadFromJson(std::string) : bool (virtual)&lt;br&gt;+ dumpToJson() : std::string (virtual)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="af_pnGvFz1MDpZ3YgOPd-1">
+          <mxGeometry y="30" width="250" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="af_pnGvFz1MDpZ3YgOPd-5" value="CControlBox" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="160" width="310" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="af_pnGvFz1MDpZ3YgOPd-6" value="- m_sessionToken : std::string&lt;br&gt;- m_name : std::string&lt;br&gt;- m_username : std::string&lt;br&gt;- m_registeredStations : std::vector&amp;lt;CFeedingStation&amp;gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="af_pnGvFz1MDpZ3YgOPd-5">
+          <mxGeometry y="30" width="310" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="af_pnGvFz1MDpZ3YgOPd-10" value="+ CControlBox()&lt;br&gt;+ CControlBox(std::string, std::string)&lt;br&gt;+ ~CControlBox()&lt;br&gt;+ executeLogin(std::string, std::string) : bool&lt;br&gt;+ executeLogout() : void&lt;br&gt;+ setName(std::string) : bool&lt;br&gt;+ getName() : std::string&lt;br&gt;+ getUsername() : std::string&lt;br&gt;+ addStation(&amp;amp;CFeedingStation) : bool&lt;br&gt;+ removeStation(std::string) : bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="af_pnGvFz1MDpZ3YgOPd-5">
+          <mxGeometry y="90" width="310" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="af_pnGvFz1MDpZ3YgOPd-14" value="" style="endArrow=none;html=1;rounded=0;exitX=-0.002;exitY=0.004;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.999;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="af_pnGvFz1MDpZ3YgOPd-5" source="af_pnGvFz1MDpZ3YgOPd-10" target="af_pnGvFz1MDpZ3YgOPd-10">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="75" y="190" as="sourcePoint" />
+            <mxPoint x="305" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="af_pnGvFz1MDpZ3YgOPd-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=-0.006;entryY=0.088;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=block;endFill=0;" edge="1" parent="1" source="af_pnGvFz1MDpZ3YgOPd-1" target="af_pnGvFz1MDpZ3YgOPd-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
