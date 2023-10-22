@@ -67,6 +67,8 @@ int yrm100x_init(yrm100x_st* dev, void* serialPort)
 
     dev->initialized = 1;
 
+    yrm100x_set_region(dev, REGION_EUROPE);
+
     return 0;
 }
 
