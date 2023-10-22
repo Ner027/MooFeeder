@@ -18,14 +18,16 @@ int main()
     ret = yrm100x_init(&dev, SERIAL_PORT);
     MY_ASSERT(ret == 0);
 
-    tryCount = READ_TRIES;
+    tryCount = 0;
 
-    while (tryCount--)
+    while (tryCount++ < READ_TRIES)
     {
         ret = yrm100x_write_command(&dev, CMD_INV_SINGLE, NULL, 0);
         MY_ASSERT(ret == 0);
 
         ret = yrm100x_read_parse(&dev, &yrmRet, yrmInv.raw, 17);
+
+        printf("Iteration: %d-> ", tryCount);
 
         if (ret < 0)
         {

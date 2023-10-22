@@ -73,7 +73,8 @@
  /// \brief Initializes a YRM100x device
  /// \param dev YRM100x device handler
  /// \param serialPort Serial port to use as communication medium with YRM100x
- /// \return 0 if initialized properly, -EINVAL if invalid arguments are passed, or -EALREADY if already initialized
+ /// \return 0 if initialized properly, -EINVAL if invalid arguments are passed, -EALREADY if already initialized,
+ /// or -EIO if an error occured while trying to open the serial port
 int yrm100x_init(yrm100x_st* dev, void* serialPort);
 
 /// \brief Writes a command with or without arguments to an YRM100x device

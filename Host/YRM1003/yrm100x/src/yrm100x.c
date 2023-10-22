@@ -45,6 +45,7 @@ static uint8_t yrm100x_calculate_checksum(const uint8_t* buffer, uint16_t buffer
  **********************************************************************************************************************/
 int yrm100x_init(yrm100x_st* dev, void* serialPort)
 {
+    int ret;
     if (!dev)
         return -EINVAL;
 
@@ -53,10 +54,16 @@ int yrm100x_init(yrm100x_st* dev, void* serialPort)
         return -EALREADY;
 
 #ifdef HOST
-    serial_open((char*) serialPort, B115200, &dev->serialPort);
+    ret = serial_open((char*) serialPort, B115200, &dev->serialPort);
 #else
-    serial_open((char*) serialPort, B115200, &dev->serialPort);
+    ret = serial_open((char*) serialPort, B115200, &dev->serialPort);
 #endif
+    if (ret < 0)
+        return -EIO;
+
+    ret = serial_set_terminator(&dev->serialPort, END);
+    if (ret < 0)
+        return -EIO;
 
     //Hardware reset
     GPIO_SET_LEVEL(YRM_EN_PORT, YRM_EN_PIN, 0);
