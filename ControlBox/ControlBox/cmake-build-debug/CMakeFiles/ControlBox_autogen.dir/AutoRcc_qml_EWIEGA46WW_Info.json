@@ -1,0 +1,36 @@
+{
+	"BUILD_DIR" : "/home/andre/workspace/ControlBox/ControlBox/cmake-build-debug/ControlBox_autogen",
+	"CMAKE_BINARY_DIR" : "/home/andre/workspace/ControlBox/ControlBox/cmake-build-debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "/home/andre/workspace/ControlBox/ControlBox/cmake-build-debug",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/home/andre/workspace/ControlBox/ControlBox",
+	"CMAKE_SOURCE_DIR" : "/home/andre/workspace/ControlBox/ControlBox",
+	"INCLUDE_DIR" : "/home/andre/workspace/ControlBox/ControlBox/cmake-build-debug/ControlBox_autogen/include",
+	"INPUTS" : 
+	[
+		"/home/andre/workspace/ControlBox/ControlBox/qml/MainMenu.qml",
+		"/home/andre/workspace/ControlBox/ControlBox/qml/SettingsMenu.qml",
+		"/home/andre/workspace/ControlBox/ControlBox/qml/LoginMenu.qml",
+		"/home/andre/workspace/ControlBox/ControlBox/qml/Types.qml",
+		"/home/andre/workspace/ControlBox/ControlBox/qml/Main.qml",
+		"/home/andre/workspace/ControlBox/ControlBox/qml/Components/SwipeListener.qml",
+		"/home/andre/workspace/ControlBox/ControlBox/qml/Components/MenuButton.qml",
+		"/home/andre/workspace/ControlBox/ControlBox/qml/Components/RoundedButton.qml",
+		"/home/andre/workspace/ControlBox/ControlBox/resources/images/Settings.png",
+		"/home/andre/workspace/ControlBox/ControlBox/resources/images/Box.png",
+		"/home/andre/workspace/ControlBox/ControlBox/resources/images/FeedingStation.png",
+		"/home/andre/workspace/ControlBox/ControlBox/resources/images/Reboot.png",
+		"/home/andre/workspace/ControlBox/ControlBox/resources/images/Shutdown.png",
+		"/home/andre/workspace/ControlBox/ControlBox/resources/images/Login.png",
+		"/home/andre/workspace/ControlBox/ControlBox/resources/images/Calf.png"
+	],
+	"LOCK_FILE" : "/home/andre/workspace/ControlBox/ControlBox/cmake-build-debug/CMakeFiles/ControlBox_autogen.dir/AutoRcc_qml_EWIEGA46WW_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "-name", "qml" ],
+	"OUTPUT_CHECKSUM" : "EWIEGA46WW",
+	"OUTPUT_NAME" : "qrc_qml.cpp",
+	"RCC_EXECUTABLE" : "/home/andre/Qt/5.15.15/gcc_64/bin/rcc",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "/home/andre/workspace/ControlBox/ControlBox/cmake-build-debug/CMakeFiles/ControlBox_autogen.dir/AutoRcc_qml_EWIEGA46WW_Used.txt",
+	"SOURCE" : "/home/andre/workspace/ControlBox/ControlBox/qml.qrc",
+	"VERBOSITY" : 0
+}

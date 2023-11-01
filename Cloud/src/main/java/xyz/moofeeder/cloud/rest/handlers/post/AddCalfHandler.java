@@ -5,7 +5,9 @@ import io.javalin.http.HandlerType;
 import io.javalin.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
 import xyz.moofeeder.cloud.enums.RequestErrorCause;
+import xyz.moofeeder.cloud.rest.exceptions.RequestException;
 import xyz.moofeeder.cloud.rest.handlers.IHandler;
+import xyz.moofeeder.cloud.util.Consts;
 import xyz.moofeeder.cloud.util.Util;
 
 public class AddCalfHandler implements IHandler
@@ -18,6 +20,10 @@ public class AddCalfHandler implements IHandler
 
         Util.validateToken(sessionToken);
         Util.validateString(phyId, HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_PHY_ID);
+
+        if (phyId.length() != Consts.phyIdLen)
+            throw new RequestException(HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_PHY_ID);
+        
     }
     @Override
     public HandlerType getType()

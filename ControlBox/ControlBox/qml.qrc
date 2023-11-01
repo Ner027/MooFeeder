@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/Main.qml</file>
+        <file>qml/MainMenu.qml</file>
+        <file>qml/Components/MenuButton.qml</file>
+        <file>resources/images/Calf.png</file>
+        <file>resources/images/FeedingStation.png</file>
+        <file>resources/images/Box.png</file>
+        <file>resources/images/Settings.png</file>
+        <file>qml/SettingsMenu.qml</file>
+        <file>resources/images/Login.png</file>
+        <file>resources/images/Reboot.png</file>
+        <file>resources/images/Shutdown.png</file>
+        <file>qml/Types.qml</file>
+        <file>qml/LoginMenu.qml</file>
+        <file>qml/Components/SwipeListener.qml</file>
+        <file>qml/Components/RoundedButton.qml</file>
+    </qresource>
+</RCC>
