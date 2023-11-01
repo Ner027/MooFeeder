@@ -15,7 +15,6 @@ public enum RequestErrorCause
     STATION_EXISTS          (10),
     INVALID_PHY_ID          (11);
 
-
     private final int m_value;
     RequestErrorCause(int value)
     {

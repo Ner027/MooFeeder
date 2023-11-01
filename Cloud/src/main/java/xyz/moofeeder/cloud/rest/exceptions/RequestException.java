@@ -10,6 +10,6 @@ public class RequestException extends HttpResponseException
 {
     public RequestException(HttpStatus status, RequestErrorCause cause)
     {
-        super(status.getCode(), "RequestException", Map.of("cause", String.valueOf(cause)));
+        super(status.getCode(), "RequestException", Map.of("cause", String.valueOf(cause.getValue())));
     }
 }

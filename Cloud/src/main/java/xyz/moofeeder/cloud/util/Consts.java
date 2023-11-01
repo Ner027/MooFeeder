@@ -9,4 +9,5 @@ public class Consts
     public static final int encryptionMaxRuns = 8;
     public static final int sessionTokenLen = 32;
     public static final int hwIdLen = 8;
+    public static final int phyIdLen = 32;
 }
