@@ -1,0 +1,7 @@
+# ninja log v5
+0	247	1698166391851910190	CMakeFiles/SerializableObjects.dir/CSerializableObject/CSerializableObject.cpp.o	3422348de95ffa40
+1	2821	1698167395988464165	CMakeFiles/SerializableObjects.dir/CControlBox.cpp.o	35121405b840452e
+2821	2896	1698167396068465855	SerializableObjects	92f349f52bb22fcd
+1	1606	1698167394780438653	CMakeFiles/SerializableObjects.dir/main.cpp.o	8764edce4d461175
+1	245	1698774961133530694	CMakeFiles/SerializableObjects.dir/CSerializableObject/CSerializableObject.cpp.o	6fae75ebf128d653
+1	3125	1698774964009586515	CMakeFiles/SerializableObjects.dir/CControlBox.cpp.o	bcf3cc4b3ac681e9

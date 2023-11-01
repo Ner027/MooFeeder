@@ -12,3 +12,6 @@
 /ControlBox/ControlBox/CMakeLists.txt.user.bea64d8
 /ControlBox/ControlBox/rasp
 /ControlBox/ControlBox/rasp.pub
+/ControlBox/ControlBox/.ninja_deps
+/ControlBox/ControlBox/.ninja_log
+/ControlBox/ControlBox/build.ninja

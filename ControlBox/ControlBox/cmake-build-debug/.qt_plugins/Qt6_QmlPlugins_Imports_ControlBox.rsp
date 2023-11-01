@@ -1,9 +1,0 @@
--rootPath
-/home/andre/workspace/ControlBox/ControlBox
--cmake-output
--output-file
-/home/andre/workspace/ControlBox/ControlBox/cmake-build-debug/.qt_plugins/Qt6_QmlPlugins_Imports_ControlBox.cmake
--importPath
-/home/andre/workspace/ControlBox/ControlBox/cmake-build-debug
--importPath
-/home/andre/Qt/6.6.0/gcc_64/./qml

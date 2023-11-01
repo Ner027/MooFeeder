@@ -1,0 +1,3 @@
+/home/andre/workspace/MooFeeder/Host/SerializableObjects/cmake-build-debug/CMakeFiles/SerializableObjects.dir
+/home/andre/workspace/MooFeeder/Host/SerializableObjects/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/andre/workspace/MooFeeder/Host/SerializableObjects/cmake-build-debug/CMakeFiles/rebuild_cache.dir
