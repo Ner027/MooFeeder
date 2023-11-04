@@ -25,9 +25,12 @@ public slots:
     void shutdownBox();
     void rebootBox();
     int loginUser(QString username, QString password);
+    void logoutUser();
     int registerUser(QString username, QString password);
+    int getBoxStatus();
 signals:
     void menuChanged(int newMenu);
     void menuBack();
+    void boxStatusChanged(int newStatus);
 };
 #endif

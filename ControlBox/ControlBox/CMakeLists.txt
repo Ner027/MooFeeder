@@ -9,7 +9,10 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Quick)
+
+set(CMAKE_PREFIX_PATH "/home/andre/Qt/5.15.15/gcc_64/lib/cmake")
+
+find_package(QT NAMES Qt5 REQUIRED COMPONENTS Core Quick)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick)
 
 set(PROJECT_SOURCES
@@ -25,7 +28,7 @@ set(PROJECT_SOURCES
         cpp/src/entities/ccontrolbox.cpp
         cpp/src/util/chttpform.cpp
         cpp/src/util/cnetworkmanager.cpp
-        cpp/inc/util/cnetworkmanager.h
+        cpp/src/util/chttprequest.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

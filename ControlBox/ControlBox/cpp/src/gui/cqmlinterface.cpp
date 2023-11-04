@@ -2,7 +2,8 @@
 #include "../../inc/gui/cmainmenu.h"
 #include "../../inc/gui/csettingsmenu.h"
 #include "../../inc/gui/cloginmenu.h"
-#include <QDebug>
+#include "../../inc/entities/ccontrolbox.h"
+#include "../../inc/gui/cmonitormenu.h"
 
 CQmlInterface* CQmlInterface::m_instance = nullptr;
 
@@ -16,10 +17,16 @@ void CQmlInterface::changeToMenu(int _newMenu)
     if (m_guiMenus.count(newMenu) == 0)
         return;
 
+    auto menu = m_guiMenus[newMenu];
+
+    //Check if this is a menu which requires the user to be logged in
+    if (menu->requiresPrivilegedAccess() && (CControlBox::getInstance()->getStatus() != LOGGED_IN))
+        return;
+
     //If no menu was set yet, set it to this and do nothing else
     if (m_menuStack.empty())
     {
-        m_menuStack.push(m_guiMenus[newMenu]);
+        m_menuStack.push(menu);
         return;
     }
 
@@ -27,7 +34,7 @@ void CQmlInterface::changeToMenu(int _newMenu)
     if (m_menuStack.top()->getType() == newMenu)
         return;
 
-    m_menuStack.push(m_guiMenus[newMenu]);
+    m_menuStack.push(menu);
 
     qDebug() << "Changed to menu " << newMenu;
 
@@ -39,6 +46,7 @@ CQmlInterface::CQmlInterface()
     registerMenu(MAIN_MENU);
     registerMenu(SETTINGS_MENU);
     registerMenu(LOGIN_MENU);
+    registerMenu(MONITOR_MENU);
     changeToMenu(MAIN_MENU);
 }
 
@@ -63,6 +71,7 @@ void CQmlInterface::registerMenu(GuiMenuType_et menuType)
             newMenu = new CMainMenu;
             break;
         case MONITOR_MENU:
+            newMenu = new CMonitorMenu;
             break;
         case STATION_MENU:
             break;
@@ -112,7 +121,11 @@ int CQmlInterface::loginUser(QString username, QString password)
 
     auto* loginMenu = dynamic_cast<CLoginMenu*>(m_menuStack.top());
 
-    return (int) loginMenu->loginUser(username, password);
+    auto ret = (int) loginMenu->loginUser(username, password);
+
+    emit boxStatusChanged((int)CControlBox::getInstance()->getStatus());
+
+    return ret;
 }
 
 int CQmlInterface::registerUser(QString username, QString password)
@@ -121,7 +134,7 @@ int CQmlInterface::registerUser(QString username, QString password)
 
     auto* loginMenu = dynamic_cast<CLoginMenu*>(m_menuStack.top());
 
-    return (int) loginMenu->loginUser(username, password);
+    return (int) loginMenu->registerUser(username, password);
 }
 
 void CQmlInterface::shutdownBox()
@@ -142,6 +155,27 @@ void CQmlInterface::rebootBox()
     auto* settingsMenu = dynamic_cast<CSettingsMenu*>(m_menuStack.top());
 
     settingsMenu->platformReboot();
+}
+
+int CQmlInterface::getBoxStatus()
+{
+    auto ret = (int) CControlBox::getInstance()->getStatus();
+
+    emit boxStatusChanged(ret);
+
+    return ret;
+}
+
+void CQmlInterface::logoutUser()
+{
+    if (m_menuStack.top()->getType() != LOGIN_MENU)
+        return;
+
+    auto* loginMenu = dynamic_cast<CLoginMenu*>(m_menuStack.top());
+
+    loginMenu->logoutUser();
+
+    emit boxStatusChanged((int)CControlBox::getInstance()->getStatus());
 }
 
 

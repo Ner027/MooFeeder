@@ -11,17 +11,17 @@ Item
     {
         switch (retCode)
         {
-            case Types.LoginReturnCode.USER_LOGGED:
+            case Types.UserReturnCode.USER_OK:
                 return actionType + " sucesseful!";
-            case Types.LoginReturnCode.INVALID_USER:
+            case Types.UserReturnCode.INVALID_USER:
                 return "Invalid User!";
-            case Types.LoginReturnCode.INVALID_PASSWORD:
+            case Types.UserReturnCode.INVALID_PASSWORD:
                 return "Invalid Passowrd!";
-            case Types.LoginReturnCode.USER_EXISTS:
+            case Types.UserReturnCode.USER_EXISTS:
                 return "User already exists!";
-            case Types.LoginReturnCode.USER_NOT_FOUND:
+            case Types.UserReturnCode.USER_NOT_FOUND:
                 return "User not found!";
-            case Types.LoginReturnCode.WRONG_PASSWORD:
+            case Types.UserReturnCode.WRONG_PASSWORD:
                 return "Wrong password provided!"
             default:
                 return "Internal Error!";
@@ -31,6 +31,17 @@ Item
     SwipeListener
     {
         onSwipe: () => {QmlInterface.goBack();}
+    }
+
+    Connections
+    {
+        target: QmlInterface
+
+        function onBoxStatusChanged(newStatus)
+        {
+            logoutButton.bEnable = (newStatus === Types.ControlBoxStatus.LOGGED_IN);
+            loginButton.bEnable  = (newStatus === Types.ControlBoxStatus.LOGGED_OUT);
+        }
     }
 
     Popup
@@ -44,6 +55,16 @@ Item
         modal: true
 
         closePolicy: Popup.CloseOnPressOutside
+
+        enter: Transition
+        {
+            NumberAnimation { property: "opacity"; from: 0.0; to: 1.0 }
+        }
+
+        exit: Transition
+        {
+            NumberAnimation { property: "opacity"; from: 1.0; to: 0.0 }
+        }
 
         Rectangle
         {
@@ -68,26 +89,23 @@ Item
         anchors.fill: parent
         color: "#F5F5F5"
 
-        Item
+        ColumnLayout
         {
-            id: itemContainer
-
             anchors.centerIn: parent
             width: parent.width * 0.4
-            height: usernameField.height + passwordField.height + loginButton.height + registerButton.height
+            spacing: 20
 
             TextField
             {
                 id: usernameField
 
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
-
-                width: parent.width
                 font.pointSize: 24
                 placeholderText: "Username"
                 placeholderTextColor: "#E0E0E0"
                 selectedTextColor: "#424242"
+
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
                 validator: RegExpValidator
                 {
@@ -99,19 +117,14 @@ Item
             {
                 id: passwordField
 
-                anchors
-                {
-                    top: usernameField.bottom
-                    horizontalCenter: parent.horizontalCenter
-                    topMargin: 20
-                }
-
-                width: parent.width
                 font.pointSize: 24
                 placeholderText: "Password"
                 placeholderTextColor: "#E0E0E0"
                 selectedTextColor: "#424242"
                 echoMode: TextInput.Password
+
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
                 validator: RegExpValidator
                 {
@@ -123,15 +136,9 @@ Item
             {
                 id: loginButton
 
-                anchors
-                {
-                    top: passwordField.bottom
-                    horizontalCenter: parent.horizontalCenter
-                    topMargin: 20
-                }
-
-                width: parent.width
                 height: 60
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
                 titleText: "Login"
 
@@ -145,24 +152,39 @@ Item
 
             RoundedButton
             {
-                id: registerButton
-
-                anchors
-                {
-                    top: loginButton.bottom
-                    horizontalCenter: parent.horizontalCenter
-                    topMargin: 20
-                }
-
-                width: parent.width
                 height: 60
+
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
                 titleText: "Register"
 
                 clickArea.onClicked:
                 {
-                    console.log("Username: " + usernameField.text);
-                    console.log("Password: " + passwordField.text);
+                    var ret = QmlInterface.registerUser(usernameField.text, passwordField.text);
+                    popupData = {"title": getPopupText(ret, "Register")};
+                    eventPopup.open();
+                }
+            }
+
+
+            RoundedButton
+            {
+                id: logoutButton
+
+                height: 60
+
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                titleText: "Logout"
+
+                bEnable: false
+
+                clickArea.onClicked:
+                {
+                    QmlInterface.logoutUser();
+                    usernameField.text = "";
+                    passwordField.text = "";
                 }
             }
         }

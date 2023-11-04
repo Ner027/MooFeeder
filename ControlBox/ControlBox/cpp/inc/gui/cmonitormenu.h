@@ -5,6 +5,7 @@
 class CMonitorMenu : public CGuiMenu
 {
 public:
+    bool requiresPrivilegedAccess() override {return true;}
     GuiMenuType_et getType() override {return MONITOR_MENU;}
 };
 

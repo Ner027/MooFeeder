@@ -1,5 +1,5 @@
 #include "../../inc/util/cnetworkmanager.h"
-#include "../../inc/cloudinfo.h"
+#include "../../inc/cloudtypes.h"
 #include <sstream>
 #include <QUrl>
 #include <QDebug>
@@ -8,6 +8,7 @@
 #include <QEventLoop>
 
 CNetworkManager* CNetworkManager::m_instance = nullptr;
+
 
 CNetworkManager* CNetworkManager::getInstance()
 {
@@ -34,30 +35,26 @@ CNetworkManager::CNetworkManager()
     m_request = new QNetworkRequest;
 }
 
-int CNetworkManager::executeRequest(const std::string& endpoint,
-                                    const char* requestType,
-                                    CHttpForm &formData,
-                                    QNetworkReply** reply)
+int CNetworkManager::executeRequest(CHttpRequest& httpRequest)
 {
-    if (!requestType)
+    if (httpRequest.getVerb() >= HttpVerb_et::MAX)
         return -EINVAL;
 
     m_requestLock.lock();
 
     std::stringstream urlBuilder;
-    urlBuilder << CLOUD_URL << endpoint;
+    urlBuilder << CLOUD_URL << httpRequest.getEndpoint();
 
     QUrl fullUrl(QString::fromStdString(urlBuilder.str()));
 
     m_request->setUrl(fullUrl);
     QEventLoop loop;
 
-    *reply = m_networkAccessManager->sendCustomRequest(*m_request,
-                                                      requestType,
-                                                      formData.getMultiPart());
+    httpRequest.m_reply = m_networkAccessManager->sendCustomRequest(*m_request,
+                                                       g_verbLut[httpRequest.getVerb()].c_str(),
+                                                       httpRequest.m_formData.getMultiPart());
 
-
-    QObject::connect(*reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    QObject::connect(httpRequest.m_reply, SIGNAL(finished()), &loop, SLOT(quit()));
 
     loop.exec();
 
@@ -65,6 +62,7 @@ int CNetworkManager::executeRequest(const std::string& endpoint,
 
     return 0;
 }
+
 
 
 

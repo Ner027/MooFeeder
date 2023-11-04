@@ -6,7 +6,7 @@ CControlBox* CControlBox::m_instance = nullptr;
 
 CControlBox::CControlBox()
 {
-    m_networkManager = CNetworkManager::getInstance();
+    m_status = LOGGED_OUT;
 }
 
 CControlBox* CControlBox::getInstance()
@@ -23,37 +23,52 @@ void CControlBox::killInstance()
     m_instance = nullptr;
 }
 
-LoginReturnCode_et CControlBox::executeLogin(const std::string& username, const std::string& password)
+UserReturnCode_et CControlBox::executeLogin(const std::string& username, const std::string& password)
 {
-    QNetworkReply* requestReply;
-    CHttpForm formData;
+    QJsonObject jObject;
+    CHttpRequest request(ENDPOINT_LOGIN, HttpVerb_et::GET);
 
-    formData.addField(FIELD_USER, QByteArray(username.c_str()))
-            .addField(FIELD_PSW, QByteArray(password.c_str()));
+    request.m_formData.addField(FIELD_USER, QByteArray(username.c_str()))
+                    .addField(FIELD_PSW, QByteArray(password.c_str()));
 
-    m_networkManager->executeRequest(ENDPOINT_LOGIN, GET_REQUEST, formData, &requestReply);
+    int ret = request.execute();
 
-    QJsonObject jObject = QJsonDocument::fromJson(requestReply->readAll()).object();
-
-    if (jObject.isEmpty())
+    if (ret < 0)
         return INTERNAL_ERROR;
 
-    qDebug() << requestReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    if (request.getJsonData(&jObject) < 0)
+        return INTERNAL_ERROR;
 
-    if (requestReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() != 202)
+    if (request.getStatus() != HttpStatusCode_et::Accepted)
     {
         if (!jObject.contains(FIELD_CAUSE))
             return INTERNAL_ERROR;
 
-        return static_cast<LoginReturnCode_et>(jObject[FIELD_CAUSE].toInt());
+        return static_cast<UserReturnCode_et>(jObject[FIELD_CAUSE].toInt());
     }
 
     if (!jObject.contains(FIELD_TOKEN))
         return INTERNAL_ERROR;
 
     m_sessionToken = jObject[FIELD_TOKEN].toString().toStdString();
+    m_status = ControlBoxStatus_et::LOGGED_IN;
 
-    return USER_LOGGED;
+    return USER_OK;
+}
+
+ControlBoxStatus_et CControlBox::getStatus()
+{
+    return m_status;
+}
+
+void CControlBox::executeLogout()
+{
+    if (m_status != ControlBoxStatus_et::LOGGED_IN)
+        return;
+
+    //Execute extra logout steps
+
+    m_status = ControlBoxStatus_et::LOGGED_OUT;
 }
 
 

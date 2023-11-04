@@ -2,6 +2,7 @@ import QtQuick 2.0
 
 Item
 {
+    property bool bEnable: true
     property alias clickArea: mouseArea
     property string titleText: ""
 
@@ -34,8 +35,9 @@ Item
         {
             id: mouseArea
             anchors.fill: parent
+            enabled: parent.parent.bEnable
         }
 
-        opacity: mouseArea.pressed ? 0.5 : 1
+        opacity: parent.bEnable ? (mouseArea.pressed ? 0.5 : 1) : 0.5
     }
 }

@@ -15,5 +15,6 @@
         <file>qml/LoginMenu.qml</file>
         <file>qml/Components/SwipeListener.qml</file>
         <file>qml/Components/RoundedButton.qml</file>
+        <file>qml/MonitorMenu.qml</file>
     </qresource>
 </RCC>

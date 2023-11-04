@@ -19,6 +19,9 @@ Item
         {
             switch (newMenu)
             {
+                case Types.GuiMenuType.MONITOR_MENU:
+                    stackView.push(monitorMenu);
+                    break;
                 case Types.GuiMenuType.SETTINGS_MENU:
                     stackView.push(settingsMenu);
                     break;
@@ -38,6 +41,7 @@ Item
     property Item mainMenu: MainMenu{}
     property Item settingsMenu: SettingsMenu{}
     property Item loginMenu: LoginMenu{}
+    property Item monitorMenu: MonitorMenu{}
 
     StackView
     {

@@ -56,11 +56,10 @@ public class RegisterBoxHandler implements IHandler
         {
             controlBox.insert();
 
-            ctx.status(HttpStatus.CREATED);
             JSONObject jObj = new JSONObject();
             jObj.put("session_token", controlBox.getSessionToken());
             ctx.json(jObj.toString());
-            ctx.status(HttpStatus.ACCEPTED);
+            ctx.status(HttpStatus.CREATED);
         }
         catch (Exception e)
         {

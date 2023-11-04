@@ -17,8 +17,8 @@ public:
     CGuiMenu() = default;
     virtual ~CGuiMenu() = default;
     virtual GuiMenuType_et getType() = 0;
+    virtual bool requiresPrivilegedAccess() = 0;
     void goBack();
 };
-
 
 #endif
