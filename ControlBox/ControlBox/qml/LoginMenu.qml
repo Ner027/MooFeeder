@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.5
+import QtQuick.VirtualKeyboard 2.4
 
 import "Components"
 Item
@@ -82,6 +83,15 @@ Item
                 wrapMode: Text.WordWrap
             }
         }
+    }
+
+    InputPanel
+    {
+        id: inputPanel
+        z: 1
+        y: Qt.inputMethod.visible ? parent.height - inputPanel.height : parent.height
+        anchors.left: parent.left
+        anchors.right: parent.right
     }
 
     Rectangle

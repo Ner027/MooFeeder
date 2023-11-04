@@ -1,7 +1,7 @@
 #ifndef CONTROLBOX_CLOUDTYPES_H
 #define CONTROLBOX_CLOUDTYPES_H
 
-#define CLOUD_URL "http://localhost:8080"
+#define CLOUD_URL "http://192.168.216.110:8080"
 
 #define ENDPOINT_LOGIN "/box/login"
 #define ENDPOINT_REGISTER "/box/register"
