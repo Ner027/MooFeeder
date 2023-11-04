@@ -15,3 +15,5 @@
 /ControlBox/ControlBox/.ninja_deps
 /ControlBox/ControlBox/.ninja_log
 /ControlBox/ControlBox/build.ninja
+
+Cloud/.idea/
