@@ -13,7 +13,7 @@ Item
         switch (retCode)
         {
             case Types.UserReturnCode.USER_OK:
-                return actionType + " sucesseful!";
+                return actionType + " successful!";
             case Types.UserReturnCode.INVALID_USER:
                 return "Invalid User!";
             case Types.UserReturnCode.INVALID_PASSWORD:

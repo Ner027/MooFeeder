@@ -2,7 +2,6 @@
 #include "../../inc/gui/cmainmenu.h"
 #include "../../inc/gui/csettingsmenu.h"
 #include "../../inc/gui/cloginmenu.h"
-#include "../../inc/entities/ccontrolbox.h"
 #include "../../inc/gui/cmonitormenu.h"
 
 CQmlInterface* CQmlInterface::m_instance = nullptr;
@@ -177,5 +176,3 @@ void CQmlInterface::logoutUser()
 
     emit boxStatusChanged((int)CControlBox::getInstance()->getStatus());
 }
-
-

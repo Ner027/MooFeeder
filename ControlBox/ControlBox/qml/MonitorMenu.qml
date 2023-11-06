@@ -1,7 +1,14 @@
 import QtQuick 2.15
+import "Components"
 
 Item
 {
+    SwipeListener
+    {
+        anchors.fill: parent
+        onSwipe: () => {QmlInterface.goBack();}
+    }
+
     Rectangle
     {
         anchors.fill: parent

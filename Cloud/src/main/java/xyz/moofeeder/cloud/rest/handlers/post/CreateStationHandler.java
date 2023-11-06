@@ -33,6 +33,7 @@ public class CreateStationHandler implements IHandler
         try
         {
             feedingStation.insert();
+            ctx.status(HttpStatus.CREATED);
             /*TODO: Accordingly to the HTTP Standard this should return something, a reserved field is already defined
               in the specification*/
         }

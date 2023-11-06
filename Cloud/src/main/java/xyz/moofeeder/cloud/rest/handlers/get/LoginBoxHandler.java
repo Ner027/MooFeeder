@@ -12,28 +12,14 @@ import xyz.moofeeder.cloud.rest.exceptions.RequestException;
 import xyz.moofeeder.cloud.rest.handlers.IHandler;
 import xyz.moofeeder.cloud.util.Util;
 
+import static xyz.moofeeder.cloud.util.Util.tryLoginBox;
+
 public class LoginBoxHandler implements IHandler
 {
     @Override
     public void handle(@NotNull Context ctx) throws Exception
     {
-        String username = ctx.formParam("username");
-        String password = ctx.formParam("password");
-
-        ControlBox controlBox = new ControlBox();
-
-        Util.validateString(username, HttpStatus.UNAUTHORIZED, RequestErrorCause.INVALID_USER);
-        Util.validateString(password, HttpStatus.UNAUTHORIZED, RequestErrorCause.INVALID_PASSWORD);
-
-        controlBox.load("username", username);
-
-        if (controlBox.getId() < 0)
-            throw new RequestException(HttpStatus.UNAUTHORIZED, RequestErrorCause.USER_NOT_FOUND);
-
-        if (!controlBox.checkAccess(password))
-            throw new RequestException(HttpStatus.UNAUTHORIZED, RequestErrorCause.WRONG_PASSWORD);
-
-        Util.log("User " + username + " logged in successfully");
+        ControlBox controlBox = tryLoginBox(ctx);
 
         try
         {

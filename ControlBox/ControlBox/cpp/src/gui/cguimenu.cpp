@@ -5,3 +5,8 @@ void CGuiMenu::goBack()
 {
     CQmlInterface::getInstance()->goBack();
 }
+
+CGuiMenu::CGuiMenu()
+{
+    m_controlBoxInstance = CControlBox::getInstance();
+}

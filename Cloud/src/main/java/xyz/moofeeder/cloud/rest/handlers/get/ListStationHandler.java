@@ -7,13 +7,11 @@ import io.javalin.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import xyz.moofeeder.cloud.data.DataManager;
 import xyz.moofeeder.cloud.entities.FeedingStation;
 import xyz.moofeeder.cloud.enums.RequestErrorCause;
 import xyz.moofeeder.cloud.rest.handlers.IHandler;
 import xyz.moofeeder.cloud.util.Util;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.util.LinkedList;
 
 public class ListStationHandler implements IHandler
 {
@@ -25,26 +23,22 @@ public class ListStationHandler implements IHandler
         Util.validateString(sessionToken, HttpStatus.UNAUTHORIZED, RequestErrorCause.INVALID_TOKEN);
         long id = Util.validateToken(sessionToken);
 
-        PreparedStatement pStat = DataManager.prepareStatement("GetStationsByParent", id);
-
-        ResultSet set = pStat.executeQuery();
-
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
 
-        while (set.next())
+        LinkedList<FeedingStation> stations = Util.getStationsByParentId(id);
+
+        stations.forEach(s ->
         {
             try
             {
-                FeedingStation feedingStation = new FeedingStation();
-                feedingStation.loadFromSet(set);
-                jsonArray.put(feedingStation.dumpToJson());
+                jsonArray.put(s.dumpToJson());
             }
-            catch (Exception e)
+            catch (IllegalAccessException e)
             {
                 throw new HttpResponseException(HttpStatus.INTERNAL_SERVER_ERROR.getCode());
             }
-        }
+        });
 
         jsonObject.put("list", jsonArray);
         ctx.status(HttpStatus.OK);

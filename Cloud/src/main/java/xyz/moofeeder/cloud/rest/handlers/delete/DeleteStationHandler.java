@@ -1,4 +1,4 @@
-package xyz.moofeeder.cloud.rest.handlers.post;
+package xyz.moofeeder.cloud.rest.handlers.delete;
 
 import io.javalin.http.Context;
 import io.javalin.http.HandlerType;
@@ -47,7 +47,7 @@ public class DeleteStationHandler implements IHandler
     @Override
     public HandlerType getType()
     {
-        return HandlerType.POST;
+        return HandlerType.DELETE;
     }
 
     @Override
