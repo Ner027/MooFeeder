@@ -1,1 +1,1 @@
-UPDATE control_box_data SET session_token = NULL WHERE  id = ?
+UPDATE box_data SET session_token = NULL WHERE  id = ?

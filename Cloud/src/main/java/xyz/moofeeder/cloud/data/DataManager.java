@@ -30,6 +30,8 @@ public class DataManager
     {
         insertData("InitControlBoxTable");
         insertData("InitFeedingStationTable");
+        insertData("InitCalfTable");
+        insertData("InitLogTable");
     }
 
     /**

@@ -1,4 +1,4 @@
-UPDATE control_box_data SET (<session_token>,
+UPDATE box_data SET (<session_token>,
                              <name>,
                              <password_salt>,
                              <username>,

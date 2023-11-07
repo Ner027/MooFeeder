@@ -1,1 +1,1 @@
-delete from feeding_station_data where id = ?
+delete from station_data where id = ?

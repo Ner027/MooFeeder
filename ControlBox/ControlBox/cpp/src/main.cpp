@@ -2,10 +2,9 @@
 #include <QQmlApplicationEngine>
 #include <QQuickView>
 #include <QQmlContext>
-#include <QNetworkReply>
-#include <QJsonObject>
 #include <thread>
 #include <QJsonDocument>
+#include <QNetworkConfigurationManager>
 #include "../inc/gui/cqmlinterface.h"
 
 

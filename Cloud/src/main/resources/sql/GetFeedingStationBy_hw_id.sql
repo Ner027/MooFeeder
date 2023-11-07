@@ -1,1 +1,1 @@
-SELECT * FROM feeding_station_data WHERE hw_id = ?
+SELECT * FROM station_data WHERE hw_id = ?

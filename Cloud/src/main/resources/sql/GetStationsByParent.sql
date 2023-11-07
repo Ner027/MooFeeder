@@ -1,1 +1,1 @@
-select * from feeding_station_data where parent_id = ?
+select * from station_data where parent_id = ?

@@ -1,1 +1,1 @@
-SELECT * FROM control_box_data WHERE id = ?
+SELECT * FROM box_data WHERE id = ?

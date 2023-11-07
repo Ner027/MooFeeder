@@ -1,4 +1,4 @@
-INSERT INTO feeding_station_data (<parent_id>,
+INSERT INTO station_data (<parent_id>,
                                   <nof_calves>,
                                   <name>,
                                   <hw_id>,
