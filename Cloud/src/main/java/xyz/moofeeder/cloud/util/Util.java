@@ -81,7 +81,7 @@ public class Util
     {
         Util.validateString(sessionToken, HttpStatus.UNAUTHORIZED, RequestErrorCause.INVALID_TOKEN);
 
-        Long id = DataManager.getData(Long.class, "ValidateSessionToken", "id", sessionToken);
+        Long id = DataManager.getData(Long.class, "ValidateSessionToken", "box_id", sessionToken);
 
         if (id == null)
             throw new RequestException(HttpStatus.UNAUTHORIZED, RequestErrorCause.TOKEN_EXPIRED);

@@ -32,7 +32,7 @@ public class DeleteStationHandler implements IHandler
 
         try
         {
-            if (!feedingStation.delete("id"))
+            if (!feedingStation.delete("station_id"))
                 throw new HttpResponseException(HttpStatus.INTERNAL_SERVER_ERROR.getCode());
 
             Util.log("Deleted station with HwId: " + hwId);

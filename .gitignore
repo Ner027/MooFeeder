@@ -15,5 +15,10 @@
 /ControlBox/ControlBox/.ninja_deps
 /ControlBox/ControlBox/.ninja_log
 /ControlBox/ControlBox/build.ninja
-
+/ControlBox/ControlBox/-DCMAKE_PREFIX_PATH=/home/*
 Cloud/.idea/
+
+*.log
+
+/Host/PThreadsWrapper/cmake-build-debug
+/Host/PThreadsWrapper/.idea

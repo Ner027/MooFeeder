@@ -1,1 +1,1 @@
-SELECT id FROM box_data WHERE session_token = ?
+SELECT box_id FROM box_data WHERE session_token = ?

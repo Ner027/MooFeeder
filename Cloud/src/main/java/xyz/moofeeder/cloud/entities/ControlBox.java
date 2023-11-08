@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 public class ControlBox extends SerializableObject
 {
-    @SerializableField(name = "id", type = SerializableFieldType.ENCODE)
+    @SerializableField(name = "box_id", type = SerializableFieldType.ENCODE)
     private final long m_id;
     @SerializableField(name = "session_token", type = SerializableFieldType.ENC_DEC)
     private String m_sessionToken;
@@ -99,12 +99,12 @@ public class ControlBox extends SerializableObject
     @Override
     public String getLoadQueryName(String fieldName)
     {
-        return "GetControlBoxBy_" + fieldName;
+        return "GetControlBoxBy-" + fieldName;
     }
 
     @Override
     public String getDeleteQueryName(String fieldName)
     {
-        return null;
+        return "DeleteControlBoxBy-" + fieldName;
     }
 }

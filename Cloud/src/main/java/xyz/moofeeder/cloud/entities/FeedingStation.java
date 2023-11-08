@@ -5,7 +5,7 @@ import xyz.moofeeder.cloud.util.Consts;
 
 public class FeedingStation extends SerializableObject
 {
-    @SerializableField(name = "id", type = SerializableFieldType.ENCODE)
+    @SerializableField(name = "station_id", type = SerializableFieldType.ENCODE)
     private final long m_id;
     @JsonField(name = "name")
     @SerializableField(name = "name", type = SerializableFieldType.ENC_DEC, encode = true)
@@ -98,13 +98,13 @@ public class FeedingStation extends SerializableObject
     @Override
     public String getLoadQueryName(String fieldName)
     {
-        return "GetFeedingStationBy_" + fieldName;
+        return "GetFeedingStationBy-" + fieldName;
     }
 
     @Override
     public String getDeleteQueryName(String fieldName)
     {
-        return "DeleteFeedingStationBy_" + fieldName;
+        return "DeleteFeedingStationBy-" + fieldName;
     }
 
 }

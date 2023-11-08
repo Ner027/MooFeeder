@@ -6,12 +6,7 @@ import io.javalin.http.HttpResponseException;
 import io.javalin.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
 import xyz.moofeeder.cloud.entities.ControlBox;
-import xyz.moofeeder.cloud.entities.FeedingStation;
 import xyz.moofeeder.cloud.rest.handlers.IHandler;
-import xyz.moofeeder.cloud.util.Util;
-
-import java.sql.SQLException;
-import java.util.LinkedList;
 
 import static xyz.moofeeder.cloud.util.Util.tryLoginBox;
 
@@ -22,19 +17,8 @@ public class DeleteBoxHandler implements IHandler
     {
         ControlBox controlBox = tryLoginBox(ctx);
 
-        LinkedList<FeedingStation> feedingStations = Util.getStationsByParentId(controlBox.getId());
-
-        feedingStations.forEach(s -> {
-            try
-            {
-                //TODO: Delete calves
-                s.delete("id");
-            }
-            catch (SQLException | IllegalAccessException e)
-            {
-                throw new HttpResponseException(HttpStatus.INTERNAL_SERVER_ERROR.getCode());
-            }
-        });
+        if (!controlBox.delete("box_id"))
+            throw new HttpResponseException(HttpStatus.INTERNAL_SERVER_ERROR.getCode());
     }
 
     @Override

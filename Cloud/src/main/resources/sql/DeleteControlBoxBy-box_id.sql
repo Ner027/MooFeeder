@@ -1,0 +1,1 @@
+delete from box_data where box_id = ?

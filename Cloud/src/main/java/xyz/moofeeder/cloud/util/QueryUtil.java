@@ -38,7 +38,6 @@ public class QueryUtil
         InputStreamReader isr = new InputStreamReader(is);
         String temp = Util.stringFromReader(isr);
 
-
         try
         {
             is.close();

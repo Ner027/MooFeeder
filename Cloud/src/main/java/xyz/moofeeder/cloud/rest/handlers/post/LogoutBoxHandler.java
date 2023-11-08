@@ -21,7 +21,6 @@ public class LogoutBoxHandler implements IHandler
 
         ctx.status(HttpStatus.OK);
     }
-
     @Override
     public HandlerType getType()
     {

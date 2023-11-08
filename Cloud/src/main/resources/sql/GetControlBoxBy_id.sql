@@ -1,1 +1,0 @@
-SELECT * FROM box_data WHERE id = ?
