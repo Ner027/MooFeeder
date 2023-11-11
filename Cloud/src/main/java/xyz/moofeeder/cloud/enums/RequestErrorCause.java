@@ -13,7 +13,8 @@ public enum RequestErrorCause
     INVALID_HWID            (8),
     STATION_NOT_FOUND       (9),
     STATION_EXISTS          (10),
-    INVALID_PHY_ID          (11);
+    INVALID_PHY_ID          (11),
+    CALF_EXISTS             (12);
 
     private final int m_value;
     RequestErrorCause(int value)

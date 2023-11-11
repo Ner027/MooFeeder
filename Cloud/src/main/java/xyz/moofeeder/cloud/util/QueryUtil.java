@@ -31,7 +31,7 @@ public class QueryUtil
 
         if (is == null)
         {
-            m_logger.log(Level.SEVERE, "SQL Query not found!");
+            m_logger.log(Level.SEVERE, "SQL Query not found! Path to query: " + qName);
             System.exit(-1);
         }
 

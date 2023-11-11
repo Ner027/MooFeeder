@@ -1,11 +1,66 @@
 package xyz.moofeeder.cloud.entities;
 
-public class Calf implements DBObject
+import xyz.moofeeder.cloud.enums.SerializableFieldType;
+import xyz.moofeeder.cloud.util.Consts;
+
+import java.sql.SQLException;
+
+public class Calf extends SerializableObject
 {
+    @SerializableField(name = "calf_id", type = SerializableFieldType.ENCODE, encode = false)
+    long m_calfId;
+    @SerializableField(name = "parent_id", type = SerializableFieldType.ENC_DEC, encode = false)
+    long m_parentId;
+    @SerializableField(name = "notes", type = SerializableFieldType.ENC_DEC, encode = true)
+    String m_notes;
+    @SerializableField(name = "phy_tag", type = SerializableFieldType.ENC_DEC, encode = true)
+    String m_phyTag;
+    @SerializableField(name = "max_consumption", type = SerializableFieldType.ENC_DEC, encode = false)
+    double m_maxConsumption;
+
+    public Calf()
+    {
+        m_parentId = -1;
+        m_calfId = -1;
+        m_maxConsumption = Consts.defaultMaxConsumption;
+    }
+    public boolean setNotes(String newNotes)
+    {
+        return false;
+    }
+
+    public boolean setParent(long newParentId)
+    {
+        if (newParentId < 0)
+            return false;
+
+        m_parentId = newParentId;
+
+        return true;
+    }
+
+    public boolean setPhyTag(String newTag)
+    {
+        if (newTag == null)
+            return false;
+
+        if (newTag.length() != Consts.phyIdLen)
+            return false;
+
+        m_phyTag = newTag;
+
+        return true;
+    }
+
+    public long getId()
+    {
+        return m_calfId;
+    }
+
     @Override
     public String getInsertionQueryName()
     {
-        return null;
+        return "InsertCalf";
     }
 
     @Override
@@ -17,7 +72,7 @@ public class Calf implements DBObject
     @Override
     public String getLoadQueryName(String fieldName)
     {
-        return null;
+        return "GetCalfBy-" + fieldName;
     }
 
     @Override
