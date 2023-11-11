@@ -10,7 +10,14 @@ public class Main
     public static void main(String[] args)
     {
         m_logger.log(Level.INFO, "Starting MooFeeder Cloud System!");
+
+        long startTime = System.currentTimeMillis();
+
         DataManager.initDatabase();
         RestServer.getInstance().initHandlers();
+
+        long endTime = System.currentTimeMillis();
+
+        m_logger.log(Level.INFO, "Start up finished! Took " + (endTime - startTime) + " ms");
     }
 }

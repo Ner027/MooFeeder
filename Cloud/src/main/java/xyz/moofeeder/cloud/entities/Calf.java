@@ -7,14 +7,17 @@ import java.sql.SQLException;
 
 public class Calf extends SerializableObject
 {
-    @SerializableField(name = "calf_id", type = SerializableFieldType.ENCODE, encode = false)
+    @SerializableField(name = "calf_id", type = SerializableFieldType.ENCODE)
     long m_calfId;
-    @SerializableField(name = "parent_id", type = SerializableFieldType.ENC_DEC, encode = false)
+    @SerializableField(name = "parent_id", type = SerializableFieldType.ENC_DEC)
     long m_parentId;
+    @JsonField(name = "notes")
     @SerializableField(name = "notes", type = SerializableFieldType.ENC_DEC, encode = true)
     String m_notes;
+    @JsonField(name = "phyTag")
     @SerializableField(name = "phy_tag", type = SerializableFieldType.ENC_DEC, encode = true)
     String m_phyTag;
+    @JsonField(name = "maxConsumption")
     @SerializableField(name = "max_consumption", type = SerializableFieldType.ENC_DEC, encode = false)
     double m_maxConsumption;
 
@@ -55,6 +58,10 @@ public class Calf extends SerializableObject
     public long getId()
     {
         return m_calfId;
+    }
+    public long getParentId()
+    {
+        return m_parentId;
     }
 
     @Override

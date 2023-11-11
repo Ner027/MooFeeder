@@ -7,7 +7,7 @@ CControlBox* CControlBox::m_instance = nullptr;
 CControlBox::CControlBox()
 {
     //When created the ControlBox is logged out
-    m_status = LOGGED_OUT;
+    m_status = LOGGED_IN;
 }
 
 CControlBox* CControlBox::getInstance()

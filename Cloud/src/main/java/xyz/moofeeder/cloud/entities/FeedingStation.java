@@ -84,6 +84,11 @@ public class FeedingStation extends SerializableObject
     {
         return m_id;
     }
+
+    public long getParentId()
+    {
+        return m_parent;
+    }
     @Override
     public String getInsertionQueryName()
     {

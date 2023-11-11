@@ -1,0 +1,1 @@
+INSERT INTO log_data (<parent_id>, <log_timestamp>, <consumed_volume>) VALUES (?, ?, ?)

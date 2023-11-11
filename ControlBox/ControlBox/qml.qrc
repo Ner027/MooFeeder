@@ -16,5 +16,11 @@
         <file>qml/Components/SwipeListener.qml</file>
         <file>qml/Components/RoundedButton.qml</file>
         <file>qml/MonitorMenu.qml</file>
+        <file>resources/images/Wifi.png</file>
+        <file>qml/Components/CalfDelegate.qml</file>
+        <file>qml/Components/BreakBar.qml</file>
+        <file>qml/Components/TextIcon.qml</file>
+        <file>resources/images/Milk.png</file>
+        <file>resources/images/Rfid.png</file>
     </qresource>
 </RCC>

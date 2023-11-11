@@ -5,8 +5,11 @@ import jakarta.annotation.Nonnull;
 import xyz.moofeeder.cloud.data.SettingsManager;
 import xyz.moofeeder.cloud.rest.handlers.IHandler;
 import xyz.moofeeder.cloud.rest.handlers.delete.DeleteBoxHandler;
+import xyz.moofeeder.cloud.rest.handlers.get.GetCalfHandler;
+import xyz.moofeeder.cloud.rest.handlers.get.ListCalfHandler;
 import xyz.moofeeder.cloud.rest.handlers.get.ListStationHandler;
 import xyz.moofeeder.cloud.rest.handlers.get.LoginBoxHandler;
+import xyz.moofeeder.cloud.rest.handlers.patch.ChangeCalfHandler;
 import xyz.moofeeder.cloud.rest.handlers.patch.ChangeStationHandler;
 import xyz.moofeeder.cloud.rest.handlers.post.AddCalfHandler;
 import xyz.moofeeder.cloud.rest.handlers.post.CreateStationHandler;
@@ -68,5 +71,8 @@ public class RestServer
         addHandler(new AddCalfHandler());
         addHandler(new DeleteBoxHandler());
         addHandler(new LogoutBoxHandler());
+        addHandler(new GetCalfHandler());
+        addHandler(new ListCalfHandler());
+        addHandler(new ChangeCalfHandler());
     }
 }

@@ -7,6 +7,7 @@ import org.bouncycastle.util.encoders.Base64Encoder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import xyz.moofeeder.cloud.data.DataManager;
+import xyz.moofeeder.cloud.entities.Calf;
 import xyz.moofeeder.cloud.entities.ControlBox;
 import xyz.moofeeder.cloud.entities.FeedingStation;
 import xyz.moofeeder.cloud.enums.RequestErrorCause;
@@ -127,7 +128,7 @@ public class Util
         return controlBox;
     }
 
-    public static LinkedList<FeedingStation> getStationsByParentId(long id) throws SQLException
+    public static LinkedList<FeedingStation> getStationsByParentId(long id) throws SQLException, IllegalAccessException
     {
         LinkedList<FeedingStation> feedingStations = new LinkedList<>();
 
@@ -137,21 +138,31 @@ public class Util
 
         while (set.next())
         {
-            try
-            {
-                FeedingStation feedingStation = new FeedingStation();
-                feedingStation.loadFromSet(set);
-                feedingStations.add(feedingStation);
-            }
-            catch (Exception e)
-            {
-                throw new HttpResponseException(HttpStatus.INTERNAL_SERVER_ERROR.getCode());
-            }
+            FeedingStation feedingStation = new FeedingStation();
+            feedingStation.loadFromSet(set);
+            feedingStations.add(feedingStation);
         }
 
         return feedingStations;
     }
 
+    public static LinkedList<Calf> getCalvesByParentId(long id) throws SQLException, IllegalAccessException
+    {
+        LinkedList<Calf> calves = new LinkedList<>();
+
+        PreparedStatement pStat = DataManager.prepareStatement("GetCalvesByParent", id);
+
+        ResultSet set = pStat.executeQuery();
+
+        while (set.next())
+        {
+            Calf calf = new Calf();
+            calf.loadFromSet(set);
+            calves.add(calf);
+        }
+
+        return calves;
+    }
 }
 
 

@@ -23,7 +23,6 @@ public class ChangeStationHandler implements IHandler
         String desc = ctx.formParam("description");
 
         Util.validateToken(sessionToken);
-        Util.validateString(sessionToken, HttpStatus.UNAUTHORIZED, RequestErrorCause.INVALID_TOKEN);
         Util.validateString(hwId, HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_HWID);
 
         FeedingStation feedingStation = new FeedingStation();

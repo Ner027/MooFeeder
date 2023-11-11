@@ -24,7 +24,8 @@ public class AddCalfHandler implements IHandler
         String phyTag = ctx.formParam("phyId");
         String parentHwId = ctx.formParam("parentStation");
 
-        Util.validateToken(sessionToken);
+        long box_id = Util.validateToken(sessionToken);
+
         Util.validateString(phyTag, HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_PHY_ID);
         Util.validateString(parentHwId, HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_HWID);
 
@@ -46,6 +47,9 @@ public class AddCalfHandler implements IHandler
 
         if (id < 0)
             throw new RequestException(HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_HWID);
+
+        if (feedingStation.getParentId() != box_id)
+            throw new RequestException(HttpStatus.UNAUTHORIZED, RequestErrorCause.INVALID_HWID);
 
         Calf calf = new Calf();
         calf.load("phy_tag", phyTag);

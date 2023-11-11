@@ -14,7 +14,8 @@ public enum RequestErrorCause
     STATION_NOT_FOUND       (9),
     STATION_EXISTS          (10),
     INVALID_PHY_ID          (11),
-    CALF_EXISTS             (12);
+    CALF_EXISTS             (12),
+    VALUE_NAN               (13);
 
     private final int m_value;
     RequestErrorCause(int value)

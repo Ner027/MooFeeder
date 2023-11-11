@@ -20,7 +20,7 @@ Item
 
             width: parent.width * 0.8
 
-            property int itemCount: 3
+            property int itemCount: 4
             spacing: (width - shutdownButton.width * itemCount) / (itemCount - 1)
 
             MenuButton
@@ -40,6 +40,16 @@ Item
 
                 titleText: "Reboot"
                 imageSource: "../resources/images/Reboot.png"
+
+                clickArea.onClicked: QmlInterface.rebootBox()
+            }
+
+            MenuButton
+            {
+                id: wifiButton
+
+                titleText: "WiFi"
+                imageSource: "../resources/images/Wifi.png"
 
                 clickArea.onClicked: QmlInterface.rebootBox()
             }

@@ -9,7 +9,8 @@ Item
         STATION_MENU    = 0x02,
         BOX_MENU        = 0x03,
         SETTINGS_MENU   = 0x04,
-        LOGIN_MENU      = 0x05
+        LOGIN_MENU      = 0x05,
+        WIFI_MENU       = 0x06
     }
 
     enum UserReturnCode
