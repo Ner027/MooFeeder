@@ -14,6 +14,13 @@ Item
         anchors.fill: parent
         color: "#E0E0E0"
 
+        MouseArea
+        {
+            anchors.fill: parent
+
+            onClicked: () => {console.log("Clicked " + model.title);}
+        }
+
         Item
         {
             height: parent.height * 0.95

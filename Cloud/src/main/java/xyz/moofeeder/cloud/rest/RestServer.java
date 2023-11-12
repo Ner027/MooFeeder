@@ -30,7 +30,6 @@ public class RestServer
     private RestServer()
     {
         int serverPort;
-
         m_initComplete = false;
 
         try
@@ -74,5 +73,7 @@ public class RestServer
         addHandler(new GetCalfHandler());
         addHandler(new ListCalfHandler());
         addHandler(new ChangeCalfHandler());
+
+        m_initComplete = true;
     }
 }

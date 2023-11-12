@@ -9,11 +9,10 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_PREFIX_PATH "/home/andre/Qt/5.15.15/gcc_64/lib/cmake")
 
-#set(CMAKE_PREFIX_PATH "/home/andre/Qt/5.15.15/gcc_64/lib/cmake")
-
-find_package(QT NAMES Qt5 REQUIRED COMPONENTS Core Quick VirtualKeyboard)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick VirtualKeyboard)
+find_package(QT NAMES Qt5 REQUIRED COMPONENTS Core Quick VirtualKeyboard Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick VirtualKeyboard Widgets)
 
 set(PROJECT_SOURCES
         cpp/src/main.cpp
@@ -57,7 +56,7 @@ else()
 endif()
 
 target_link_libraries(ControlBox
-  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick)
+  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Widgets)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
