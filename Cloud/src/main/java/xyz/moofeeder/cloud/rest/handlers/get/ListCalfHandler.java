@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import xyz.moofeeder.cloud.entities.Calf;
+import xyz.moofeeder.cloud.entities.FeedingStation;
 import xyz.moofeeder.cloud.rest.handlers.IHandler;
 import xyz.moofeeder.cloud.util.Util;
 
@@ -22,23 +23,32 @@ public class ListCalfHandler implements IHandler
 
         long id = Util.validateToken(token);
 
-        LinkedList<Calf> calves;
+        LinkedList<FeedingStation> stations = Util.getStationsByParentId(id);
 
-        try
+        LinkedList<Calf> calves = new LinkedList<>();
+
+        stations.forEach(feedingStation ->
         {
-            calves = Util.getCalvesByParentId(id);
-        }
-        catch (Exception e)
-        {
-            throw new HttpResponseException(HttpStatus.INTERNAL_SERVER_ERROR.getCode());
-        }
+            try
+            {
+                LinkedList<Calf> temp = Util.getCalvesByParentId(feedingStation.getId());
+                calves.addAll(temp);
+            }
+            catch (Exception e)
+            {
+                throw new HttpResponseException(HttpStatus.INTERNAL_SERVER_ERROR.getCode());
+            }
+        });
+
 
         JSONArray jArray = new JSONArray();
+        int currentTime = (int) (System.currentTimeMillis() / 1000);
 
         calves.forEach(s ->
         {
             try
             {
+                s.recalculateConsumption(currentTime);
                 jArray.put(s.dumpToJson());
             }
             catch (IllegalAccessException e)

@@ -4,7 +4,8 @@ import QtQuick.Layouts 1.3
 
 Item
 {
-    width: parent.width
+    property bool isSelected: false
+    width: ListView.view.width
     height: 100
 
     Rectangle
@@ -12,13 +13,28 @@ Item
         id: itemContainer
 
         anchors.fill: parent
-        color: "#E0E0E0"
+        color: (isSelected ? "#757575" : "#E0E0E0")
+
+
+        Connections
+        {
+            target: QmlInterface
+
+            function onClearSelection()
+            {
+                isSelected = false;
+            }
+        }
 
         MouseArea
         {
             anchors.fill: parent
 
-            onClicked: () => {console.log("Clicked " + model.title);}
+            onClicked: () =>
+                       {
+                           QmlInterface.selectCalf(model.phyTag);
+                           isSelected = true;
+                       }
         }
 
         Item

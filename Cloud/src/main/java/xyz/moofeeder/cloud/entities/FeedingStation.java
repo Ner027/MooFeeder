@@ -18,9 +18,6 @@ public class FeedingStation extends SerializableObject
     private String m_hwId;
     @SerializableField(name = "parent_id", type = SerializableFieldType.ENC_DEC)
     private long m_parent;
-    @JsonField(name = "nof_calves")
-    @SerializableField(name = "nof_calves", type = SerializableFieldType.ENC_DEC)
-    private int m_nofCalves;
 
     public FeedingStation()
     {

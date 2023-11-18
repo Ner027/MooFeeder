@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QNetworkConfigurationManager>
 #include "../inc/gui/cqmlinterface.h"
+#include "../inc/entities/ccalf.h"
 #include <iostream>
 #include <memory>
 
@@ -27,16 +28,24 @@ std::string exec(const char* cmd)
         result += buffer;
     }
 
-    std::cout << result << std::endl;
-
     return result;
 }
 
-std::vector<std::string> parseIwListMessage(std::string src)
+struct NetworkInfo
 {
-    std::string line;
-    std::vector<std::string> ret;
+    std::string ssid;
+    std::string authType;
+    int32_t signalStrength;
+};
+
+std::vector<NetworkInfo> parseScanMessage(std::string src)
+{
+    std::string line, key;
     size_t currentPosition = 0;
+    NetworkInfo networkInfo;
+    std::vector<NetworkInfo> ret;
+
+    qDebug() << src.c_str();
 
     currentPosition = src.find('\n');
     while (currentPosition != std::string::npos)
@@ -46,10 +55,19 @@ std::vector<std::string> parseIwListMessage(std::string src)
         line = src.substr(0, currentPosition);
         src = src.substr(currentPosition + 1);
 
-        if (line.find("ESSID") == std::string::npos)
-            continue;
-
-        ret.push_back(line.substr(line.find(':') + 1));
+        if (line.find("ESSID") != std::string::npos)
+        {
+            networkInfo.ssid = line.substr(line.find(':') + 1);
+        }
+        else if(line.find("Signal level") != std::string::npos)
+        {
+            networkInfo.signalStrength = (int32_t) strtol(line.substr(line.find("l=") + 1).c_str(), nullptr, 10);
+        }
+        else if (line.find("Authentication Suites") != std::string::npos)
+        {
+            networkInfo.authType = line.substr(line.find(':') + 1);
+            ret.push_back(networkInfo);
+        }
     }
 
     return ret;
@@ -69,6 +87,16 @@ int main(int argc, char *argv[])
     view.setSource(QUrl("qrc:/qml/Main.qml"));
     view.show();
 
-    return QApplication::exec();
+    auto ret = parseScanMessage(exec("iwlist wlo1 scan | grep -E \"ESSID|Signal level|Authentication Suites\""));
 
+    for (const auto &item: ret)
+    {
+        qDebug() << "SSID: " << item.ssid.c_str();
+        qDebug() << "AuthType: " << item.authType.c_str();
+        qDebug() << "Signal Strength: " << item.signalStrength;
+    }
+    //CControlBox::getInstance()->executeLogin("user", "mooFeeder");
+    //qDebug() << "Session Token: " << CControlBox::getInstance()->getSessionToken().c_str();
+
+    return QApplication::exec();
 }

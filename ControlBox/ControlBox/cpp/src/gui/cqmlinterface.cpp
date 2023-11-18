@@ -37,6 +37,8 @@ void CQmlInterface::changeToMenu(int _newMenu)
 
     qDebug() << "Changed to menu " << newMenu;
 
+    onMenuLoaded(newMenu);
+
     emit menuChanged(newMenu);
 }
 
@@ -176,3 +178,50 @@ void CQmlInterface::logoutUser()
 
     emit boxStatusChanged((int)CControlBox::getInstance()->getStatus());
 }
+
+void CQmlInterface::onMenuLoaded(GuiMenuType_et newMenu)
+{
+    switch (newMenu)
+    {
+        case MONITOR_MENU:
+        {
+            auto monitorMenu = dynamic_cast<CMonitorMenu*>(m_menuStack.top());
+
+            emit clearCalfList();
+            emit clearSelection();
+            emit clearGraph();
+
+            auto calfList = monitorMenu->getCalfList();
+
+            for (auto& item : calfList)
+                addCalfToList(QString::fromStdString(item.getPhyTag()),
+                              item.getCurrentConsumption(),
+                              item.getMaxConsumption());
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+void CQmlInterface::selectCalf(QString phyTag)
+{
+    CCalf calf(phyTag.toStdString());
+    auto logs = calf.getLatestLogs();
+
+    emit clearSelection();
+    emit clearGraph();
+    emit calfSelected(calf.getMaxConsumption(), "Not implemented yet!");
+
+    if (logs.empty())
+        return;
+
+    for (auto& item: logs)
+        emit addPointToGraph(item.getTimestamp(), item.getConsumedVolume());
+}
+
+void CQmlInterface::updateCalfList()
+{
+    onMenuLoaded(MONITOR_MENU);
+}
+

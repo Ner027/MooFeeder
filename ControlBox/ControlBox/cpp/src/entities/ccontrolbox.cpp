@@ -7,7 +7,7 @@ CControlBox* CControlBox::m_instance = nullptr;
 CControlBox::CControlBox()
 {
     //When created the ControlBox is logged out
-    m_status = LOGGED_IN;
+    m_status = LOGGED_OUT;
 }
 
 CControlBox* CControlBox::getInstance()
@@ -81,6 +81,11 @@ void CControlBox::executeLogout()
     //TODO: Execute extra logout steps
 
     m_status = ControlBoxStatus_et::LOGGED_OUT;
+}
+
+std::string CControlBox::getSessionToken()
+{
+    return m_sessionToken;
 }
 
 

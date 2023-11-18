@@ -10,6 +10,7 @@ import xyz.moofeeder.cloud.data.DataManager;
 import xyz.moofeeder.cloud.entities.Calf;
 import xyz.moofeeder.cloud.entities.ControlBox;
 import xyz.moofeeder.cloud.entities.FeedingStation;
+import xyz.moofeeder.cloud.entities.Log;
 import xyz.moofeeder.cloud.enums.RequestErrorCause;
 import xyz.moofeeder.cloud.rest.exceptions.RequestException;
 
@@ -162,6 +163,51 @@ public class Util
         }
 
         return calves;
+    }
+
+    public static JSONArray getCalfLogsById(long calfId, int timestamp)
+    {
+        JSONArray jsonArray = new JSONArray();
+
+        try
+        {
+            PreparedStatement pStat = DataManager.prepareStatement("GetLogsByParentId",
+                    calfId,
+                    timestamp - 86400,
+                    timestamp);
+
+            ResultSet set = pStat.executeQuery();
+
+            while (set.next())
+            {
+                Log log = new Log();
+                JSONObject jsonObject = new JSONObject();
+
+                log.loadFromSet(set);
+                jsonObject.put("timestamp", log.getTimestamp());
+                jsonObject.put("volume", log.getConsumption());
+                jsonArray.put(jsonObject);
+            }
+        }
+        catch (SQLException | IllegalAccessException ignored)
+        {
+            throw new HttpResponseException(HttpStatus.INTERNAL_SERVER_ERROR.getCode());
+        }
+
+        return jsonArray;
+    }
+
+    public static double calculateConsumptionFromLogs(JSONArray logs)
+    {
+        double currentConsumption = 0;
+
+        for (Object log : logs)
+        {
+            JSONObject jsonObject = (JSONObject) log;
+            currentConsumption += Double.parseDouble(jsonObject.get("volume").toString());
+        }
+
+        return currentConsumption;
     }
 }
 

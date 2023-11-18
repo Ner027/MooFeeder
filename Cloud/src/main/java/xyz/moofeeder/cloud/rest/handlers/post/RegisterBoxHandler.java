@@ -57,7 +57,7 @@ public class RegisterBoxHandler implements IHandler
             controlBox.insert();
 
             JSONObject jObj = new JSONObject();
-            jObj.put("session_token", controlBox.getSessionToken());
+            jObj.put("sessionToken", controlBox.getSessionToken());
             ctx.json(jObj.toString());
             ctx.status(HttpStatus.CREATED);
         }

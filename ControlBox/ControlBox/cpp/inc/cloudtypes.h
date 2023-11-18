@@ -1,16 +1,20 @@
 #ifndef CONTROLBOX_CLOUDTYPES_H
 #define CONTROLBOX_CLOUDTYPES_H
 
-#define CLOUD_URL "http://localhost:8080"
+#define CLOUD_URL "http://localhost:8017"
 
 #define ENDPOINT_LOGIN "/box/login"
 #define ENDPOINT_REGISTER "/box/register"
+
+#define ENDPOINT_CALF_DATA "/calf/data"
+#define ENDPOINT_CALF_LIST "/calf/list"
 
 #define FIELD_USER "username"
 #define FIELD_PSW "password"
 #define FIELD_CAUSE "cause"
 #define FIELD_RESERVED "reserved"
-#define FIELD_TOKEN "session_token"
+#define FIELD_TOKEN "sessionToken"
+#define FIELD_PHY_TAG "phyId"
 
 enum UserReturnCode_et
 {

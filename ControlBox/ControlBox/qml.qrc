@@ -22,5 +22,7 @@
         <file>qml/Components/TextIcon.qml</file>
         <file>resources/images/Milk.png</file>
         <file>resources/images/Rfid.png</file>
+        <file>qml/Components/StationDelegate.qml</file>
+        <file>qml/BoxMenu.qml</file>
     </qresource>
 </RCC>

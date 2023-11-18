@@ -1,0 +1,1 @@
+SELECT * FROM log_data WHERE parent_id = ? AND log_timestamp BETWEEN ? AND ? ORDER BY log_timestamp
