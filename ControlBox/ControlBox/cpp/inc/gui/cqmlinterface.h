@@ -32,6 +32,8 @@ private:
     /// \param menuType The type of menu to register
     void registerMenu(GuiMenuType_et menuType);
 
+    void onMenuLoaded(GuiMenuType_et menuTypeEt);
+
     static CQmlInterface* m_instance;
     std::map<GuiMenuType_et, CGuiMenu*> m_guiMenus;
     std::stack<CGuiMenu*> m_menuStack;
@@ -67,6 +69,10 @@ public slots:
     /// \brief This slot returns the current ControlBox status
     /// \return Returns a cast to an integer from a ControlBoxStatus_et
     int getBoxStatus();
+
+    void selectCalf(QString phyTag);
+
+    void updateCalfList();
 signals:
     /// \brief This signal is emitted when the current GUI menu is changed
     /// \param newMenu The menu that the GUI changed to
@@ -78,5 +84,18 @@ signals:
     /// \brief This signal is emitted when the ControlBox status changes, ie. it goes from logged in to logged out, or
     /// vice-versa
     void boxStatusChanged(int newStatus);
+
+    void clearCalfList();
+
+    void addCalfToList(QString phyTag, float currentConsumption, float maxConsumption);
+
+    void clearGraph();
+
+    void clearSelection();
+
+    void calfSelected(float maxConsumption, QString notes);
+
+    void addPointToGraph(int timestamp, float volume);
+
 };
 #endif

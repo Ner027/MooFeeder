@@ -31,7 +31,7 @@ public class LoginBoxHandler implements IHandler
         }
 
         JSONObject jObj = new JSONObject();
-        jObj.put("session_token", controlBox.getSessionToken());
+        jObj.put("sessionToken", controlBox.getSessionToken());
         ctx.json(jObj.toString());
         ctx.status(HttpStatus.ACCEPTED);
     }

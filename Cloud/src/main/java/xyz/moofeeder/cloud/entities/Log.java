@@ -20,6 +20,23 @@ public class Log extends SerializableObject
         m_consumption = consumedVolume;
     }
 
+    public Log()
+    {
+        m_timestamp = 0;
+        m_parentId = -1;
+        m_consumption = -1;
+    }
+
+    public long getTimestamp()
+    {
+        return m_timestamp;
+    }
+
+    public double getConsumption()
+    {
+        return m_consumption;
+    }
+
     @Override
     public String getInsertionQueryName()
     {

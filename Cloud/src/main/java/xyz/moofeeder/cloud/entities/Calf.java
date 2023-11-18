@@ -1,8 +1,16 @@
 package xyz.moofeeder.cloud.entities;
 
+import io.javalin.http.HttpResponseException;
+import io.javalin.http.HttpStatus;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import xyz.moofeeder.cloud.data.DataManager;
 import xyz.moofeeder.cloud.enums.SerializableFieldType;
 import xyz.moofeeder.cloud.util.Consts;
+import xyz.moofeeder.cloud.util.Util;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Calf extends SerializableObject
@@ -21,11 +29,14 @@ public class Calf extends SerializableObject
     @SerializableField(name = "max_consumption", type = SerializableFieldType.ENC_DEC, encode = false)
     double m_maxConsumption;
 
+    @JsonField(name = "currentConsumption")
+    double m_currentConsumption;
     public Calf()
     {
         m_parentId = -1;
         m_calfId = -1;
         m_maxConsumption = Consts.defaultMaxConsumption;
+        m_currentConsumption = 0;
     }
     public boolean setNotes(String newNotes)
     {
@@ -53,6 +64,12 @@ public class Calf extends SerializableObject
         m_phyTag = newTag;
 
         return true;
+    }
+
+    public void recalculateConsumption(int timestamp)
+    {
+        JSONArray logs = Util.getCalfLogsById(m_calfId, timestamp);
+        m_currentConsumption = Util.calculateConsumptionFromLogs(logs);
     }
 
     public long getId()

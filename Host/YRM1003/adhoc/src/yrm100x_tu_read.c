@@ -4,7 +4,7 @@
 #include "../inc/yrm100x_tu.h"
 #include "../../platform/inc/platform.h"
 
-#define READ_TRIES 5
+#define READ_TRIES 20
 
 yrm100x_st dev;
 
@@ -50,6 +50,8 @@ int main()
 
             printf("\n");
         }
+
+        delay_ms(500);
     }
 
     return 0;

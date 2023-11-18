@@ -5,6 +5,7 @@
  * Includes
  ******************************************************************************************************************++**/
 #include "cguimenu.h"
+#include "../entities/ccalf.h"
 
 /***********************************************************************************************************************
  * Typedefs
@@ -22,6 +23,9 @@ public:
     /// \brief Override from parent class
     /// \return true
     bool requiresPrivilegedAccess() override {return true;}
+
+    std::vector<CCalf> getCalfList();
+private:
 };
 
 #endif

@@ -5,10 +5,100 @@ import "Components"
 
 Item
 {
+    property bool initialized: false
+    property int itemCount: 0
+
+    function getFormatedTag(phyTag)
+    {
+        let shortTag = phyTag.slice(0, 16);
+        let formatedTag = "";
+
+        for(let i = 0; i < shortTag.length; i++)
+        {
+            formatedTag += shortTag[i].toUpperCase();
+
+            if (((i % 2) !== 0) && (i !== shortTag.length - 1))
+                formatedTag += ":";
+        }
+
+        return formatedTag;
+    }
+
     SwipeListener
     {
         anchors.fill: parent
         onSwipe: () => {QmlInterface.goBack();}
+    }
+
+    Connections
+    {
+        target: QmlInterface
+
+        function onClearCalfList()
+        {
+            calfList.clear();
+        }
+
+        function onAddCalfToList(phyTag, currentConsumption, maxConsumption)
+        {
+            calfList.append({"title": "Calf " + calfList.count,
+                                "rfidTag" : getFormatedTag(phyTag),
+                                "phyTag"  : phyTag,
+                                "milkVolume": currentConsumption + "/" + maxConsumption + "L"});
+        }
+
+        function onClearGraph()
+        {
+            initialized = false;
+            itemCount = 0;
+            xAxis.tickCount = 0;
+            xAxis.max = new Date(0);
+            xAxis.min = new Date(0);
+
+            chart.setAxisX(xAxis);
+            chart.setAxisY(yAxis);
+
+            lineSeries.clear();
+            lineSeries.axisX = xAxis;
+            lineSeries.axisY = yAxis;
+
+            chart.update();
+        }
+
+        function onAddPointToGraph(timestamp, volume)
+        {
+            let timestampMillis = timestamp * 1000;
+            let dateObj = new Date(timestampMillis);
+
+            if (!initialized)
+            {
+                xAxis.min = dateObj;
+                initialized = true;
+            }
+
+            if (xAxis.max < dateObj)
+            {
+                xAxis.max = dateObj;
+            }
+
+            if (dateObj < xAxis.min)
+            {
+                xAxis.min = dateObj;
+            }
+
+            lineSeries.append(timestampMillis, volume);
+
+            itemCount++;
+            xAxis.tickCount = itemCount;
+
+            chart.update();
+        }
+
+        function onCalfSelected(maxConsumption, notes)
+        {
+            notesText.titleText = notes;
+            consumptionText.titleText = "Max daily consumption: " + maxConsumption + "L"
+        }
     }
 
     Rectangle
@@ -40,39 +130,9 @@ Item
                 anchors.fill: parent
                 spacing: 16
                 delegate: CalfDelegate{}
-                model: ListModel
-                {
-                    ListElement
-                    {
-                        title: "Calf 0"
-                        rfidTag: "DE:AD:C0:DE"
-                        milkVolume: "7/15 L"
-                    }
-                    ListElement
-                    {
-                        title: "Calf 1"
-                        rfidTag: "FA:FE:DE:AD"
-                        milkVolume: "3/15 L"
-                    }
-                    ListElement
-                    {
-                        title: "Calf 2"
-                        rfidTag: "00:C0:FF:EE"
-                        milkVolume: "9/15 L"
-                    }
-                    ListElement
-                    {
-                        title: "Calf 3"
-                        rfidTag: "FE:ED:C0:DE"
-                        milkVolume: "5/15 L"
-                    }
-                    ListElement
-                    {
-                        title: "Calf 4"
-                        rfidTag: "DE:AD:BE:EF"
-                        milkVolume: "15/15 L"
-                    }
-                }
+                model: ListModel {id: calfList}
+
+                onFlickStarted: () => {QmlInterface.updateCalfList();}
             }
         }
 
@@ -109,18 +169,12 @@ Item
 
                     ChartView
                     {
+                        id: chart
                         anchors.fill: parent
                         antialiasing: true
                         legend.visible: false
                         backgroundColor: "#F5F5F5"
                         plotAreaColor: "#F5F5F5"
-
-
-                        DateTimeAxis
-                        {
-                            id: axisX
-                            tickCount: 5
-                        }
 
                         AreaSeries
                         {
@@ -128,15 +182,27 @@ Item
                             borderColor: "#80CAFF"
                             borderWidth: 2
 
+                            axisY:
+                            ValueAxis
+                            {
+                                id: yAxis
+                                labelFormat: "%.2fL"
+                                max: 15
+                                min: 0
+                                tickCount: 5
+                            }
+
+                            axisX:
+                            DateTimeAxis
+                            {
+                                id: xAxis
+                                format: "dd/MM <br> hh:mm"
+                            }
+
                             upperSeries:
                             LineSeries
                             {
-                                axisX: axisX
-                                XYPoint { x: 1; y: 0 }
-                                XYPoint { x: 2; y: 4 }
-                                XYPoint { x: 3; y: 6 }
-                                XYPoint { x: 4; y: 2.1 }
-                                XYPoint { x: 5; y: 4.9 }
+                                id: lineSeries
                             }
                         }
                     }

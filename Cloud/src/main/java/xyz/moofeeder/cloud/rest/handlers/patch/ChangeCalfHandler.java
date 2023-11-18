@@ -35,7 +35,7 @@ public class ChangeCalfHandler implements IHandler
         FeedingStation feedingStation = new FeedingStation();
         feedingStation.load("station_id", calf.getParentId());
 
-        if (feedingStation.getId() != box_id)
+        if (feedingStation.getParentId() != box_id)
             throw new RequestException(HttpStatus.UNAUTHORIZED, RequestErrorCause.TOKEN_EXPIRED);
 
         if (consumption != null)
@@ -51,7 +51,7 @@ public class ChangeCalfHandler implements IHandler
                 throw new RequestException(HttpStatus.UNAUTHORIZED, RequestErrorCause.VALUE_NAN);
             }
 
-            Log log = new Log(feedingStation.getId(), consumptionValue);
+            Log log = new Log(calf.getId(), consumptionValue);
 
             log.insert();
         }

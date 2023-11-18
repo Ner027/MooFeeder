@@ -47,6 +47,8 @@ public:
     /// \brief This method provides the current status of the ControlBox
     /// \return Returns LOGGED_OUT if this ControlBox is logged out, otherwise returns LOGGED_IN
     ControlBoxStatus_et getStatus();
+
+    std::string getSessionToken();
 private:
     /// \brief Constructor made private to ensure this class can not be created from the outside
     CControlBox();

@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2023-11-05T15:09:43.254Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.0.3 Chrome/114.0.5735.289 Electron/25.8.4 Safari/537.36" etag="ZFuoeXx9Cy0rrkfggscS" version="22.0.3" type="device" pages="3">
+<mxfile host="Electron" modified="2023-11-14T18:59:14.135Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.6.5 Chrome/114.0.5735.243 Electron/25.3.1 Safari/537.36" etag="ZWom7gF0YVcsW9kpFz8h" version="21.6.5" type="device" pages="3">
   <diagram name="Page-1" id="71b2FrJPfIM__oIZdsdz">
-    <mxGraphModel dx="3355" dy="1504" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="2669" dy="1124" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -74,7 +74,7 @@
         <mxCell id="ZUO63sL9m029fD5R3awg-7" value="- m_id : long&lt;br&gt;- m_parentId : long&lt;br&gt;- m_notes: std::vector&amp;lt;std::string&amp;gt;&lt;br&gt;- m_phyTag: std::string&lt;br&gt;- m_maxConsumption : float&lt;br&gt;- m_volumeConsumed : float" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="ZUO63sL9m029fD5R3awg-6" vertex="1">
           <mxGeometry y="30" width="310" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="ZUO63sL9m029fD5R3awg-9" value="+ CCalf()&lt;br&gt;+ CCalf(long)&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;+ ~CCalf()&lt;br&gt;+ getParentId() : long&lt;br&gt;+ setMaxConsumption(float) : bool&lt;br&gt;+ getMaxConsumtionI() : float&lt;br&gt;+ getAllowedConstumption() : float&lt;br&gt;+ executeConsume(float) : CLog&amp;nbsp;&lt;br&gt;+ addNote(std::string) : bool&lt;br&gt;+ removeNote(int) : bool&lt;br&gt;+ getNoteList() : std::vector&amp;lt;std::string&amp;gt;&lt;br&gt;+ combineNotes() : std::string&lt;br&gt;- calculateConsumptionBudget() : float" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="ZUO63sL9m029fD5R3awg-6" vertex="1">
+        <mxCell id="ZUO63sL9m029fD5R3awg-9" value="+ CCalf()&lt;br&gt;+ CCalf(long)&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;+ ~CCalf()&lt;br&gt;+ getParentId() : long&lt;br&gt;+ setMaxConsumption(float) : bool&lt;br&gt;+ getMaxConsumtion() : float&lt;br&gt;+ getAllowedConstumption() : float&lt;br&gt;+ executeConsume(float) : CLog&amp;nbsp;&lt;br&gt;+ addNote(std::string) : bool&lt;br&gt;+ removeNote(int) : bool&lt;br&gt;+ getNoteList() : std::vector&amp;lt;std::string&amp;gt;&lt;br&gt;+ combineNotes() : std::string&lt;br&gt;- calculateConsumptionBudget() : float" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="ZUO63sL9m029fD5R3awg-6" vertex="1">
           <mxGeometry y="120" width="310" height="200" as="geometry" />
         </mxCell>
         <mxCell id="ZUO63sL9m029fD5R3awg-8" value="" style="endArrow=none;html=1;rounded=0;exitX=-0.002;exitY=0.004;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.999;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="ZUO63sL9m029fD5R3awg-6" source="ZUO63sL9m029fD5R3awg-9" target="ZUO63sL9m029fD5R3awg-9" edge="1">
@@ -251,7 +251,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="_bNP-FtNICf3IdOWBFQL" name="Page-3">
-    <mxGraphModel dx="4008" dy="2406" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="580" dy="359" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />

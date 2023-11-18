@@ -25,6 +25,8 @@ set(PROJECT_SOURCES
         cpp/src/gui/cmonitormenu.cpp
         cpp/src/gui/cmonitormenu.cpp
         cpp/src/entities/ccontrolbox.cpp
+        cpp/src/entities/ccalf.cpp
+        cpp/src/entities/clog.cpp
         cpp/src/util/chttpform.cpp
         cpp/src/util/cnetworkmanager.cpp
         cpp/src/util/chttprequest.cpp
