@@ -1,14 +1,18 @@
 #ifndef LORA_RN2483_COMMANDS_H
 #define LORA_RN2483_COMMANDS_H
 
+/***********************************************************************************************************************
+ * Defines
+ **********************************************************************************************************************/
 #define CMD_LEN(x) (sizeof((x)) - 1)
-
-#define CMD_TERMINATOR "\r\n"
-#define CMD_TERMINATOR_LEN 2
 
 /***********************************************************************************************************************
  * Commands
  ***********************************************************************************************************************/
+const char CMD_TERMINATOR_STR[] = "\r\n";
+#define CMD_TERMINATOR ((uint8_t*) CMD_TERMINATOR_STR)
+#define CMD_TERMINATOR_LEN CMD_LEN(CMD_TERMINATOR_STR)
+
 const char CMD_SYS_RST_STR[] = "sys reset\r\n";
 #define CMD_SYS_RST ((uint8_t*) CMD_SYS_RST_STR)
 #define CMD_SYS_RST_LEN CMD_LEN(CMD_SYS_RST_STR)

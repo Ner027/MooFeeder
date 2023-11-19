@@ -14,4 +14,8 @@ add_executable(LoRa
         mac/server/src/cloramac.cpp
         mac/client/src/mac_client.cpp
         queue/inc/queue.hpp
+        mac/common/src/mac_util.c
+        ptwrap/src/csemaphore.cpp
+        network/common/inc/network_types.h
+        app/common/inc/app_types.h
 )

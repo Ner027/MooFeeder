@@ -6,12 +6,15 @@
 static serial_port_st loraPort;
 static rn2483_st loraRadio;
 
+//#define SERVER
 int main()
 {
-    //CLoRaMac loraMac;
-    //loraMac.join();
-
+#ifdef SERVER
+    CLoRaMac loraMac;
+    loraMac.join();
+#else
     mac_init();
+#endif
 
     while (1);
 

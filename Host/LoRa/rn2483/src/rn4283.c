@@ -1,3 +1,6 @@
+/***********************************************************************************************************************
+ * Includes
+ **********************************************************************************************************************/
 #include <asm-generic/errno-base.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -8,9 +11,15 @@
 #include "../../serial/inc/serial.h"
 #include "../../strlib/inc/strlib.h"
 
+/***********************************************************************************************************************
+ * Defines
+ **********************************************************************************************************************/
 #define MAX_MSG_SIZE 230
-#define TX_AMBLES_LEN CMD_RADIO_TX_LEN + CMD_TERMINATOR_LEN
+#define TX_AMBLES_LEN (CMD_RADIO_TX_LEN + CMD_TERMINATOR_LEN)
 
+/***********************************************************************************************************************
+ * Typedefs
+ **********************************************************************************************************************/
 typedef enum
 {
     FW_VER,
@@ -32,9 +41,11 @@ typedef struct
     rn2483_ret_et retOk;
 }rn2483_cmd_st;
 
+/***********************************************************************************************************************
+ * Private Variables
+ **********************************************************************************************************************/
 static const uint8_t hexDecodeLut[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 0, 0, 0, 10, 11, 12, 13, 14, 15};
 static const uint8_t hexEncodeLut[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-
 static const rn2483_cmd_st initCommands[] =
 {
     {CMD_SYS_RST,   CMD_SYS_RST_LEN,    FW_VER},
@@ -53,38 +64,47 @@ static const rn2483_cmd_st initCommands[] =
     {CMD_SET_SYNC,  CMD_SET_SYNC_LEN,   RADIO_OK},
     {CMD_SET_BWD,   CMD_SET_BWD_LEN,    RADIO_OK},
 };
-
 #define INIT_COMMANDS_LEN (sizeof(initCommands) / sizeof(rn2483_cmd_st))
 
+/***********************************************************************************************************************
+ * Private Prototypes
+ **********************************************************************************************************************/
 static rn2483_ret_et parse_response(rn2483_st* dev, size_t msgLen);
 static rn2483_ret_et execute_command(rn2483_st* dev, const uint8_t* pCmd, size_t cmdLen);
+static bool isValidHexChar(char ch);
 static ssize_t bytes_to_hex(const uint8_t* pSrc, uint8_t* pDest, size_t srcLen);
 static ssize_t hex_to_bytes(const uint8_t* pSrc, uint8_t* pDest, size_t srcLen);
 
+/***********************************************************************************************************************
+ * Public Functions
+ **********************************************************************************************************************/
 int rn2483_init(rn2483_st* dev, serial_port_st* serialPort)
 {
     int ret;
     size_t i;
-    rn2483_ret_et radioRet;
     rn2483_cmd_st* currentCmd;
 
     if (!dev || !serialPort)
         return -EINVAL;
 
-    ret = serial_set_terminator(serialPort, CMD_TERMINATOR, CMD_TERMINATOR_LEN);
+    //Change the serial port terminator to the one used by the RN2483 radio (\r\n)
+    ret = serial_set_terminator(serialPort, CMD_TERMINATOR_STR, CMD_TERMINATOR_LEN);
     if (ret < 0)
         return -EFAULT;
 
     dev->serialPort = serialPort;
 
+    //Execute all the command on the initialization list
     for (i = 0; i < INIT_COMMANDS_LEN; ++i)
     {
         currentCmd = (rn2483_cmd_st*) &initCommands[i];
 
+        //If any of the commands fail to execute return an error
         if (execute_command(dev, currentCmd->cmd, currentCmd->len) != currentCmd->retOk)
             return -EFAULT;
     }
 
+    //After initialization is finished, return the physical EUI from the RN2483 device
     ret = serial_write(serialPort, CMD_GET_EUI, CMD_GET_EUI_LEN);
     if (ret < 0)
         return -EFAULT;
@@ -95,6 +115,7 @@ int rn2483_init(rn2483_st* dev, serial_port_st* serialPort)
 
     return (hex_to_bytes(dev->serialBuffer, dev->phyAddr, ret) > 0) ? 0 : -EFAULT;
 }
+
 int rn2483_tx(rn2483_st* dev, const uint8_t* pSrc, uint8_t srcLen)
 {
     ssize_t ret;
@@ -158,12 +179,35 @@ int rn2483_rx(rn2483_st* dev, uint8_t* pDst, uint8_t destLen)
     ret -= RET_RX_LEN;
     if (destLen < ret)
         return -ENOSPC;
+
     //Parse data from hex back to raw bytes
     return (int) hex_to_bytes(&dev->serialBuffer[RET_RX_LEN], pDst, ret);
 }
 
+int rn2483_set_wdt(rn2483_st* dev, uint64_t timeout)
+{
+    if (!dev)
+        return -EINVAL;
+
+    sprintf((char*)dev->serialBuffer, "radio set wdt %ld\r\n", timeout);
+
+    if (execute_command(dev, dev->serialBuffer, strlen((char*) dev->serialBuffer)) != RADIO_OK)
+        return -EFAULT;
+
+    return 0;
+}
+
+/***********************************************************************************************************************
+ * Private Functions
+ **********************************************************************************************************************/
+/// \brief This function parses a text response from a RN2483 device to a more usable type
+/// \note This functions doesn't perform parameter checking as it is supposed to be used internally only
+/// \param dev Handler to the RN2483 device
+/// \param msgLen Length of the message to parse
+/// \return Returns a rn2483_ret_et depending on the message received
 static rn2483_ret_et parse_response(rn2483_st* dev, size_t msgLen)
 {
+    //First check the length of the message, as it is faster than checking if it fully matches other strings first
     switch (msgLen)
     {
         case RET_OK_LEN:
@@ -203,11 +247,41 @@ static rn2483_ret_et parse_response(rn2483_st* dev, size_t msgLen)
     return RET_UKN;
 }
 
+/// \brief This function checks whether or not a character can be used in an hexadecimal number
+/// \param ch Character to check
+/// \return True if character is a valid hex char, otherwise returns false
 static bool isValidHexChar(char ch)
 {
     return (((ch >= '0') && (ch <= '9')) || ((ch >= 'A') && (ch <= 'F')));
 }
 
+/// \brief This functions executes a command on a RN2483 device, waiting for the response to said command
+/// \note This functions doesn't perform parameter checking as it is supposed to be used internally only
+/// \param dev Handler to the RN2483 device
+/// \param pCmd Buffer containing the command to execute
+/// \param cmdLen Length of the command to execute
+/// \return INTERNAL_ERROR if a low-level functions fails to execute, otherwise returns the response to the command
+static rn2483_ret_et execute_command(rn2483_st* dev, const uint8_t* pCmd, size_t cmdLen)
+{
+    int ret;
+
+    ret = serial_write(dev->serialPort, pCmd, cmdLen);
+    if (ret < 0)
+        return INTERNAL_ERROR;
+
+    ret = serial_sync_readline(dev->serialPort, dev->serialBuffer, BUFFER_SIZE);
+    if (ret < 0)
+        return INTERNAL_ERROR;
+
+    return parse_response(dev, ret);
+}
+
+/// \brief This function converts an hex string to a raw byte array
+/// \param pSrc Hexadecimal string
+/// \param pDest Buffer to write the translated bytes to
+/// \param srcLen Length of the hexadecimal string
+/// \return -EINVAL if invalid parameters are passed, -EBADMSG is the string contains an invalid hex character, returns
+/// the length of the retrieved raw message
 static ssize_t hex_to_bytes(const uint8_t* pSrc, uint8_t* pDest, size_t srcLen)
 {
     size_t i;
@@ -226,21 +300,11 @@ static ssize_t hex_to_bytes(const uint8_t* pSrc, uint8_t* pDest, size_t srcLen)
     return (ssize_t) (srcLen >> 1);
 }
 
-static rn2483_ret_et execute_command(rn2483_st* dev, const uint8_t* pCmd, size_t cmdLen)
-{
-    int ret;
-
-    ret = serial_write(dev->serialPort, pCmd, cmdLen);
-    if (ret < 0)
-        return INTERNAL_ERROR;
-
-    ret = serial_sync_readline(dev->serialPort, dev->serialBuffer, BUFFER_SIZE);
-    if (ret < 0)
-        return INTERNAL_ERROR;
-
-    return parse_response(dev, ret);
-}
-
+/// \brief This functions converts a byte array to an hexadecimal string
+/// \param pSrc Buffer containing the bytes that will be translated to hex
+/// \param pDest Buffer where the hexadecimal string will be written to
+/// \param srcLen Number of bytes to convert from
+/// \return -EINVAL if invalid parameters are passed, otherwise returns the size of the resulting hex string
 static ssize_t bytes_to_hex(const uint8_t* pSrc, uint8_t* pDest, size_t srcLen)
 {
     size_t i;

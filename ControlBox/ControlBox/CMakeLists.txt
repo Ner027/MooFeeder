@@ -15,8 +15,8 @@ find_package(QT NAMES Qt5 REQUIRED COMPONENTS Core Quick VirtualKeyboard Widgets
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick VirtualKeyboard Widgets)
 
 set(PROJECT_SOURCES
-        cpp/src/main.cpp
         qml.qrc
+        cpp/src/main.cpp
         cpp/src/gui/cqmlinterface.cpp
         cpp/src/gui/cguimenu.cpp
         cpp/src/gui/cmainmenu.cpp
