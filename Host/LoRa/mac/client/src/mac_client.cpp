@@ -67,7 +67,7 @@ void producer_thread()
         if (txQueue.isEmpty())
         {
             sprintf((char*)macFrame.payload, "Hello from LoRa Client! This is frame: %d", counter++);
-            phyFrame.object.len = MAC_CONTROL_LEN + PHY_CONTROL_LEN + strlen((char*)macFrame.payload);
+            phyFrame.object.len = MAC_CTRL_LEN + PHY_CONTROL_LEN + strlen((char*)macFrame.payload);
             txQueue.push(phyFrame);
         }
 
@@ -194,7 +194,7 @@ static void mac_state_send_pair()
     joinRequest->fwVer.version = 0xDE;
     joinRequest->fwVer.patch   = 0xC0;
 
-    currentFrame.len = sizeof(join_req_st) + MAC_CONTROL_LEN + 1;
+    currentFrame.len = sizeof(join_req_st) + MAC_CTRL_LEN + 1;
 
     ret = mac_sync_tx();
     if (ret < 0)
@@ -274,7 +274,7 @@ static void mac_state_run()
     if (macFrame.control->header == HDR_DOWN_LINK)
     {
         //If it is not an empty message push it to the reception queue
-        if (currentFrame.len != (MAC_CONTROL_LEN + PHY_CONTROL_LEN))
+        if (currentFrame.len != (MAC_CTRL_LEN + PHY_CONTROL_LEN))
             rxQueue.push(QueueItem<phy_frame_st>(currentFrame));
     }
 

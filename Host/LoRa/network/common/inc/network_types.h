@@ -1,7 +1,8 @@
 #ifndef LORA_NETWORK_TYPES_H
 #define LORA_NETWORK_TYPES_H
 
-#include <cstdint>
+#include <stdint.h>
+#define NETWORK_CTRL_LEN 4
 
 typedef struct
 {

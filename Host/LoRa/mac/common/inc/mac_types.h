@@ -7,7 +7,7 @@
 #define MAC_PAYLOAD_LEN 212
 #define HDR_LEN 1
 #define ADDR_LEN 4
-#define MAC_CONTROL_LEN (HDR_LEN + (ADDR_LEN * 2))
+#define MAC_CTRL_LEN (HDR_LEN + (ADDR_LEN * 2))
 
 #define HDR_DOWN_LINK 0xA0
 #define HDR_JOIN_REQ  0xB0

@@ -62,7 +62,7 @@ void CLoRaMac::stateInit()
     //Set MAC Addresses
     memcpy(macFrame.control->srcAddr, &m_loraRadio.phyAddr[4], ADDR_LEN);
     memset(macFrame.control->destAddr, 0, ADDR_LEN);
-    m_syncMsg.len = MAC_CONTROL_LEN + 1;
+    m_syncMsg.len = MAC_CTRL_LEN + 1;
 
     m_nextState = ST_EVAL;
 }
@@ -133,14 +133,17 @@ void CLoRaMac::stateRx()
                 return;
             }
 
+            //Server + Broadcast slot
+            ret += 2;
+
             timeSinceSync = GET_CURRENT_TIME() - m_lastTxTime;
             timeMs = MS_FROM_DURATION(timeSinceSync);
             clientSlot = timeMs / TIME_SLOT_MS;
 
             printf("Time since last sync message: %ld ms... This is slot: %d\n", timeMs, clientSlot);
-            printf("Data Received from client at address: %d! -> %.*s\n", ret, phyFrame.object.len - MAC_CONTROL_LEN - 1, macFrame.payload);
+            printf("Data Received from client at address: %d! -> %.*s\n", ret, phyFrame.object.len - MAC_CTRL_LEN - 1, macFrame.payload);
 
-            if ((ret + 2) != clientSlot)
+            if (ret != clientSlot)
             {
                 printf("Client transmitting in the wrong slot!\n");
                 //TODO: Kick client from network
@@ -183,7 +186,7 @@ void CLoRaMac::stateRx()
             pJoinAccept = (join_acp_st*) macFrame.payload;
             pJoinAccept->timeSlot = clientSlot;
 
-            phyFrame.object.len = MAC_CONTROL_LEN + sizeof(join_acp_st) + 1;
+            phyFrame.object.len = MAC_CTRL_LEN + sizeof(join_acp_st) + 1;
 
             m_txQueue.push(phyFrame);
 

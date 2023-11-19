@@ -18,4 +18,8 @@ add_executable(LoRa
         ptwrap/src/csemaphore.cpp
         network/common/inc/network_types.h
         app/common/inc/app_types.h
+        app/server/src/app_server.cpp
+        app/client/src/app_client.cpp
+        app/common/src/app_util.c
+        app/common/inc/app_util.h
 )
