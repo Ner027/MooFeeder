@@ -35,7 +35,7 @@ public:
     /// \param password String containing the password
     /// \return Returns USER_OK if user was logged in with success, INTERNAL_ERROR if unable to perform the web request,
     /// or a corrupted/wrong frame was received, otherwise returns the code received from the Cloud system
-    UserReturnCode_et loginUser(QString& username, QString& password);
+    CloudReturnCode_et loginUser(QString& username, QString& password);
 
     /// \brief This method performs a session logout from the ControlBox
     void logoutUser();
@@ -44,7 +44,7 @@ public:
     /// \param username String containing the username
     /// \param password String containing the password
     /// \return
-    UserReturnCode_et registerUser(QString& username, QString& password);
+    CloudReturnCode_et registerUser(QString& username, QString& password);
 };
 
 #endif

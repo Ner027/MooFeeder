@@ -16,7 +16,7 @@ CCalf::CCalf(const std::string phyTag)
     m_currentConsumption = (float) calfData["calfData"].toObject()["currentConsumption"].toDouble();
 }
 
-int CCalf::getCalfFromCloud(QJsonObject *jsonObject)
+int CCalf::getCalfFromCloud(QJsonObject* jsonObject)
 {
     if (!jsonObject)
         return -EINVAL;
@@ -83,6 +83,17 @@ float CCalf::getMaxConsumption()
 float CCalf::getCurrentConsumption()
 {
     return m_currentConsumption;
+}
+
+QJsonObject CCalf::dumpToJson()
+{
+    QJsonObject jsonObject;
+
+    jsonObject["rfidTag"] = m_phyTag.c_str();
+    jsonObject["currentConsumption"] = m_currentConsumption;
+    jsonObject["maxConsumption"] = m_maxConsumption;
+
+    return jsonObject;
 }
 
 

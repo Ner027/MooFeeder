@@ -28,6 +28,9 @@ Item
                 case Types.GuiMenuType.LOGIN_MENU:
                     stackView.push(loginMenu);
                     break;
+                case Types.GuiMenuType.STATION_MENU:
+                    stackView.push(stationMenu);
+                    break;
             }
         }
 
@@ -42,6 +45,7 @@ Item
     property Item settingsMenu: SettingsMenu{}
     property Item loginMenu: LoginMenu{}
     property Item monitorMenu: MonitorMenu{}
+    property Item stationMenu: StationMenu{}
 
     StackView
     {

@@ -39,7 +39,7 @@ public:
     /// \param password String containing the password
     /// \return Returns USER_OK if user was logged in with success, INTERNAL_ERROR if unable to perform the web request,
     /// or a corrupted/wrong frame was received, otherwise returns the code received from the Cloud system
-    UserReturnCode_et executeLogin(const std::string& username, const std::string& password);
+    CloudReturnCode_et executeLogin(const std::string& username, const std::string& password);
 
     /// \brief This method performs a session logout from the ControlBox
     void executeLogout();

@@ -87,6 +87,7 @@ int main(int argc, char *argv[])
     view.setSource(QUrl("qrc:/qml/Main.qml"));
     view.show();
 
+    /*
     auto ret = parseScanMessage(exec("iwlist wlo1 scan | grep -E \"ESSID|Signal level|Authentication Suites\""));
 
     for (const auto &item: ret)
@@ -95,8 +96,10 @@ int main(int argc, char *argv[])
         qDebug() << "AuthType: " << item.authType.c_str();
         qDebug() << "Signal Strength: " << item.signalStrength;
     }
+
     //CControlBox::getInstance()->executeLogin("user", "mooFeeder");
     //qDebug() << "Session Token: " << CControlBox::getInstance()->getSessionToken().c_str();
+    */
 
     return QApplication::exec();
 }

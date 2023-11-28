@@ -47,6 +47,15 @@ Item
                                 "milkVolume": currentConsumption + "/" + maxConsumption + "L"});
         }
 
+        function onSetCalfList(cList)
+        {
+            for (let i = 0; i < cList.length; i++)
+            {
+                let jObj = cList[i];
+                onAddCalfToList(jObj.rfidTag, jObj.currentConsumption, jObj.maxConsumption);
+            }
+        }
+
         function onClearGraph()
         {
             initialized = false;
@@ -127,6 +136,7 @@ Item
 
             ListView
             {
+                id: listView
                 anchors.fill: parent
                 spacing: 16
                 delegate: CalfDelegate{}

@@ -1,6 +1,6 @@
 #include "../../inc/gui/cloginmenu.h"
 
-UserReturnCode_et CLoginMenu::loginUser(QString &username, QString &password)
+CloudReturnCode_et CLoginMenu::loginUser(QString &username, QString &password)
 {
     return m_controlBoxInstance->executeLogin(username.toStdString(), password.toStdString());
 }
@@ -10,7 +10,7 @@ void CLoginMenu::logoutUser()
     m_controlBoxInstance->executeLogout();
 }
 
-UserReturnCode_et CLoginMenu::registerUser(QString &username, QString &password)
+CloudReturnCode_et CLoginMenu::registerUser(QString &username, QString &password)
 {
     QJsonObject jObject;
     CHttpRequest request(ENDPOINT_REGISTER, HttpVerb_et::POST);
@@ -37,8 +37,8 @@ UserReturnCode_et CLoginMenu::registerUser(QString &username, QString &password)
         if (!jObject.contains(FIELD_CAUSE))
             return INTERNAL_ERROR;
 
-        //Otherwise cast it to a UserReturnCode_et and return it
-        return static_cast<UserReturnCode_et>(jObject[FIELD_CAUSE].toInt());
+        //Otherwise cast it to a CloudReturnCode_et and return it
+        return static_cast<CloudReturnCode_et>(jObject[FIELD_CAUSE].toInt());
     }
 
     //TODO: Retrieve session token from registration and auto-login

@@ -20,7 +20,7 @@ Item
         {
             target: QmlInterface
 
-            function onClearSelection()
+            function onClearCalfSelection()
             {
                 isSelected = false;
             }

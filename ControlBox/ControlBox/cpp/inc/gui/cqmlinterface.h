@@ -7,6 +7,7 @@
 #include <QObject>
 #include <map>
 #include <stack>
+#include <QJsonArray>
 #include "cguimenu.h"
 
 /***********************************************************************************************************************
@@ -54,7 +55,7 @@ public slots:
     /// \brief This slot allows QML to start a login process
     /// \param username String containing the username
     /// \param password String containing the password
-    /// \return Returns a cast to an integer from a UserReturnCode_et
+    /// \return Returns a cast to an integer from a CloudReturnCode_et
     int loginUser(QString username, QString password);
 
     /// \brief This slot allows QML to perform a logout
@@ -63,7 +64,7 @@ public slots:
     /// \brief This slot allows QML to start a registration process
     /// \param username String containing the username
     /// \param password String containing the password
-    /// \return Returns a cast to an integer from a UserReturnCode_et
+    /// \return Returns a cast to an integer from a CloudReturnCode_et
     int registerUser(QString username, QString password);
 
     /// \brief This slot returns the current ControlBox status
@@ -73,6 +74,8 @@ public slots:
     void selectCalf(QString phyTag);
 
     void updateCalfList();
+
+    void updateStationList();
 signals:
     /// \brief This signal is emitted when the current GUI menu is changed
     /// \param newMenu The menu that the GUI changed to
@@ -87,11 +90,19 @@ signals:
 
     void clearCalfList();
 
+    void clearStationList();
+
+    void setCalfList(QJsonArray calfList);
+
+    void setStationList(QJsonArray stationList);
+
     void addCalfToList(QString phyTag, float currentConsumption, float maxConsumption);
 
     void clearGraph();
 
-    void clearSelection();
+    void clearCalfSelection();
+
+    void clearStationSelection();
 
     void calfSelected(float maxConsumption, QString notes);
 

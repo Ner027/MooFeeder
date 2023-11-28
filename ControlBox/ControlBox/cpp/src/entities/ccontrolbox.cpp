@@ -27,7 +27,7 @@ void CControlBox::killInstance()
     m_instance = nullptr;
 }
 
-UserReturnCode_et CControlBox::executeLogin(const std::string& username, const std::string& password)
+CloudReturnCode_et CControlBox::executeLogin(const std::string& username, const std::string& password)
 {
     QJsonObject jObject;
     CHttpRequest request(ENDPOINT_LOGIN, HttpVerb_et::GET);
@@ -53,8 +53,8 @@ UserReturnCode_et CControlBox::executeLogin(const std::string& username, const s
         if (!jObject.contains(FIELD_CAUSE))
             return INTERNAL_ERROR;
 
-        //Otherwise cast it to a UserReturnCode_et and return it
-        return static_cast<UserReturnCode_et>(jObject[FIELD_CAUSE].toInt());
+        //Otherwise cast it to a CloudReturnCode_et and return it
+        return static_cast<CloudReturnCode_et>(jObject[FIELD_CAUSE].toInt());
     }
 
     //If the login request was accepted but no session token was provided, the request response was corrupted

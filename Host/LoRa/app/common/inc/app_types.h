@@ -7,13 +7,13 @@
 
 #define APP_PAYLOAD_LEN 16
 #define APP_CTRL_LEN 1
-
 #define RFID_TAG_LEN 8
 
 typedef struct
 {
     uint8_t len;
 }app_control_st;
+
 typedef struct
 {
     app_control_st* control;
@@ -24,6 +24,24 @@ typedef struct
 {
     uint8_t rfidTag[RFID_TAG_LEN];
 }budget_request_st;
+
+typedef struct
+{
+    uint8_t rfidTag[RFID_TAG_LEN];
+    uint32_t allowedConsumption;
+}budget_response_st;
+
+typedef struct
+{
+    uint8_t rfidTag[RFID_TAG_LEN];
+    uint32_t volumeConsumed;
+}consumption_report_st;
+
+typedef struct
+{
+    uint16_t rawTemperature;
+    uint16_t rawVbat;
+}sensor_data_st;
 
 typedef struct
 {

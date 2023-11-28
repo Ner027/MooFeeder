@@ -132,8 +132,6 @@ static void mac_thread()
 
 static void mac_state_init()
 {
-    mac_frame_st macFrame;
-
     serial_open("/dev/ttyUSB0", B57600, &radioPort);
     rn2483_init(&loraRadio, &radioPort);
 

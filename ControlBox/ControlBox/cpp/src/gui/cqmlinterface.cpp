@@ -3,6 +3,8 @@
 #include "../../inc/gui/csettingsmenu.h"
 #include "../../inc/gui/cloginmenu.h"
 #include "../../inc/gui/cmonitormenu.h"
+#include "../../inc/gui/cstationmenu.h"
+#include <QJsonArray>
 
 CQmlInterface* CQmlInterface::m_instance = nullptr;
 
@@ -48,6 +50,7 @@ CQmlInterface::CQmlInterface()
     registerMenu(SETTINGS_MENU);
     registerMenu(LOGIN_MENU);
     registerMenu(MONITOR_MENU);
+    registerMenu(STATION_MENU);
     changeToMenu(MAIN_MENU);
 }
 
@@ -75,6 +78,7 @@ void CQmlInterface::registerMenu(GuiMenuType_et menuType)
             newMenu = new CMonitorMenu;
             break;
         case STATION_MENU:
+            newMenu = new CStationMenu;
             break;
         case BOX_MENU:
             break;
@@ -182,26 +186,42 @@ void CQmlInterface::logoutUser()
 void CQmlInterface::onMenuLoaded(GuiMenuType_et newMenu)
 {
     switch (newMenu)
-    {
-        case MONITOR_MENU:
         {
-            auto monitorMenu = dynamic_cast<CMonitorMenu*>(m_menuStack.top());
+            case MONITOR_MENU:
+            {
+                QJsonArray jArray;
+                auto monitorMenu = dynamic_cast<CMonitorMenu*>(m_menuStack.top());
 
-            emit clearCalfList();
-            emit clearSelection();
-            emit clearGraph();
+                emit clearCalfList();
+                emit clearCalfSelection();
+                emit clearGraph();
 
-            auto calfList = monitorMenu->getCalfList();
+                auto calfList = monitorMenu->getCalfList();
+                for (auto& item : calfList)
+                    jArray.append(item.dumpToJson());
 
-            for (auto& item : calfList)
-                addCalfToList(QString::fromStdString(item.getPhyTag()),
-                              item.getCurrentConsumption(),
-                              item.getMaxConsumption());
-            break;
+                emit setCalfList(jArray);
+                break;
+            }
+
+            case STATION_MENU:
+            {
+                QJsonArray jArray;
+                auto stationMenu = dynamic_cast<CStationMenu*>(m_menuStack.top());
+
+                emit clearStationList();
+                emit clearStationSelection();
+
+                auto stationList = stationMenu->getStationList();
+                for (auto& item : stationList)
+                    jArray.append(item.dumpToJson());
+
+                emit setStationList(jArray);
+                break;
+            }
+            default:
+                break;
         }
-        default:
-            break;
-    }
 }
 
 void CQmlInterface::selectCalf(QString phyTag)
@@ -209,7 +229,7 @@ void CQmlInterface::selectCalf(QString phyTag)
     CCalf calf(phyTag.toStdString());
     auto logs = calf.getLatestLogs();
 
-    emit clearSelection();
+    emit clearCalfSelection();
     emit clearGraph();
     emit calfSelected(calf.getMaxConsumption(), "Not implemented yet!");
 
@@ -223,5 +243,10 @@ void CQmlInterface::selectCalf(QString phyTag)
 void CQmlInterface::updateCalfList()
 {
     onMenuLoaded(MONITOR_MENU);
+}
+
+void CQmlInterface::updateStationList()
+{
+    onMenuLoaded(STATION_MENU);
 }
 

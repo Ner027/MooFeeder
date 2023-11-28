@@ -4,8 +4,9 @@
 #include <string>
 #include <QJsonObject>
 #include "clog.h"
+#include "cserializableobject.h"
 
-class CCalf
+class CCalf : public CSerializableObject
 {
 public:
     explicit CCalf(const std::string phyTag);
@@ -15,12 +16,14 @@ public:
     std::string getPhyTag();
     float getMaxConsumption();
     float getCurrentConsumption();
+
+    int loadFromJson(QJsonObject& jsonObject) override { return 0;}
+    QJsonObject dumpToJson() override;
 private:
     int getCalfFromCloud(QJsonObject* jsonObject);
     std::string m_phyTag;
     float m_maxConsumption;
     float m_currentConsumption;
-    float m_consumedVolume;
 };
 
 #endif
