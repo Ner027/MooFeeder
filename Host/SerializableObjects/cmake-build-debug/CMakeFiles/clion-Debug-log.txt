@@ -1,4 +1,4 @@
-/home/andre/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/232.9921.42/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/andre/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/232.9921.42/bin/ninja/linux/x64/ninja -G Ninja -S /home/andre/workspace/MooFeeder/Host/SerializableObjects -B /home/andre/workspace/MooFeeder/Host/SerializableObjects/cmake-build-debug
+/home/andre/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/232.9921.42/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" -S /home/andre/workspace/MooFeeder/Host/SerializableObjects -B /home/andre/workspace/MooFeeder/Host/SerializableObjects/cmake-build-debug
 -- The C compiler identification is GNU 12.3.0
 -- The CXX compiler identification is GNU 12.3.0
 -- Detecting C compiler ABI info
