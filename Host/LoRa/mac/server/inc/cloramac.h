@@ -4,7 +4,7 @@
 #include "../../../ptwrap/inc/cthread.h"
 #include "../../../rn2483/inc/rn2483_types.h"
 #include "../../common/inc/mac_types.h"
-#include "../../../phy/inc/phy_types.h"
+#include "../../../phy/common/inc/phy_types.h"
 #include "../../../queue/inc/queue.hpp"
 
 typedef enum
@@ -18,8 +18,11 @@ typedef enum
 class CLoRaMac : public CThread
 {
 public:
-    CLoRaMac();
+    static CLoRaMac* getInstance();
+    static void killInstance();
 private:
+    CLoRaMac();
+    static CLoRaMac* m_instance;
     systick_t m_txTimeBegin;
     systick_t m_txTimeEnd;
     systick_t m_lastTxTime;
@@ -30,6 +33,7 @@ private:
     phy_frame_st m_syncMsg;
     CQueue<phy_frame_st> m_txQueue;
     CQueue<phy_frame_st> m_rxQueue;
+    std::atomic<bool> m_keepRunning;
 
     void* run(void *) override;
     void stateInit();
@@ -38,6 +42,8 @@ private:
     void stateRx();
     void updateTxTime();
     int findDevice(mac_addr_t* natEntry);
+    int checkDestination(mac_addr_t* pAddr);
+    int getFreeSlot() const;
 };
 
 #endif

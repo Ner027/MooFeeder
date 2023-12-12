@@ -3,11 +3,12 @@
 
 #include <stdint.h>
 #include "../../../common/inc/lora_timmings.h"
+#include "../../../phy/common/inc/phy_types.h"
 
 #define MAC_PAYLOAD_LEN 212
 #define HDR_LEN 1
 #define ADDR_LEN 4
-#define MAC_CTRL_LEN (HDR_LEN + (ADDR_LEN * 2))
+#define MAC_CTRL_LEN sizeof(mac_control_st)
 
 #define HDR_DOWN_LINK 0xA0
 #define HDR_JOIN_REQ  0xB0
@@ -26,8 +27,8 @@ typedef struct
 
 typedef struct
 {
-    mac_control_st* control;
-    uint8_t* payload;
+    mac_control_st control;
+    uint8_t payload[PHY_PAYLOAD_LEN - MAC_CTRL_LEN];
 }mac_frame_st;
 
 typedef struct
@@ -52,6 +53,6 @@ typedef struct
 {
     //2 = Broadcast + Server slot
     mac_addr_t devices[NR_OF_SLOTS - 2];
-    uint8_t nofDevices;
+    uint8_t usedSlots;
 }nat_table_st;
 #endif

@@ -3,25 +3,29 @@
  ***********************************************************************************************************************/
 #include <errno.h>
 #include <string.h>
-#include "../Inc/serial.h"
-#include "../Inc/serial_types.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "stm32l4xx_hal.h"
+#include "../inc/serial.h"
+#include "../../oswrapper/inc/oswrapper.h"
 
 /***********************************************************************************************************************
  * Defines
  ***********************************************************************************************************************/
 #define MAX_SERIAL_PORTS 4
 #define MAX_WAIT_TICKS 2
-#define LINE_TERMINATOR '\n'
+#define DEFAULT_TERMINATOR '\n'
+#define ENABLE_LOG
 
 /***********************************************************************************************************************
  * Private Variables
  ***********************************************************************************************************************/
+static serial_port_st *registeredPorts[MAX_SERIAL_PORTS] = {0};
 
 /***********************************************************************************************************************
  * Private Prototypes
  ***********************************************************************************************************************/
+static int getPortIndex(UART_HandleTypeDef* uartHandle);
 
 /***********************************************************************************************************************
  * Callbacks
@@ -34,7 +38,12 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *uartHandle)
     if (!uartHandle)
         return;
 
-    serialPort = (serial_port_st*) uartHandle->pRxBuffPtr;
+    i = getPortIndex(uartHandle);
+
+    if (i < 0)
+        return;
+
+    serialPort = registeredPorts[i];
 
     if ((serialPort->txWrIndex - serialPort->txRdIndex) <= 0)
     {
@@ -48,14 +57,20 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *uartHandle)
     }
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef* uartHandle)
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *uartHandle)
 {
+    int i;
     serial_port_st* serialPort;
 
     if (!uartHandle)
         return;
 
-    serialPort = (serial_port_st *) uartHandle->pRxBuffPtr;
+    i = getPortIndex(uartHandle);
+
+    if (i < 0)
+        return;
+
+    serialPort = registeredPorts[i];
 
     serialPort->rxBuffer[serialPort->rxWrIndex++ & (BUFFER_SIZE - 1)] = serialPort->rxByte;
 
@@ -65,10 +80,15 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* uartHandle)
 /***********************************************************************************************************************
  * Public Functions
  ***********************************************************************************************************************/
-int serial_init(serial_port_st *serialPort, UART_HandleTypeDef *uartHandle)
+int serial_open(serial_port_st *serialPort, UART_HandleTypeDef *uartHandle)
 {
+    uint8_t i;
+
     if (!serialPort || !uartHandle)
         return -EINVAL;
+
+    if (serialPort->initialized)
+        return -EALREADY;
 
     serialPort->uartHandle = uartHandle;
 
@@ -78,11 +98,25 @@ int serial_init(serial_port_st *serialPort, UART_HandleTypeDef *uartHandle)
     serialPort->rxRdIndex = 0;
 
     serialPort->txRunning = 0;
-
 #ifdef THREAD_SAFE
     serialPort->txMutex = xSemaphoreCreateMutex();
     serialPort->rxMutex = xSemaphoreCreateMutex();
 #endif
+    for (i = 0; i < MAX_SERIAL_PORTS; ++i)
+    {
+        if (registeredPorts[i] == NULL)
+        {
+            registeredPorts[i] = serialPort;
+            break;
+        }
+    }
+
+    if (i == MAX_SERIAL_PORTS)
+        return -ENOSPC;
+
+    serialPort->initialized = 1;
+    serialPort->terminator[0] = DEFAULT_TERMINATOR;
+    serialPort->terminatorSize = 1;
 
     HAL_UART_Receive_IT(uartHandle, &serialPort->rxByte, 1);
 
@@ -91,8 +125,26 @@ int serial_init(serial_port_st *serialPort, UART_HandleTypeDef *uartHandle)
 
 int serial_close(serial_port_st *serialPort)
 {
+    uint8_t i;
+
     if (!serialPort)
         return -EINVAL;
+
+    for (i = 0; i < MAX_SERIAL_PORTS; ++i)
+    {
+        if (registeredPorts[i]->uartHandle->Instance == serialPort->uartHandle->Instance)
+        {
+#ifdef THREAD_SAFE
+            vSemaphoreDelete(serialPort->txMutex);
+            vSemaphoreDelete(serialPort->rxMutex);
+#endif
+            registeredPorts[i] = NULL;
+            break;
+        }
+    }
+
+    if (i == MAX_SERIAL_PORTS)
+        return -ENODEV;
 
     if (HAL_UART_DeInit(serialPort->uartHandle) != HAL_OK)
         return -EFAULT;
@@ -100,7 +152,7 @@ int serial_close(serial_port_st *serialPort)
     return 0;
 }
 
-ssize_t serial_tx_async(serial_port_st* serialPort, const uint8_t* txBuffer, size_t bufferLen)
+ssize_t serial_write(serial_port_st* serialPort, const uint8_t* txBuffer, size_t bufferLen)
 {
     size_t i;
 
@@ -128,13 +180,15 @@ ssize_t serial_tx_async(serial_port_st* serialPort, const uint8_t* txBuffer, siz
                              &serialPort->txBuffer[serialPort->txRdIndex++ & (BUFFER_SIZE - 1)], 1);
     }
 
+    printf("%s", txBuffer);
+
 #ifdef THREAD_SAFE
     xSemaphoreGive(serialPort->txMutex);
 #endif
     return 0;
 }
 
-ssize_t serial_rx_async(serial_port_st* serialPort, uint8_t* rxBuffer, size_t bufferLen)
+ssize_t serial_read(serial_port_st* serialPort, uint8_t* rxBuffer, size_t bufferLen)
 {
     size_t i, len;
 
@@ -157,44 +211,87 @@ ssize_t serial_rx_async(serial_port_st* serialPort, uint8_t* rxBuffer, size_t bu
     return (ssize_t) len;
 }
 
-ssize_t serial_readline(serial_port_st* serialPort, uint8_t* rxBuffer, size_t bufferLen, TickType_t maxWait)
+
+int serial_readline(serial_port_st* serialPort, uint8_t* rxBuffer, size_t bufferSize, duration_t maxWait)
 {
     int ret;
-    uint8_t rx;
-    uint8_t* pStart = rxBuffer;
-
-    size_t readBytes;
+    uint8_t ch;
+    int8_t termPosition;
+    size_t bytesRead;
+    systick_t endTime;
 
     if (!serialPort || !rxBuffer)
         return -EINVAL;
 
-    TickType_t endTime = xTaskGetTickCount() + maxWait;
+    if (!serialPort->initialized)
+        return -EPERM;
 
-    readBytes = 0;
-    do
+    endTime = GET_CURRENT_TIME();
+    if (maxWait == MAX_DELAY)
+        endTime = maxWait;
+    else endTime = GET_CURRENT_TIME() + maxWait;
+
+    termPosition = -1;
+    bytesRead = 0;
+    while ((bytesRead < bufferSize) && (GET_CURRENT_TIME() < endTime))
     {
-        ret = serial_rx_async(serialPort, &rx, 1);
+        ret = serial_read(serialPort, &ch, 1);
 
-        if (ret > 0)
+        //If read returns a negative value some error occurred, in this case exit the functions
+        if (ret < 0)
+            return ret;
+
+        //If nothing was read just keep waiting
+        if (ret == 0)
         {
-            *rxBuffer++ = rx;
-            readBytes++;
+            THREAD_SLEEP_FOR(SYSTEM_TICK_FROM_MS(5));
+            continue;
         }
-        else vTaskDelay(5/portTICK_PERIOD_MS);
+
+        if (termPosition < 0)
+        {
+            if (ch == serialPort->terminator[0])
+                termPosition = 1;
+        }
+        else
+        {
+            if (ch == serialPort->terminator[termPosition])
+                termPosition++;
+
+            else return -EINVAL;
+        }
+
+        if (termPosition == serialPort->terminatorSize)
+        {
+            rxBuffer[bytesRead] = '\0';
+#ifdef ENABLE_LOG
+            printf("%s\n", (char*)rxBuffer);
+#endif
+            return (int) bytesRead;
+        }
+
+        if (termPosition < 0)
+            rxBuffer[bytesRead++] = ch;
     }
-    while ((rx != LINE_TERMINATOR) && ((endTime - xTaskGetTickCount()) > 0) && (readBytes < bufferLen));
 
-    if (readBytes >= bufferLen)
-        return -ENOSPC;
-
-    if (rx != LINE_TERMINATOR)
+    if (GET_CURRENT_TIME() >= endTime)
         return -ETIMEDOUT;
 
-    *rxBuffer = '\0';
+    return 0;
+}
 
-    printf("%s", pStart);
+int serial_set_terminator(serial_port_st* serialPort, const char* newTerminator, uint8_t terminatorSize)
+{
+    if (!serialPort || (terminatorSize > MAX_TERMINATOR_LEN))
+        return -EINVAL;
 
-    return (ssize_t) (readBytes);
+    if (!serialPort->initialized)
+        return -EPERM;
+
+    memcpy(serialPort->terminator, newTerminator, terminatorSize);
+    serialPort->terminatorSize = terminatorSize;
+
+    return 0;
 }
 
 int serial_flush(serial_port_st* serialPort)
@@ -216,4 +313,20 @@ int serial_flush(serial_port_st* serialPort)
     xSemaphoreGive(serialPort->rxMutex);
 #endif
     return 0;
+}
+
+/***********************************************************************************************************************
+ * Private Functions
+ ***********************************************************************************************************************/
+static int getPortIndex(UART_HandleTypeDef* uartHandle)
+{
+    uint8_t i;
+
+    for (i = 0; i < MAX_SERIAL_PORTS; ++i)
+    {
+        if (registeredPorts[i]->uartHandle->Instance == uartHandle->Instance)
+            return i;
+    }
+
+    return -1;
 }

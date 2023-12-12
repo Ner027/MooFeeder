@@ -6,9 +6,8 @@
 #include "../../../serial/inc/serial.h"
 #include "../../../rn2483/inc/rn2483.h"
 #include "../../common/inc/mac_types.h"
-#include "../../../phy/inc/phy_types.h"
-#include "../../common/inc/mac_util.h"
 #include "../../../queue/inc/queue.hpp"
+#include "../../../phy/common/inc/phy_types.h"
 
 #define MAX_PAIR_LISTEN_TRIES 4
 
@@ -48,19 +47,17 @@ static bool keepRunning;
 
 void producer_thread()
 {
+    uint32_t counter = 0;
+    mac_frame_st* macFrame;
     QueueItem<phy_frame_st> phyFrame;
-    mac_frame_st macFrame;
 
     SLEEP_FOR(DURATION_FROM_MS(10000));
 
-    phy2mac(&phyFrame.object, &macFrame);
+    macFrame = (mac_frame_st*) phyFrame.object.payload;
 
-    uint32_t counter = 0;
-
-    macFrame.control->header = HDR_UP_LINK;
-    memcpy(macFrame.control->srcAddr, &loraRadio.phyAddr[4], ADDR_LEN);
-    memcpy(macFrame.control->destAddr, serverMac, ADDR_LEN);
-
+    macFrame->control.header = HDR_UP_LINK;
+    memcpy(macFrame->control.srcAddr, &loraRadio.phyAddr[4], ADDR_LEN);
+    memcpy(macFrame->control.destAddr, serverMac, ADDR_LEN);
 
     while (1)
     {

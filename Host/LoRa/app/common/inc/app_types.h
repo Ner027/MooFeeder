@@ -16,8 +16,8 @@ typedef struct
 
 typedef struct
 {
-    app_control_st* control;
-    uint8_t* payload;
+    app_control_st control;
+    uint8_t payload[APP_PAYLOAD_LEN];
 }app_frame_st;
 
 typedef struct

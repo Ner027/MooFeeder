@@ -3,6 +3,7 @@
 
 CMutex::CMutex()
 {
+    pthread_mutexattr_init(&m_attr);
     if (pthread_mutex_init(&m_mutex, &m_attr) != 0)
         throw std::runtime_error("Unable to create mutex!");
 }

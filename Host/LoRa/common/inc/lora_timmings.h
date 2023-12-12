@@ -7,5 +7,6 @@
 #define SERVER_SLOT 0
 #define BROADCAST_SLOT 1
 #define NR_OF_SLOTS 10
+#define NR_OF_DEVICES (NR_OF_SLOTS - 2)
 
 #endif

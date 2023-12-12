@@ -2,7 +2,7 @@
 
 CThread::CThread() : m_thread(), m_attr()
 {
-
+    pthread_attr_init(&m_attr);
 }
 
 void CThread::start()
