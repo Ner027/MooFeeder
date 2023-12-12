@@ -1,0 +1,17 @@
+# ninja log v5
+4	18	1701560135641588315	CMakeFiles/LoRa.dir/mac/common/src/mac_util.c.o	4a747afb960ebf79
+2	39	1701560135665588438	CMakeFiles/LoRa.dir/strlib/src/strlib.c.o	755267dfb6cdc607
+1006	1090	1701560136713593842	LoRa	254403afe524c299
+3	41	1701560135665588438	CMakeFiles/LoRa.dir/ptwrap/src/cuniquelock.cpp.o	ccd6f54c72d5f8ba
+1	1003	1701560136625593389	CMakeFiles/LoRa.dir/main.cpp.o	5cdeb7c71db5043f
+4	27	1701560135653588377	CMakeFiles/LoRa.dir/app/server/src/app_server.cpp.o	cfaa28ec78077679
+0	28	1702339557489447156	build.ninja	b012448883c9410f
+2	26	1701560135649588356	CMakeFiles/LoRa.dir/util/src/util.c.o	2b85b092c3adec4
+4	389	1701560136013590233	CMakeFiles/LoRa.dir/network/server/src/cloranetwork.cpp.o	439b56508cd8803
+3	43	1701560135665588438	CMakeFiles/LoRa.dir/ptwrap/src/cthread.cpp.o	278548f3fd501764
+3	20	1701560135645588335	CMakeFiles/LoRa.dir/ptwrap/src/csemaphore.cpp.o	13b86c6d07874164
+2	437	1701560136061590480	CMakeFiles/LoRa.dir/ptwrap/src/cmutex.cpp.o	7c323438a939dcae
+3	1006	1701560136629593409	CMakeFiles/LoRa.dir/mac/server/src/cloramac.cpp.o	1d096214db43997d
+1	59	1701560135681588521	CMakeFiles/LoRa.dir/rn2483/src/rn4283.c.o	42bacaf91c73f836
+4	21	1701560135645588335	CMakeFiles/LoRa.dir/app/client/src/app_client.cpp.o	43d6c21fafb3c023
+1	54	1701560135677588500	CMakeFiles/LoRa.dir/serial/src/serial.c.o	a22b7f2e3d79cb8e
