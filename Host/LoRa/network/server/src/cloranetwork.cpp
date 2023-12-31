@@ -1,7 +1,6 @@
 #include "../inc/cloranetwork.h"
 #include "../../common/inc/network_util.h"
 
-#include <cstdio>
 #include <asm-generic/errno-base.h>
 
 CLoRaNetwork* CLoRaNetwork::m_instance = nullptr;

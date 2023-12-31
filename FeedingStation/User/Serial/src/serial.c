@@ -7,7 +7,6 @@
 #include "task.h"
 #include "stm32l4xx_hal.h"
 #include "../inc/serial.h"
-#include "../../oswrapper/inc/oswrapper.h"
 
 /***********************************************************************************************************************
  * Defines

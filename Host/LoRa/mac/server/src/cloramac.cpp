@@ -58,7 +58,7 @@ void CLoRaMac::stateInit()
     mac_frame_st* pMacFrame;
 
     //TODO: Replace hardcode port in favor of a more flexible approach
-    ret = serial_open("/dev/ttyUSB1", B57600, &m_radioPort);
+    ret = serial_open("/dev/ttyACM0", B57600, &m_radioPort);
     if (ret < 0)
     {
         MAC_LOG("Failed to open RN2483 Serial Port!\n");
@@ -183,7 +183,7 @@ void CLoRaMac::stateRx()
             ret += 2;
 
             timeSinceSync = GET_CURRENT_TIME() - m_lastTxTime;
-            timeMs = MS_FROM_DURATION(timeSinceSync);
+            timeMs = std::chrono::duration_cast<std::chrono::milliseconds>(timeSinceSync).count();
             clientSlot = timeMs / TIME_SLOT_MS;
 
             MAC_LOG("Time since last sync message: %ld ms... This is slot: %d\n", timeMs, clientSlot);

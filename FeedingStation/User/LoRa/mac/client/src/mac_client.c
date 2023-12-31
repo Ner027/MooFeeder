@@ -5,9 +5,11 @@
 
 
 #include "../../common/inc/mac_types.h"
-#include "../../../phy/inc/rn2483.h"
+#include "../../../phy/common/inc/rn2483.h"
 #include "../../../../strlib/inc/strlib.h"
 #include "usart.h"
+#include "../../../oswrapper/inc/oswrapper.h"
+#include "../../../../Serial/inc/serial.h"
 
 #define MAX_PAIR_LISTEN_TRIES 4
 
@@ -31,12 +33,15 @@ static systick_t txTimeBegin, txTimeEnd, syncTime;
 static mac_state_et currentState, nextState;
 static serial_port_st radioPort;
 static rn2483_st loraRadio;
-static phy_frame_st currentFrame;
+static phy_frame_st currentFrame, dummyFrame;
 static uint8_t timeSlot;
 static uint8_t pairListenCounter;
 static mac_addr_t serverMac;
 static QueueHandle_st txQueue, rxQueue;
-static bool isPaired;
+static SemaphoreHandle_st macReady;
+static SemaphoreHandle_t flagsMutex;
+static bool isPaired, isInitialized = 0;
+static bool keepRunning;
 
 static void mac_state_init();
 static void mac_state_sync();
@@ -49,38 +54,63 @@ static void update_times();
 static int mac_sync_tx();
 static int mac_sync_rx(bool updateWdt);
 
-static bool keepRunning;
-
-
-void producer_thread()
+int mac_wait_on_ready()
 {
-    int ret;
-    phy_frame_st phyFrame;
-    mac_frame_st* pMacFrame;
+    if (!isInitialized)
+        return -EPERM;
 
-    THREAD_SLEEP_FOR(SYSTEM_TICK_FROM_MS(10000));
+    SemaphoreTake(&macReady);
 
-    pMacFrame = (mac_frame_st*) phyFrame.payload;
+    return 0;
+}
 
-    uint32_t counter = 0;
+int mac_send(mac_frame_st* pMacFrame)
+{
+    if (!pMacFrame)
+        return -EINVAL;
+
+    if (!isInitialized)
+        return -EPERM;
 
     pMacFrame->control.header = HDR_UP_LINK;
-    memcpy(pMacFrame->control.srcAddr, &loraRadio.phyAddr[4], ADDR_LEN);
-    memcpy(pMacFrame->control.destAddr, serverMac, ADDR_LEN);
+    memcpy(pMacFrame->control.srcAddr, &loraRadio.phyAddr[4], sizeof(mac_addr_t));
+    memcpy(pMacFrame->control.destAddr, serverMac, sizeof(mac_addr_t));
 
+    if (QueuePush(&txQueue, pMacFrame, SYSTEM_TICK_FROM_MS(0)) < 0)
+        return -ENOSPC;
 
-    while (1)
-    {
-        ret = QueuePeek(&txQueue, &phyFrame, SYSTEM_TICK_FROM_MS(0));
-        if (ret < 0)
-        {
-            sprintf((char*)pMacFrame->payload, "Hello from LoRa Client! This is frame: %lu", counter++);
-            phyFrame.len = MAC_CTRL_LEN + PHY_CONTROL_LEN + strlen((char*)pMacFrame->payload);
-            QueuePush(&txQueue, &phyFrame, MAX_DELAY);
-        }
+    return 0;
+}
 
-        THREAD_SLEEP_FOR(SYSTEM_TICK_FROM_MS(50));
-    }
+int mac_get_slot()
+{
+    bool auxIsPaired;
+
+    if (!isInitialized)
+        return -EPERM;
+
+    xSemaphoreTake(flagsMutex, MAX_DELAY);
+    auxIsPaired = isPaired;
+    xSemaphoreGive(flagsMutex);
+
+    if (!auxIsPaired)
+        return -EADDRNOTAVAIL;
+
+    return timeSlot;
+}
+
+int mac_receive(mac_frame_st* pMacFrame)
+{
+    if (!pMacFrame)
+        return -EINVAL;
+
+    if (!isInitialized)
+        return -EPERM;
+
+    if (QueuePop(&rxQueue, pMacFrame, SYSTEM_TICK_FROM_MS(0) < 0) < 0)
+        return -ENODATA;
+
+    return 0;
 }
 
 int mac_init()
@@ -91,6 +121,8 @@ int mac_init()
 
     QueueInit(&txQueue, TX_QUEUE_SIZE, sizeof(phy_frame_st));
     QueueInit(&rxQueue, RX_QUEUE_SIZE, sizeof(phy_frame_st));
+    SemaphoreInit(&macReady);
+    flagsMutex = xSemaphoreCreateMutex();
 
     ret = xTaskCreate(mac_thread, "T_MAC", MAC_STACK_SIZE, NULL, MAC_PRIO, NULL);
     if (ret != pdPASS)
@@ -98,7 +130,8 @@ int mac_init()
         printf("Failed to create MAC Task!\n");
         return -ENOSPC;
     }
-    xTaskCreate(producer_thread, "T_PROD", 512, NULL, 4, NULL);
+
+    isInitialized = 1;
 
     return 0;
 }
@@ -143,7 +176,6 @@ static void mac_thread(void* args)
     }
 }
 
-
 static void mac_state_init()
 {
     memset(&radioPort, 0, sizeof(serial_port_st));
@@ -151,7 +183,14 @@ static void mac_state_init()
     serial_open(&radioPort, &huart2);
     rn2483_init(&loraRadio, &radioPort);
 
+    SemaphoreGive(&macReady);
+
+
+    xSemaphoreTake(flagsMutex, MAX_DELAY);
     isPaired = false;
+
+    xSemaphoreGive(flagsMutex);
+
     nextState = ST_SYNC;
 }
 
@@ -159,6 +198,7 @@ static void mac_state_sync()
 {
     int ret;
     mac_frame_st* pMacFrame;
+    bool paired;
 
     printf("Entering sync...\n");
     rn2483_set_wdt(&loraRadio, MAX_WDT_TIME);
@@ -174,7 +214,12 @@ static void mac_state_sync()
     if ((pMacFrame->control.header != HDR_DOWN_LINK) && (pMacFrame->control.header != HDR_JOIN_ACP) && (pMacFrame->control.header != HDR_KICK_REQ))
         return;
 
-    if (isPaired)
+
+    xSemaphoreTake(flagsMutex, MAX_DELAY);
+    paired = isPaired;
+    xSemaphoreGive(flagsMutex);
+
+    if (paired)
     {
         nextState = ST_RUNNING;
     }
@@ -254,7 +299,12 @@ static void mac_state_wait_pair()
         {
             timeSlot = pJoinAccept->timeSlot;
             printf("Pairing request accepted! Paired at slot: %d\n", timeSlot);
+
+
+            xSemaphoreTake(flagsMutex, MAX_DELAY);
             isPaired = true;
+            xSemaphoreGive(flagsMutex);
+
             nextState = ST_RUNNING;
         }
     }
@@ -288,11 +338,23 @@ static void mac_state_run()
     {
         //If it is not an empty message push it to the reception queue
         if (currentFrame.len != (MAC_CTRL_LEN + PHY_CONTROL_LEN))
-            QueuePush(&rxQueue, &currentFrame, MAX_DELAY);
+        {
+            ret = QueuePush(&rxQueue, &currentFrame, SYSTEM_TICK_FROM_MS(0));
+            if (ret < 0)
+            {
+                printf("MAC is full! Discarding oldest frame!\n");
+                QueuePop(&rxQueue, &dummyFrame, SYSTEM_TICK_FROM_MS(0));
+                QueuePush(&rxQueue, &currentFrame, SYSTEM_TICK_FROM_MS(0));
+            }
+        }
     }
     else if (pMacFrame->control.header == HDR_KICK_REQ)
     {
+
+        xSemaphoreTake(flagsMutex, MAX_DELAY);
         isPaired = false;
+        xSemaphoreGive(flagsMutex);
+
         nextState = ST_SYNC;
         return;
     }
@@ -309,6 +371,7 @@ static void mac_state_run()
     }
 
     //Check if sync was lost whilst trying to transmit
+    pMacFrame = (mac_frame_st*) &currentFrame;
     ret = mac_sync_tx();
     if (ret < 0)
     {

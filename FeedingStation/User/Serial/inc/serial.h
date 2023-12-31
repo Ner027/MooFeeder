@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include "FreeRTOS.h"
 #include "stm32l4xx_hal.h"
-#include "../../oswrapper/inc/oswrapper.h"
+#include "../../LoRa/oswrapper/inc/oswrapper.h"
 
 /***********************************************************************************************************************
  * Defines

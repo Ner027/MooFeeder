@@ -2,19 +2,18 @@
 #define LORA_NETWORK_TYPES_H
 
 #include <stdint.h>
-#define NETWORK_CTRL_LEN 4
+#define NETWORK_CTRL_LEN sizeof(network_control_st)
 
 typedef struct
 {
-    uint16_t sequenceNumber;
-    uint8_t flags;
-    uint8_t checkSum;
+    uint8_t netAddrs;
+    uint8_t payloadLen;
 }network_control_st;
 
 typedef struct
 {
-    network_control_st* control;
-    uint8_t* payload;
+    network_control_st control;
+    uint8_t payload[MAC_PAYLOAD_LEN - NETWORK_CTRL_LEN];
 }network_frame_st;
 
 #endif

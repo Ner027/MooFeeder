@@ -23,5 +23,6 @@ add_executable(LoRa
         util/src/util.c
         mac/common/inc/mac_util.h
         mac/common/src/mac_util.c
+        oswrapper/src/oswrapper.cpp
         #app/common/src/app_util.c
 )
