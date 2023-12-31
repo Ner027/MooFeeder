@@ -3,7 +3,6 @@
 
 #define ENABLE_MAC_LOGS
 
-
 #ifdef ENABLE_MAC_LOGS
 #include "../../../util/inc/util.h"
 #define MAC_LOG(format, ...) print("MAC", format, ##__VA_ARGS__)

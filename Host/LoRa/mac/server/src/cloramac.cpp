@@ -1,4 +1,3 @@
-#include <cstdio>
 #include <thread>
 #include <cstring>
 #include "../inc/cloramac.h"
@@ -30,10 +29,15 @@ void* CLoRaMac::run(void* args)
                 break;
         }
     }
+
+    return nullptr;
 }
 
 CLoRaMac::CLoRaMac() : m_loraRadio() , m_radioPort(), m_syncMsg(), m_currentState(), m_natTable()
 {
+    SemaphoreInit(&m_macReady);
+    m_txTimeBegin = GET_CURRENT_TIME();
+    m_txTimeEnd = GET_CURRENT_TIME();
     m_keepRunning = true;
     m_nextState = ST_INIT;
     this->start();
@@ -42,8 +46,10 @@ CLoRaMac::CLoRaMac() : m_loraRadio() , m_radioPort(), m_syncMsg(), m_currentStat
 void CLoRaMac::updateTxTime()
 {
     m_lastTxTime = m_txTimeBegin;
-    m_txTimeBegin = GET_CURRENT_TIME() + DURATION_FROM_MS(TIME_SLOT_MS * NR_OF_SLOTS);
-    m_txTimeEnd = m_txTimeBegin + DURATION_FROM_MS(TIME_SLOT_MS);
+    auto tNow = GET_CURRENT_TIME();
+    auto dur = SYSTEM_TICK_FROM_MS(TIME_SLOT_MS * NR_OF_SLOTS);
+    m_txTimeBegin = tNow + dur;
+    m_txTimeEnd = m_txTimeBegin + SYSTEM_TICK_FROM_MS(TIME_SLOT_MS);
 }
 
 void CLoRaMac::stateInit()
@@ -52,7 +58,7 @@ void CLoRaMac::stateInit()
     mac_frame_st* pMacFrame;
 
     //TODO: Replace hardcode port in favor of a more flexible approach
-    ret = serial_open("/dev/ttyUSB0", B57600, &m_radioPort);
+    ret = serial_open("/dev/ttyUSB1", B57600, &m_radioPort);
     if (ret < 0)
     {
         MAC_LOG("Failed to open RN2483 Serial Port!\n");
@@ -69,7 +75,7 @@ void CLoRaMac::stateInit()
     }
 
     m_txTimeBegin = GET_CURRENT_TIME();
-    m_txTimeEnd = m_txTimeBegin + DURATION_FROM_MS(TIME_SLOT_MS);
+    m_txTimeEnd = m_txTimeBegin + SYSTEM_TICK_FROM_MS(TIME_SLOT_MS);
 
     pMacFrame = (mac_frame_st*) m_syncMsg.payload;
 
@@ -78,10 +84,12 @@ void CLoRaMac::stateInit()
 
     //Set MAC Addresses (Server MAC Address is the 4 LSBs of the radio EUI)
     memcpy(pMacFrame->control.srcAddr, &m_loraRadio.phyAddr[4], ADDR_LEN);
-    memset(pMacFrame->control.destAddr, 0, ADDR_LEN);
+    memset(pMacFrame->control.destAddr, MAC_BROADCAST_ADDR, ADDR_LEN);
     m_syncMsg.len = MAC_CTRL_LEN + 1;
 
     memset(&m_natTable, 0, sizeof(m_natTable));
+
+    SemaphoreGive(&m_macReady);
 
     m_nextState = ST_EVAL;
 }
@@ -98,29 +106,30 @@ void CLoRaMac::stateEval()
 void CLoRaMac::stateTx()
 {
     auto oldTxEnd = m_txTimeEnd;
-    QueueItem<phy_frame_st> phyFrame;
+    phy_frame_st phyFrame;
 
     //Check if there is something to transmit, if not transmit an empty sync message
-    if (m_txQueue.isEmpty())
+    if (m_txQueue.try_pop(phyFrame))
     {
-        rn2483_tx(&m_loraRadio, (uint8_t*)&m_syncMsg, m_syncMsg.len);
+        rn2483_tx(&m_loraRadio, (uint8_t*)&phyFrame, phyFrame.len);
     }
     else
     {
-        m_txQueue.pop(phyFrame);
-        rn2483_tx(&m_loraRadio, (uint8_t*)&phyFrame.object, phyFrame.object.len);
+        rn2483_tx(&m_loraRadio, (uint8_t*)&m_syncMsg, m_syncMsg.len);
     }
 
     //Yield until the end of the TX Slot
+    auto tNow = GET_CURRENT_TIME();
     updateTxTime();
-    SLEEP_FOR(oldTxEnd - GET_CURRENT_TIME());
+    THREAD_SLEEP_FOR(oldTxEnd - tNow);
 
+    //TODO: Maybe should go to Eval
     m_nextState = ST_RX;
 }
 
 void CLoRaMac::stateRx()
 {
-    QueueItem<phy_frame_st> phyFrame;
+    phy_frame_st phyFrame;
     mac_frame_st* pMacFrame;
     join_acp_st* pJoinAccept;
     uint8_t clientSlot;
@@ -131,18 +140,18 @@ void CLoRaMac::stateRx()
     auto timeMs = MS_FROM_DURATION(timeSinceSync);
 
     systick_t currentTime = GET_CURRENT_TIME();
-    int64_t timeoutMillis = MS_FROM_DURATION(m_txTimeBegin - currentTime);
+    int64_t timeoutMillis = MS_FROM_SYSTEM_TICK(m_txTimeBegin - currentTime).count();
 
     if (timeoutMillis < 0)
         timeoutMillis = 0;
 
     rn2483_set_wdt(&m_loraRadio, (uint32_t)timeoutMillis);
 
-    int ret = rn2483_rx(&m_loraRadio, (uint8_t*) &phyFrame.object, PHY_FRAME_LEN);
+    int ret = rn2483_rx(&m_loraRadio, (uint8_t*) &phyFrame, PHY_FRAME_LEN);
     if (ret < 0)
         return;
 
-    pMacFrame = (mac_frame_st*) phyFrame.object.payload;
+    pMacFrame = (mac_frame_st*) phyFrame.payload;
 
     if (checkDestination(&pMacFrame->control.destAddr) != 0)
     {
@@ -162,7 +171,7 @@ void CLoRaMac::stateRx()
                 pMacFrame->control.header = HDR_KICK_REQ;
                 memcpy(pMacFrame->control.destAddr, pMacFrame->control.srcAddr, ADDR_LEN);
                 memcpy(pMacFrame->control.srcAddr, &m_loraRadio.phyAddr[4], ADDR_LEN);
-                phyFrame.object.len = MAC_CTRL_LEN + 1;
+                phyFrame.len = MAC_CTRL_LEN + 1;
 
                 m_natTable.usedSlots &= ~(1 << ret);
                 m_txQueue.push(phyFrame);
@@ -179,7 +188,7 @@ void CLoRaMac::stateRx()
 
             MAC_LOG("Time since last sync message: %ld ms... This is slot: %d\n", timeMs, clientSlot);
             MAC_LOG("Data Received from client at address: %d! -> %.*s\n", ret,
-                (int) (phyFrame.object.len - MAC_CTRL_LEN - 1),
+                (int) (phyFrame.len - MAC_CTRL_LEN - 1),
                 (char*)pMacFrame->payload);
 
             //Check if the client is transmitting in the wrong time slot, this can be caused by clock skews, or restarts
@@ -231,7 +240,7 @@ void CLoRaMac::stateRx()
             pJoinAccept = (join_acp_st*) pMacFrame->payload;
             pJoinAccept->timeSlot = clientSlot;
 
-            phyFrame.object.len = MAC_CTRL_LEN + sizeof(join_acp_st) + PHY_CONTROL_LEN;
+            phyFrame.len = MAC_CTRL_LEN + sizeof(join_acp_st) + PHY_CONTROL_LEN;
 
             m_txQueue.push(phyFrame);
 
@@ -279,7 +288,7 @@ int CLoRaMac::getFreeSlot() const
     return -ENOSPC;
 }
 
-CLoRaMac *CLoRaMac::getInstance()
+CLoRaMac* CLoRaMac::getInstance()
 {
     if (m_instance == nullptr)
         m_instance = new CLoRaMac;
@@ -293,3 +302,47 @@ void CLoRaMac::killInstance()
     delete m_instance;
     m_instance = nullptr;
 }
+
+bool CLoRaMac::waitOnReady(duration_t maxWait)
+{
+    return (SemaphoreTake(&m_macReady) == 0);
+}
+
+int CLoRaMac::pushMessage(mac_frame_st& macFrame, uint8_t msgLen)
+{
+    phy_frame_st phyFrame;
+    mac_frame_st* pMacFrame;
+
+    pMacFrame = (mac_frame_st*) phyFrame.payload;
+
+    //Message from server to clients aka Down-link
+    pMacFrame->control.header = HDR_DOWN_LINK;
+
+    //Src -> Server, Dst -> Broadcast
+    memcpy(pMacFrame->control.srcAddr, &m_loraRadio.phyAddr[4], ADDR_LEN);
+    memset(pMacFrame->control.destAddr, MAC_BROADCAST_ADDR, ADDR_LEN);
+
+    memcpy(pMacFrame->payload, macFrame.payload, msgLen);
+
+    phyFrame.len = msgLen + MAC_CTRL_LEN + PHY_CONTROL_LEN;
+
+    m_txQueue.push(phyFrame);
+
+    return phyFrame.len;
+}
+
+int CLoRaMac::popMessage(mac_frame_st* macFrame)
+{
+    phy_frame_st phyFrame;
+
+    if (!macFrame)
+        return -EINVAL;
+
+    if (!m_rxQueue.try_pop(phyFrame))
+        return -ENODATA;
+
+    memcpy(macFrame, phyFrame.payload, phyFrame.len - PHY_CONTROL_LEN);
+
+    return (int)(phyFrame.len - PHY_CONTROL_LEN - MAC_CTRL_LEN);
+}
+

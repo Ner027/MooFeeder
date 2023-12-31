@@ -63,4 +63,10 @@ int serial_set_terminator(serial_port_st* serialPort, char newTerminator);
 /// -EPERM if device was no initialized, or errno in case of an internal error
 int serial_flush(serial_port_st* serialPort);
 
+/// \brief Reads a passed number of bytes from a serial port
+/// \param serialPort Serial port handler
+/// \param rxBuffer Buffer to write the read bytes to
+/// \param bufferSize Number of bytes to read
+/// \return -EINVAL if invalid parameters are passed, return 0 on success
+int serial_read_bytes(serial_port_st* serialPort, uint8_t* rxBuffer, size_t bufferSize);
 #endif

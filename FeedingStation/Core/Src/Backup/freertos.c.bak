@@ -18,6 +18,9 @@
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include "FreeRTOS.h"
 #include "task.h"
@@ -26,10 +29,6 @@
 #include "../../User/oswrapper/inc/oswrapper.h"
 #include "../../User/LoRa/mac/client/inc/mac_client.h"
 #include "usbd_cdc.h"
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

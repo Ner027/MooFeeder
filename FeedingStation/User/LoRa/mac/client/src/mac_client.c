@@ -58,11 +58,9 @@ void producer_thread()
     phy_frame_st phyFrame;
     mac_frame_st* pMacFrame;
 
-
     THREAD_SLEEP_FOR(SYSTEM_TICK_FROM_MS(10000));
 
     pMacFrame = (mac_frame_st*) phyFrame.payload;
-
 
     uint32_t counter = 0;
 

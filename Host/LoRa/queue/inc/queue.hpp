@@ -6,41 +6,16 @@
 #include "../../ptwrap/inc/cuniquelock.h"
 #include <memory.h>
 
-template <typename T>
-class QueueItem
-{
-private:
-    size_t itemSize;
-public:
-    T object;
-
-    QueueItem()
-    {
-        itemSize = sizeof(T);
-    }
-
-    explicit QueueItem(T& src) : itemSize(sizeof(T))
-    {
-        object = src;
-    }
-
-    QueueItem& operator=(const QueueItem& src)
-    {
-        memcpy(&object, &src.object, itemSize);
-        return *this;
-    }
-};
-
 template <class T>
 class CQueue
 {
 public:
     CQueue();
-    void push(QueueItem<T> obj);
-    bool pop(QueueItem<T>& ret);
+    void push(T obj);
+    bool try_pop(T& ret);
     bool isEmpty();
 private:
-    std::queue<QueueItem<T>> m_dataQueue;
+    std::queue<T> m_dataQueue;
     CMutex m_dataMutex;
 };
 
@@ -55,7 +30,7 @@ bool CQueue<T>::isEmpty()
 }
 
 template<class T>
-bool CQueue<T>::pop(QueueItem<T>& ret)
+bool CQueue<T>::try_pop(T& ret)
 {
     CUniqueLock lock(m_dataMutex);
     if (m_dataQueue.empty())
@@ -68,7 +43,7 @@ bool CQueue<T>::pop(QueueItem<T>& ret)
 }
 
 template<class T>
-void CQueue<T>::push(QueueItem<T> obj)
+void CQueue<T>::push(T obj)
 {
     m_dataMutex.lock();
     m_dataQueue.push(obj);

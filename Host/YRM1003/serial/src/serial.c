@@ -147,6 +147,29 @@ int serial_read(serial_port_st* serialPort, uint8_t* rxBuffer, size_t bufferSize
     return serial_read_internal(serialPort, rxBuffer, bufferSize);
 }
 
+int serial_read_bytes(serial_port_st* serialPort, uint8_t* rxBuffer, size_t bufferSize)
+{
+    int ret;
+    if (!serialPort || !rxBuffer)
+        return -EINVAL;
+
+    while (bufferSize)
+    {
+        ret = serial_read_internal(serialPort, rxBuffer, 1);
+        if (ret > 0)
+        {
+            bufferSize--;
+            rxBuffer++;
+        }
+        else
+        {
+            usleep(5000);
+        }
+    }
+
+    return 0;
+}
+
 int serial_sync_readline(serial_port_st* serialPort, uint8_t* rxBuffer, size_t bufferSize)
 {
     int ret;

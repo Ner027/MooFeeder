@@ -11,6 +11,14 @@ extern "C" {
 #include "serial_types.h"
 #include <stddef.h>
 
+#define ENABLE_SERIAL_LOGS
+
+#ifdef ENABLE_SERIAL_LOGS
+#include "../../util/inc/util.h"
+#define SERIAL_LOG(format, ...) print("Serial", format, ##__VA_ARGS__)
+#else
+#define SERIAL_LOG(format, ...) do{}while(0)
+#endif
 
 /***********************************************************************************************************************
  * Serial APIs

@@ -10,6 +10,8 @@
 #define ADDR_LEN 4
 #define MAC_CTRL_LEN sizeof(mac_control_st)
 
+#define MAC_BROADCAST_ADDR 0xFF
+
 #define HDR_DOWN_LINK 0xA0
 #define HDR_JOIN_REQ  0xB0
 #define HDR_JOIN_ACP  0xC0

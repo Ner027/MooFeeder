@@ -1,6 +1,6 @@
 #ifndef LORA_MAC_H
 #define LORA_MAC_H
-#include "../../../common/inc/oswrap.h"
+#include "../../../oswrapper/inc/oswrapper.h"
 #include "../../../ptwrap/inc/cthread.h"
 #include "../../../rn2483/inc/rn2483_types.h"
 #include "../../common/inc/mac_types.h"
@@ -20,6 +20,9 @@ class CLoRaMac : public CThread
 public:
     static CLoRaMac* getInstance();
     static void killInstance();
+    bool waitOnReady(duration_t maxWait);
+    int pushMessage(mac_frame_st& macFrame, uint8_t msgLen);
+    int popMessage(mac_frame_st* macFrame);
 private:
     CLoRaMac();
     static CLoRaMac* m_instance;
@@ -34,7 +37,7 @@ private:
     CQueue<phy_frame_st> m_txQueue;
     CQueue<phy_frame_st> m_rxQueue;
     std::atomic<bool> m_keepRunning;
-
+    SemaphoreHandle_st m_macReady;
     void* run(void *) override;
     void stateInit();
     void stateEval();
@@ -43,7 +46,7 @@ private:
     void updateTxTime();
     int findDevice(mac_addr_t* natEntry);
     int checkDestination(mac_addr_t* pAddr);
-    int getFreeSlot() const;
+    [[nodiscard]] int getFreeSlot() const;
 };
 
 #endif

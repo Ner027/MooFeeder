@@ -13,7 +13,6 @@
  * Defines
  **********************************************************************************************************************/
 #define DEFAULT_TERMINATOR '\n'
-#define ENABLE_LOG
 
 /***********************************************************************************************************************
  * Private Prototypes
@@ -135,9 +134,7 @@ int serial_write(serial_port_st* serialPort, const uint8_t* txBuffer, size_t buf
     if (ret != bufferSize)
         return -EIO;
 
-#ifdef ENABLE_LOG
-    printf("%.*s\n", (int) (bufferSize - 2), txBuffer);
-#endif
+    SERIAL_LOG("%.*s\n", (int) (bufferSize - 2), txBuffer);
 
     return 0;
 }
@@ -159,7 +156,6 @@ int serial_sync_readline(serial_port_st* serialPort, uint8_t* rxBuffer, size_t b
     int8_t termPosition;
     uint8_t ch;
     size_t bytesRead;
-
 
     if (!serialPort || !rxBuffer)
         return -EINVAL;
@@ -197,9 +193,9 @@ int serial_sync_readline(serial_port_st* serialPort, uint8_t* rxBuffer, size_t b
         if (termPosition == serialPort->terminatorSize)
         {
             rxBuffer[bytesRead] = '\0';
-#ifdef ENABLE_LOG
-            printf("%s\n", rxBuffer);
-#endif
+
+            SERIAL_LOG("%s\n", rxBuffer);
+
             return (int) bytesRead;
         }
 

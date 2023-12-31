@@ -4,18 +4,39 @@
 #include "../../../mac/common/inc/mac_types.h"
 #include "../../../ptwrap/inc/cthread.h"
 #include "../../../queue/inc/queue.hpp"
+#include "../../../mac/server/inc/cloramac.h"
+#include <atomic>
 
+typedef enum
+{
+    NETWORK_INIT,
+    NETWORK_TX,
+    NETWORK_RX
+}network_state_et;
 
 class CLoRaNetwork : public CThread
 {
 public:
+    static CLoRaNetwork* getInstance();
+    void killInstance();
     void* run(void *) override;
     int sendMessage(app_frame_st& appFrame, uint8_t src, uint8_t dest);
-    int decodeMacMessage(mac_frame_st& src, uint8_t srcLen);
-    int composeMacMessage();
+    bool waitOnReady();
 private:
+    CLoRaNetwork();
+    static CLoRaNetwork* m_instance;
+    CLoRaMac* m_macInstance;
+    std::atomic<bool> m_keepRunning;
+    network_state_et m_currentState;
+    network_state_et m_nextState;
+    SemaphoreHandle_st m_networkReady;
     CQueue<network_frame_st> networkTxQueues[NR_OF_DEVICES];
     CQueue<network_frame_st> networkRxQueues[NR_OF_DEVICES];
+    int decodeMacMessage(mac_frame_st& src, uint8_t srcLen);
+    int composeMacMessage();
+    void stateInit();
+    void stateTx();
+    void stateRx();
 };
 
 

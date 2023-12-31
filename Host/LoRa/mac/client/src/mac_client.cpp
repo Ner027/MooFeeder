@@ -1,15 +1,21 @@
-#include <cstring>
+#include <errno.h>
+#include <stdbool.h>
+#include <memory.h>
 #include "../inc/mac_client.h"
-#include "../../../common/inc/oswrap.h"
+#include "../../common/inc/mac_types.h"
 #include "../../../serial/inc/serial_types.h"
 #include "../../../rn2483/inc/rn2483_types.h"
-#include "../../../serial/inc/serial.h"
+#include "../../../oswrapper/inc/oswrapper.h"
 #include "../../../rn2483/inc/rn2483.h"
-#include "../../common/inc/mac_types.h"
-#include "../../../queue/inc/queue.hpp"
-#include "../../../phy/common/inc/phy_types.h"
+#include "../../../serial/inc/serial.h"
 
 #define MAX_PAIR_LISTEN_TRIES 4
+
+#define MAC_STACK_SIZE 1024
+#define MAC_PRIO 16
+
+#define TX_QUEUE_SIZE 4
+#define RX_QUEUE_SIZE 4
 
 typedef enum
 {
@@ -29,7 +35,7 @@ static phy_frame_st currentFrame;
 static uint8_t timeSlot;
 static uint8_t pairListenCounter;
 static mac_addr_t serverMac;
-static CQueue<phy_frame_st> txQueue, rxQueue;
+static QueueHandle_st txQueue, rxQueue;
 static bool isPaired;
 
 static void mac_state_init();
@@ -38,50 +44,79 @@ static void mac_state_send_pair();
 static void mac_state_wait_pair();
 static void mac_state_run();
 static void mac_state_idle();
+#ifdef HOST
 static void mac_thread();
+#elif defined(TARGET)
+static void mac_thread(void* args);
+#endif
 static void update_times();
 static int mac_sync_tx();
 static int mac_sync_rx(bool updateWdt);
 
 static bool keepRunning;
 
-void producer_thread()
+#ifdef HOST
+static void producer_thread()
+#elif defined(TARGET)
+static void producer_thread(void* args)
+#endif
 {
+    int ret;
+    phy_frame_st phyFrame;
+    mac_frame_st* pMacFrame;
+
+    THREAD_SLEEP_FOR(SYSTEM_TICK_FROM_MS(10000));
+
+    pMacFrame = (mac_frame_st*) phyFrame.payload;
+
     uint32_t counter = 0;
-    mac_frame_st* macFrame;
-    QueueItem<phy_frame_st> phyFrame;
 
-    SLEEP_FOR(DURATION_FROM_MS(10000));
+    pMacFrame->control.header = HDR_UP_LINK;
+    memcpy(pMacFrame->control.srcAddr, &loraRadio.phyAddr[4], ADDR_LEN);
+    memcpy(pMacFrame->control.destAddr, serverMac, ADDR_LEN);
 
-    macFrame = (mac_frame_st*) phyFrame.object.payload;
-
-    macFrame->control.header = HDR_UP_LINK;
-    memcpy(macFrame->control.srcAddr, &loraRadio.phyAddr[4], ADDR_LEN);
-    memcpy(macFrame->control.destAddr, serverMac, ADDR_LEN);
 
     while (1)
     {
-        if (txQueue.isEmpty())
+        ret = QueuePeek(&txQueue, &phyFrame, SYSTEM_TICK_FROM_MS(0));
+        if (ret < 0)
         {
-            sprintf((char*)macFrame.payload, "Hello from LoRa Client! This is frame: %d", counter++);
-            phyFrame.object.len = MAC_CTRL_LEN + PHY_CONTROL_LEN + strlen((char*)macFrame.payload);
-            txQueue.push(phyFrame);
+            sprintf((char*)pMacFrame->payload, "Hello from LoRa Client! This is frame: %lu", counter++);
+            phyFrame.len = MAC_CTRL_LEN + PHY_CONTROL_LEN + strlen((char*)pMacFrame->payload);
+            QueuePush(&txQueue, &phyFrame, MAX_DELAY);
         }
 
-        SLEEP_FOR(DURATION_FROM_MS(50));
+        THREAD_SLEEP_FOR(SYSTEM_TICK_FROM_MS(50));
     }
 }
 
 int mac_init()
 {
+#ifdef TARGET
+    BaseType_t ret;
+#endif
+
     nextState = ST_INIT;
     keepRunning = true;
 
-    std::thread t1(mac_thread);
-    t1.detach();
+    QueueInit(&txQueue, TX_QUEUE_SIZE, sizeof(phy_frame_st));
+    QueueInit(&rxQueue, RX_QUEUE_SIZE, sizeof(phy_frame_st));
 
-    std::thread tProducer(producer_thread);
-    tProducer.detach();
+#ifdef TARGET
+    ret = xTaskCreate(mac_thread, "T_MAC", MAC_STACK_SIZE, NULL, MAC_PRIO, NULL);
+    if (ret != pdPASS)
+    {
+        printf("Failed to create MAC Task!\n");
+        return -ENOSPC;
+    }
+    xTaskCreate(producer_thread, "T_PROD", 512, NULL, 4, NULL);
+#endif
+
+    std::thread mt(mac_thread);
+    mt.detach();
+
+    std::thread pt(producer_thread);
+    pt.detach();
 
     return 0;
 }
@@ -96,11 +131,15 @@ int mac_kill()
     return 0;
 }
 
+#ifdef HOST
 static void mac_thread()
+#elif defined(TARGET)
+static void mac_thread(void* args)
+#endif
 {
     while (1)
     {
-         currentState = nextState;
+        currentState = nextState;
 
         switch (currentState)
         {
@@ -129,7 +168,13 @@ static void mac_thread()
 
 static void mac_state_init()
 {
+    memset(&radioPort, 0, sizeof(serial_port_st));
+
+#ifdef HOST
     serial_open("/dev/ttyUSB0", B57600, &radioPort);
+#elif defined(TARGET)
+    serial_open(&radioPort, &huart2);
+#endif
     rn2483_init(&loraRadio, &radioPort);
 
     isPaired = false;
@@ -139,7 +184,7 @@ static void mac_state_init()
 static void mac_state_sync()
 {
     int ret;
-    mac_frame_st macFrame;
+    mac_frame_st* pMacFrame;
 
     printf("Entering sync...\n");
     rn2483_set_wdt(&loraRadio, MAX_WDT_TIME);
@@ -149,10 +194,10 @@ static void mac_state_sync()
     if (ret < 0)
         return;
 
-    phy2mac(&currentFrame, &macFrame);
+    pMacFrame = (mac_frame_st*) currentFrame.payload;
 
     //Only DownLink and JoinAccept frames can be used as synchronization messages
-    if ((macFrame.control->header != HDR_DOWN_LINK) && (macFrame.control->header != HDR_JOIN_ACP))
+    if ((pMacFrame->control.header != HDR_DOWN_LINK) && (pMacFrame->control.header != HDR_JOIN_ACP) && (pMacFrame->control.header != HDR_KICK_REQ))
         return;
 
     if (isPaired)
@@ -161,7 +206,7 @@ static void mac_state_sync()
     }
     else
     {
-        memcpy(serverMac, macFrame.control->srcAddr, ADDR_LEN);
+        memcpy(serverMac, pMacFrame->control.srcAddr, ADDR_LEN);
         nextState = ST_SEND_PAIR;
         timeSlot = BROADCAST_SLOT;
     }
@@ -172,18 +217,18 @@ static void mac_state_sync()
 static void mac_state_send_pair()
 {
     int ret;
-    mac_frame_st macFrame;
+    mac_frame_st* pMacFrame;
     join_req_st* joinRequest;
 
+    pMacFrame = (mac_frame_st*) currentFrame.payload;
     pairListenCounter = 0;
 
-    phy2mac(&currentFrame, &macFrame);
-    macFrame.control->header = HDR_JOIN_REQ;
+    pMacFrame->control.header = HDR_JOIN_REQ;
     //Dest -> Server, Source -> This device
-    memcpy(macFrame.control->destAddr, serverMac, ADDR_LEN);
-    memcpy(macFrame.control->srcAddr, &loraRadio.phyAddr[4], ADDR_LEN);
+    memcpy(pMacFrame->control.destAddr, serverMac, ADDR_LEN);
+    memcpy(pMacFrame->control.srcAddr, &loraRadio.phyAddr[4], ADDR_LEN);
 
-    joinRequest = (join_req_st*) macFrame.payload;
+    joinRequest = (join_req_st*) pMacFrame->payload;
     joinRequest->fwVer.major   = 0xDE;
     joinRequest->fwVer.minor   = 0xAD;
     joinRequest->fwVer.version = 0xDE;
@@ -199,7 +244,7 @@ static void mac_state_send_pair()
 
 static void mac_state_wait_pair()
 {
-    mac_frame_st macFrame;
+    mac_frame_st* pMacFrame;
     join_acp_st* pJoinAccept;
 
     //Check if client is in sync with the server
@@ -211,11 +256,11 @@ static void mac_state_wait_pair()
         return;
     }
 
-    phy2mac(&currentFrame, &macFrame);
-    pJoinAccept = (join_acp_st*) macFrame.payload;
+    pMacFrame = (mac_frame_st*) currentFrame.payload;
+    pJoinAccept = (join_acp_st*) pMacFrame->payload;
 
     //If a message was received with success check if it is a join accept
-    if ((macFrame.control->header != HDR_JOIN_ACP))
+    if ((pMacFrame->control.header != HDR_JOIN_ACP))
     {
         //After a few tries, quit waiting for the pairing accept
         if (pairListenCounter++ > MAX_PAIR_LISTEN_TRIES)
@@ -225,7 +270,7 @@ static void mac_state_wait_pair()
     else
     {
         //Check if this client was the destination of the message
-        if (strncmp((char*) macFrame.control->destAddr, (char*) &loraRadio.phyAddr[4], ADDR_LEN) != 0)
+        if (strncmp((char*) pMacFrame->control.destAddr, (char*) &loraRadio.phyAddr[4], ADDR_LEN) != 0)
         {
             //TODO: Maybe check server address as well
             printf("Received join accept target at other device!\n");
@@ -243,8 +288,7 @@ static void mac_state_wait_pair()
 
 static void mac_state_run()
 {
-    QueueItem<phy_frame_st> phyFrame;
-    mac_frame_st macFrame;
+    mac_frame_st* pMacFrame;
 
     systick_t currentTime = GET_CURRENT_TIME();
     printf("Running...\n");
@@ -256,36 +300,39 @@ static void mac_state_run()
         return;
     }
 
-    phy2mac(&currentFrame, &macFrame);
+    pMacFrame = (mac_frame_st*) currentFrame.payload;
 
     //Check if received message is from the current server this device is using
-    if (strncmp((char*) macFrame.control->srcAddr, (char*) serverMac, ADDR_LEN) != 0)
+    if (strncmp((char*) pMacFrame->control.srcAddr, (char*) serverMac, ADDR_LEN) != 0)
     {
         nextState = ST_SYNC;
         return;
     }
 
     //Check the message type
-    if (macFrame.control->header == HDR_DOWN_LINK)
+    if (pMacFrame->control.header == HDR_DOWN_LINK)
     {
         //If it is not an empty message push it to the reception queue
         if (currentFrame.len != (MAC_CTRL_LEN + PHY_CONTROL_LEN))
-            rxQueue.push(QueueItem<phy_frame_st>(currentFrame));
+            QueuePush(&rxQueue, &currentFrame, MAX_DELAY);
     }
-
-    //Check if there is anything to transmit
-    if (txQueue.isEmpty())
+    else if (pMacFrame->control.header == HDR_KICK_REQ)
     {
-        //If not, yield during the transmission time
-        SLEEP_FOR(txTimeBegin - currentTime);
-        txTimeBegin = txTimeBegin + DURATION_FROM_MS(timeSlot * TIME_SLOT_MS);
-        txTimeEnd = txTimeBegin + DURATION_FROM_MS(TIME_SLOT_MS);
+        isPaired = false;
+        nextState = ST_SYNC;
         return;
     }
 
-    //If there is something to transmit, set the current frame to it
-    txQueue.pop(phyFrame);
-    memcpy(&currentFrame, &phyFrame.object, phyFrame.object.len);
+    //Check if there is anything to transmit
+    ret = QueuePop(&txQueue, &currentFrame, SYSTEM_TICK_FROM_MS(0));
+    if (ret < 0)
+    {
+        //If not, yield during the transmission time
+        THREAD_SLEEP_FOR(txTimeBegin - currentTime);
+        txTimeBegin = txTimeBegin + SYSTEM_TICK_FROM_MS(timeSlot * TIME_SLOT_MS);
+        txTimeEnd = txTimeBegin + SYSTEM_TICK_FROM_MS(TIME_SLOT_MS);
+        return;
+    }
 
     //Check if sync was lost whilst trying to transmit
     ret = mac_sync_tx();
@@ -301,14 +348,14 @@ static void mac_state_run()
 static void mac_state_idle()
 {
     printf("MAC in idle!\n");
-    SLEEP_FOR(DURATION_FROM_MS(30000));
+    THREAD_SLEEP_FOR(SYSTEM_TICK_FROM_MS(30000));
 }
 
 static void update_times()
 {
     syncTime = GET_CURRENT_TIME();
-    txTimeBegin = syncTime + DURATION_FROM_MS(timeSlot * TIME_SLOT_MS);
-    txTimeEnd = txTimeBegin + DURATION_FROM_MS(TIME_SLOT_MS);
+    txTimeBegin = syncTime + SYSTEM_TICK_FROM_MS(timeSlot * TIME_SLOT_MS);
+    txTimeEnd = txTimeBegin + SYSTEM_TICK_FROM_MS(TIME_SLOT_MS);
 }
 
 static int mac_sync_tx()
@@ -318,7 +365,7 @@ static int mac_sync_tx()
     //Wait for transmission slot
     while ((currentTime < txTimeBegin))
     {
-        SLEEP_FOR(txTimeBegin - currentTime);
+        THREAD_SLEEP_FOR(txTimeBegin - currentTime);
         currentTime = GET_CURRENT_TIME();
     }
 
@@ -331,27 +378,27 @@ static int mac_sync_tx()
 static int mac_sync_rx(bool updateWdt)
 {
     int ret;
-    mac_frame_st macFrame;
-    int64_t timeoutMillis;
+    mac_frame_st* pMacFrame;
+    duration_t timeoutMillis;
 
     if (updateWdt)
     {
-        systick_t expectedTxTime = txTimeBegin + DURATION_FROM_MS(NR_OF_SLOTS * TIME_SLOT_MS);
-        timeoutMillis = MS_FROM_DURATION(expectedTxTime - GET_CURRENT_TIME());
+        systick_t expectedTxTime = txTimeBegin + SYSTEM_TICK_FROM_MS(NR_OF_SLOTS * TIME_SLOT_MS);
+        timeoutMillis = MS_FROM_SYSTEM_TICK(expectedTxTime - GET_CURRENT_TIME());
 
-        if (timeoutMillis < 0)
-            timeoutMillis = NR_OF_SLOTS * TIME_SLOT_MS;
+        if (timeoutMillis < SYSTEM_TICK_FROM_MS(0))
+            timeoutMillis = SYSTEM_TICK_FROM_MS(NR_OF_SLOTS * TIME_SLOT_MS);
 
-        rn2483_set_wdt(&loraRadio, timeoutMillis);
+        rn2483_set_wdt(&loraRadio, MS_FROM_DURATION(timeoutMillis));
     }
 
     ret = rn2483_rx(&loraRadio, (uint8_t*)&currentFrame, PHY_FRAME_LEN);
     if (ret < 0)
         return -ETIMEDOUT;
 
-    phy2mac(&currentFrame, &macFrame);
+    pMacFrame = (mac_frame_st*) currentFrame.payload;
 
-    if ((macFrame.control->header != HDR_DOWN_LINK) && (macFrame.control->header != HDR_JOIN_ACP))
+    if ((pMacFrame->control.header != HDR_DOWN_LINK) && (pMacFrame->control.header != HDR_JOIN_ACP) && (pMacFrame->control.header != HDR_KICK_REQ))
         return -EBADMSG;
 
     update_times();
