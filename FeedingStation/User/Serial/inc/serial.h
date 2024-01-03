@@ -88,6 +88,8 @@ ssize_t serial_read(serial_port_st* serialPort, uint8_t* rxBuffer, size_t buffer
 // time, otherwise returns the amount of characters read
 int serial_readline(serial_port_st* serialPort, uint8_t* rxBuffer, size_t bufferSize, duration_t maxWait);
 
+int serial_sync_readline(serial_port_st* serialPort, uint8_t* rxBuffer, size_t bufferSize);
+
 int serial_set_terminator(serial_port_st* serialPort, const char* newTerminator, uint8_t terminatorSize);
 
 #endif

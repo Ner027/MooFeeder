@@ -5,13 +5,6 @@
 #define SERVER
 int main()
 {
-    /*
-#ifdef SERVER
-    CLoRaMac::getInstance()->join();
-#else
-    mac_init();
-#endif
-*/
     CLoRaNetwork* loraNet = CLoRaNetwork::getInstance();
 
     loraNet->waitOnReady();
@@ -20,31 +13,60 @@ int main()
 
     loraNet->detach();
 
-    while (1)
+    std::thread consumerThread([&loraNet]
     {
-        budget_request_st* pReq = (budget_request_st*) appFrame.payload;
+        int ret;
+        while (1)
+        {
+            for (int i = 2; i < NR_OF_DEVICES + 2; ++i)
+            {
+                app_frame_st appMessage;
 
-        pReq->rfidTag[0] = 0xDE;
-        pReq->rfidTag[1] = 0xAD;
-        pReq->rfidTag[2] = 0xBE;
-        pReq->rfidTag[3] = 0xEF;
-        pReq->rfidTag[4] = 0xFA;
-        pReq->rfidTag[5] = 0xFE;
-        pReq->rfidTag[6] = 0xDE;
-        pReq->rfidTag[7] = 0xAD;
-        appFrame.control.frameType = BUDGET_REQUEST;
-        loraNet->sendMessage(appFrame, SERVER_SLOT, 2);
-        pReq->rfidTag[7] = 0x00;
-        loraNet->sendMessage(appFrame, SERVER_SLOT, 3);
-        pReq->rfidTag[7] = 0x10;
-        loraNet->sendMessage(appFrame, SERVER_SLOT, 4);
+                ret = loraNet->receiveMessage(appMessage, i);
+                if (ret < 0)
+                    continue;
 
-        budget_response_st* pRep = (budget_response_st*) pReq;
-        pRep->allowedConsumption = 0xAAC0FFEE;
-        appFrame.control.frameType = BUDGET_RESPONSE;
-        loraNet->sendMessage(appFrame, SERVER_SLOT, 5);
+                switch (appMessage.control.frameType)
+                {
+                    case BUDGET_REQUEST:
+                    {
+                        budget_request_st* pBudgetReq = (budget_request_st*) appMessage.payload;
+                        printf("Budget request for tag: 0x%.2lx\n", *((uint64_t*)pBudgetReq->rfidTag));
 
-        THREAD_SLEEP_FOR(SYSTEM_TICK_FROM_MS(5000));
-    }
+                        budget_response_st* pBudgetResponse = (budget_response_st*) appMessage.payload;
+                        float vAllowed = 10.0f;
+                        memcpy(pBudgetResponse->rfidTag, pBudgetReq->rfidTag, RFID_TAG_LEN);
+                        memcpy(&pBudgetResponse->allowedConsumption, &vAllowed, 4);
+                        appMessage.control.frameType = BUDGET_RESPONSE;
+                        loraNet->sendMessage(appMessage, SERVER_SLOT, i);
+
+                        break;
+                    }
+                    case BUDGET_RESPONSE:
+                        break;
+                    case CONSUMPTION_REPORT:
+                    {
+                        consumption_report_st* pConsumptionRep = (consumption_report_st*) appMessage.payload;
+                        float vConsumed;
+                        memcpy(&vConsumed, &pConsumptionRep->volumeConsumed, 4);
+                        printf("Consumption Report from tag: 0x%lx with volume: %f\n",
+                               *((uint64_t*)pConsumptionRep->rfidTag),
+                               vConsumed);
+                        break;
+                    }
+                    case SENSOR_DATA:
+                        break;
+                    case TEXT_MESSAGE:
+                        text_msg_st* pTxtMsg = (text_msg_st*) appMessage.payload;
+                        printf("Client at Network Address: %d sent message: %.*s\n", i, pTxtMsg->messageSize, pTxtMsg->textMessage);
+                        break;
+                }
+            }
+
+            THREAD_SLEEP_FOR(SYSTEM_TICK_FROM_MS(10));
+        }
+    });
+
+    consumerThread.join();
     return 0;
 }

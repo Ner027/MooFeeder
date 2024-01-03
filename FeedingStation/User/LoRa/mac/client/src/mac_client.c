@@ -10,11 +10,12 @@
 #include "usart.h"
 #include "../../../oswrapper/inc/oswrapper.h"
 #include "../../../../Serial/inc/serial.h"
+#include "../../../network/common/inc/network_types.h"
 
 #define MAX_PAIR_LISTEN_TRIES 4
 
 #define MAC_STACK_SIZE 1024
-#define MAC_PRIO 16
+#define MAC_PRIO (configMAX_PRIORITIES - 1)
 
 #define TX_QUEUE_SIZE 4
 #define RX_QUEUE_SIZE 4
@@ -39,7 +40,7 @@ static uint8_t pairListenCounter;
 static mac_addr_t serverMac;
 static QueueHandle_st txQueue, rxQueue;
 static SemaphoreHandle_st macReady;
-static SemaphoreHandle_t flagsMutex;
+static Mutex_t flagsMutex, timeSlotMutex;
 static bool isPaired, isInitialized = 0;
 static bool keepRunning;
 
@@ -64,8 +65,30 @@ int mac_wait_on_ready()
     return 0;
 }
 
-int mac_send(mac_frame_st* pMacFrame)
+int mac_wait_on_pair()
 {
+    bool isPairedAux;
+
+    if (!isInitialized)
+        return -EPERM;
+
+    do
+    {
+        //MutexLock(&flagsMutex, MAX_DELAY);
+        isPairedAux = isPaired;
+        //MutexUnlock(&flagsMutex);
+
+        THREAD_SLEEP_FOR(SYSTEM_TICK_FROM_MS(5));
+    }
+    while (!isPairedAux);
+
+    return 0;
+}
+
+int mac_send(mac_frame_st* pMacFrame, uint8_t payloadLen)
+{
+    phy_frame_st phyFrame;
+
     if (!pMacFrame)
         return -EINVAL;
 
@@ -76,7 +99,10 @@ int mac_send(mac_frame_st* pMacFrame)
     memcpy(pMacFrame->control.srcAddr, &loraRadio.phyAddr[4], sizeof(mac_addr_t));
     memcpy(pMacFrame->control.destAddr, serverMac, sizeof(mac_addr_t));
 
-    if (QueuePush(&txQueue, pMacFrame, SYSTEM_TICK_FROM_MS(0)) < 0)
+    memcpy(phyFrame.payload, pMacFrame, payloadLen + MAC_CTRL_LEN);
+    phyFrame.len = payloadLen + MAC_CTRL_LEN + 1;
+
+    if (QueuePush(&txQueue, &phyFrame, SYSTEM_TICK_FROM_MS(0)) < 0)
         return -ENOSPC;
 
     return 0;
@@ -84,33 +110,34 @@ int mac_send(mac_frame_st* pMacFrame)
 
 int mac_get_slot()
 {
-    bool auxIsPaired;
+    uint8_t auxTimeSlot;
 
     if (!isInitialized)
         return -EPERM;
 
-    xSemaphoreTake(flagsMutex, MAX_DELAY);
-    auxIsPaired = isPaired;
-    xSemaphoreGive(flagsMutex);
+    //MutexLock(&timeSlotMutex, MAX_DELAY);
+    auxTimeSlot = timeSlot;
+    //MutexUnlock(&timeSlotMutex);
 
-    if (!auxIsPaired)
-        return -EADDRNOTAVAIL;
-
-    return timeSlot;
+    return auxTimeSlot;
 }
 
 int mac_receive(mac_frame_st* pMacFrame)
 {
+    phy_frame_st phyFrame;
+
     if (!pMacFrame)
         return -EINVAL;
 
     if (!isInitialized)
         return -EPERM;
 
-    if (QueuePop(&rxQueue, pMacFrame, SYSTEM_TICK_FROM_MS(0) < 0) < 0)
+    if (QueuePop(&rxQueue, &phyFrame, SYSTEM_TICK_FROM_MS(0) < 0))
         return -ENODATA;
 
-    return 0;
+    memcpy(pMacFrame, phyFrame.payload, phyFrame.len - 1);
+
+    return (int)(phyFrame.len - MAC_CTRL_LEN - PHY_CONTROL_LEN);
 }
 
 int mac_init()
@@ -122,7 +149,9 @@ int mac_init()
     QueueInit(&txQueue, TX_QUEUE_SIZE, sizeof(phy_frame_st));
     QueueInit(&rxQueue, RX_QUEUE_SIZE, sizeof(phy_frame_st));
     SemaphoreInit(&macReady);
-    flagsMutex = xSemaphoreCreateMutex();
+
+    MutexInit(&flagsMutex);
+    MutexInit(&timeSlotMutex);
 
     ret = xTaskCreate(mac_thread, "T_MAC", MAC_STACK_SIZE, NULL, MAC_PRIO, NULL);
     if (ret != pdPASS)
@@ -185,11 +214,24 @@ static void mac_state_init()
 
     SemaphoreGive(&macReady);
 
-
-    xSemaphoreTake(flagsMutex, MAX_DELAY);
+    //MutexLock(&flagsMutex, MAX_DELAY);
     isPaired = false;
+    //MutexUnlock(&flagsMutex);
 
-    xSemaphoreGive(flagsMutex);
+    rn2483_set_wdt(&loraRadio, MAX_WDT_TIME);
+
+//    systick_t lastRxTime = GET_CURRENT_TIME();
+//
+//    while (1)
+//    {
+//        int ret = rn2483_rx(&loraRadio, (uint8_t*)&currentFrame, PHY_FRAME_LEN);
+//        if (ret < 0)
+//            continue;
+//
+//        systick_t currentTime = GET_CURRENT_TIME();
+//        printf("Time since last RX: %lu\n", currentTime - lastRxTime);
+//        lastRxTime = currentTime;
+//    }
 
     nextState = ST_SYNC;
 }
@@ -214,10 +256,9 @@ static void mac_state_sync()
     if ((pMacFrame->control.header != HDR_DOWN_LINK) && (pMacFrame->control.header != HDR_JOIN_ACP) && (pMacFrame->control.header != HDR_KICK_REQ))
         return;
 
-
-    xSemaphoreTake(flagsMutex, MAX_DELAY);
+    //MutexLock(&flagsMutex, MAX_DELAY);
     paired = isPaired;
-    xSemaphoreGive(flagsMutex);
+    //MutexUnlock(&flagsMutex);
 
     if (paired)
     {
@@ -227,7 +268,10 @@ static void mac_state_sync()
     {
         memcpy(serverMac, pMacFrame->control.srcAddr, ADDR_LEN);
         nextState = ST_SEND_PAIR;
+
+        //MutexLock(&timeSlotMutex, MAX_DELAY);
         timeSlot = BROADCAST_SLOT;
+        //MutexUnlock(&timeSlotMutex);
     }
 
     update_times();
@@ -297,13 +341,15 @@ static void mac_state_wait_pair()
         }
         else
         {
+            //MutexLock(&timeSlotMutex, MAX_DELAY);
             timeSlot = pJoinAccept->timeSlot;
+            //MutexUnlock(&timeSlotMutex);
+
             printf("Pairing request accepted! Paired at slot: %d\n", timeSlot);
 
-
-            xSemaphoreTake(flagsMutex, MAX_DELAY);
+            //MutexLock(&flagsMutex, MAX_DELAY);
             isPaired = true;
-            xSemaphoreGive(flagsMutex);
+            //MutexUnlock(&flagsMutex);
 
             nextState = ST_RUNNING;
         }
@@ -313,10 +359,12 @@ static void mac_state_wait_pair()
 static void mac_state_run()
 {
     mac_frame_st* pMacFrame;
+    uint8_t auxTimeSlot;
 
     systick_t currentTime = GET_CURRENT_TIME();
     printf("Running...\n");
     //Try to receive something, if unable to receive anything, sync was lost, so try to re-sync
+    
     int ret = mac_sync_rx(true);
     if (ret < 0)
     {
@@ -350,10 +398,9 @@ static void mac_state_run()
     }
     else if (pMacFrame->control.header == HDR_KICK_REQ)
     {
-
-        xSemaphoreTake(flagsMutex, MAX_DELAY);
+        //MutexLock(&flagsMutex, MAX_DELAY);
         isPaired = false;
-        xSemaphoreGive(flagsMutex);
+        //MutexUnlock(&flagsMutex);
 
         nextState = ST_SYNC;
         return;
@@ -364,14 +411,14 @@ static void mac_state_run()
     if (ret < 0)
     {
         //If not, yield during the transmission time
-        THREAD_SLEEP_FOR(txTimeBegin - currentTime);
+        THREAD_SLEEP_FOR(txTimeEnd - GET_CURRENT_TIME());
+
         txTimeBegin = txTimeBegin + SYSTEM_TICK_FROM_MS(timeSlot * TIME_SLOT_MS);
         txTimeEnd = txTimeBegin + SYSTEM_TICK_FROM_MS(TIME_SLOT_MS);
         return;
     }
 
     //Check if sync was lost whilst trying to transmit
-    pMacFrame = (mac_frame_st*) &currentFrame;
     ret = mac_sync_tx();
     if (ret < 0)
     {
@@ -385,13 +432,21 @@ static void mac_state_run()
 static void mac_state_idle()
 {
     printf("MAC in idle!\n");
-    THREAD_SLEEP_FOR(SYSTEM_TICK_FROM_MS(30000));
+    THREAD_SLEEP_FOR(SYSTEM_TICK_FROM_MS(TIME_SLOT_MS * (NR_OF_SLOTS / 3)));
+    nextState = ST_SYNC;
 }
 
 static void update_times()
 {
+    uint8_t auxTimeSlot;
+
     syncTime = GET_CURRENT_TIME();
-    txTimeBegin = syncTime + SYSTEM_TICK_FROM_MS(timeSlot * TIME_SLOT_MS);
+
+    //MutexLock(&timeSlotMutex, MAX_DELAY);
+    auxTimeSlot = timeSlot;
+    //MutexUnlock(&timeSlotMutex);
+
+    txTimeBegin = syncTime + SYSTEM_TICK_FROM_MS(auxTimeSlot * TIME_SLOT_MS);
     txTimeEnd = txTimeBegin + SYSTEM_TICK_FROM_MS(TIME_SLOT_MS);
 }
 

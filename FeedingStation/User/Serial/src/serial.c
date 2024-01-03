@@ -14,7 +14,7 @@
 #define MAX_SERIAL_PORTS 4
 #define MAX_WAIT_TICKS 2
 #define DEFAULT_TERMINATOR '\n'
-#define ENABLE_LOG
+//#define ENABLE_LOG
 
 /***********************************************************************************************************************
  * Private Variables
@@ -179,7 +179,9 @@ ssize_t serial_write(serial_port_st* serialPort, const uint8_t* txBuffer, size_t
                              &serialPort->txBuffer[serialPort->txRdIndex++ & (BUFFER_SIZE - 1)], 1);
     }
 
-    printf("%s", txBuffer);
+#ifdef ENABLE_LOG
+    printf("[%lu] %s", xTaskGetTickCount(), txBuffer);
+#endif
 
 #ifdef THREAD_SAFE
     xSemaphoreGive(serialPort->txMutex);
@@ -210,6 +212,43 @@ ssize_t serial_read(serial_port_st* serialPort, uint8_t* rxBuffer, size_t buffer
     return (ssize_t) len;
 }
 
+
+int serial_sync_readline(serial_port_st* serialPort, uint8_t* rxBuffer, size_t bufferSize)
+{
+    int ret;
+    uint8_t ch;
+    size_t bytesRead;
+
+    if (!serialPort || !rxBuffer)
+        return -EINVAL;
+
+    if (!serialPort->initialized)
+        return -EPERM;
+
+    bytesRead = 0;
+    while ((bytesRead < bufferSize))
+    {
+        ret = serial_read(serialPort, &ch, 1);
+
+        //If read returns a negative value some error occurred, in this case exit the functions
+        if (ret < 0)
+            return ret;
+
+        //If nothing was read just keep waiting
+        if (ret == 0)
+        {
+            vTaskDelay(5/portTICK_PERIOD_MS);
+            continue;
+        }
+        rxBuffer[bytesRead++] = ch;
+
+        //If the received character matches the set terminator, exit and return the number of bytes that was read
+        if (ch == serialPort->terminator[0])
+            return (int)bytesRead;
+    }
+
+    return 0;
+}
 
 int serial_readline(serial_port_st* serialPort, uint8_t* rxBuffer, size_t bufferSize, duration_t maxWait)
 {
@@ -256,7 +295,6 @@ int serial_readline(serial_port_st* serialPort, uint8_t* rxBuffer, size_t buffer
         {
             if (ch == serialPort->terminator[termPosition])
                 termPosition++;
-
             else return -EINVAL;
         }
 
@@ -264,7 +302,7 @@ int serial_readline(serial_port_st* serialPort, uint8_t* rxBuffer, size_t buffer
         {
             rxBuffer[bytesRead] = '\0';
 #ifdef ENABLE_LOG
-            printf("%s\n", (char*)rxBuffer);
+            printf("[%lu] %s\n", xTaskGetTickCount(), (char*)rxBuffer);
 #endif
             return (int) bytesRead;
         }

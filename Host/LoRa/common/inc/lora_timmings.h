@@ -1,7 +1,7 @@
 #ifndef LORA_LORA_TIMMINGS_H
 #define LORA_LORA_TIMMINGS_H
 
-#define TIME_SLOT_MS 300
+#define TIME_SLOT_MS 500
 #define LISTEN_AHEAD_MS 50
 #define WDT_DELTA 50
 #define SERVER_SLOT 0

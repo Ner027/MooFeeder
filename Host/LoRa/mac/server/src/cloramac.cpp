@@ -105,6 +105,7 @@ void CLoRaMac::stateEval()
 
 void CLoRaMac::stateTx()
 {
+    static auto lastTxTime = GET_CURRENT_TIME();
     auto oldTxEnd = m_txTimeEnd;
     phy_frame_st phyFrame;
 
@@ -121,7 +122,12 @@ void CLoRaMac::stateTx()
     //Yield until the end of the TX Slot
     auto tNow = GET_CURRENT_TIME();
     updateTxTime();
-    THREAD_SLEEP_FOR(oldTxEnd - tNow);
+    if (tNow < oldTxEnd)
+        THREAD_SLEEP_FOR(oldTxEnd - tNow);
+
+    auto timeNow = GET_CURRENT_TIME();
+    printf("Time since last TX: %ld\n", std::chrono::duration_cast<std::chrono::milliseconds>(timeNow - lastTxTime).count());
+    lastTxTime = timeNow;
 
     //TODO: Maybe should go to Eval
     m_nextState = ST_RX;
@@ -187,9 +193,6 @@ void CLoRaMac::stateRx()
             clientSlot = timeMs / TIME_SLOT_MS;
 
             MAC_LOG("Time since last sync message: %ld ms... This is slot: %d\n", timeMs, clientSlot);
-            MAC_LOG("Data Received from client at address: %d! -> %.*s\n", ret,
-                (int) (phyFrame.len - MAC_CTRL_LEN - 1),
-                (char*)pMacFrame->payload);
 
             //Check if the client is transmitting in the wrong time slot, this can be caused by clock skews, or restarts
             //From both the client and the server
@@ -198,6 +201,8 @@ void CLoRaMac::stateRx()
                 MAC_LOG("Client transmitting in the wrong slot!\n");
                 //TODO: Kick client from network
             }
+
+            m_rxQueue.push(phyFrame);
 
             return;
 
@@ -345,4 +350,3 @@ int CLoRaMac::popMessage(mac_frame_st* macFrame)
 
     return (int)(phyFrame.len - PHY_CONTROL_LEN - MAC_CTRL_LEN);
 }
-

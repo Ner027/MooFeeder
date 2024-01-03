@@ -21,6 +21,7 @@ public:
     void killInstance();
     void* run(void *) override;
     int sendMessage(app_frame_st& appFrame, uint8_t src, uint8_t dest);
+    int receiveMessage(app_frame_st& appFrame, uint8_t src);
     bool waitOnReady();
 private:
     CLoRaNetwork();
@@ -30,8 +31,8 @@ private:
     network_state_et m_currentState;
     network_state_et m_nextState;
     SemaphoreHandle_st m_networkReady;
-    CQueue<network_frame_st> networkTxQueues[NR_OF_DEVICES];
-    CQueue<network_frame_st> networkRxQueues[NR_OF_DEVICES];
+    CQueue<network_frame_st> m_networkTxQueues[NR_OF_DEVICES];
+    CQueue<network_frame_st> m_networkRxQueues[NR_OF_DEVICES];
     int decodeMacMessage(mac_frame_st& src, uint8_t srcLen);
     int composeMacMessage();
     void stateInit();

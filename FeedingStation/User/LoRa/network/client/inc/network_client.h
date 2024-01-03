@@ -4,6 +4,7 @@
 #include "../../common/inc/network_types.h"
 
 int network_init();
-int network_send(network_frame_st* pNetFrame);
+int network_send(network_frame_st* pNetFrame, duration_t maxWait);
+int network_receive(network_frame_st* pNetFrame, duration_t maxWait);
 
 #endif

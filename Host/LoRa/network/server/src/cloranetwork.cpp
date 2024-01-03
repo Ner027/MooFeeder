@@ -37,7 +37,7 @@ int CLoRaNetwork::sendMessage(app_frame_st& appFrame, uint8_t src, uint8_t dest)
 
     memcpy(netFrame.payload, &appFrame, netFrame.control.payloadLen);
 
-    networkTxQueues[dest].push(netFrame);
+    m_networkTxQueues[dest].push(netFrame);
 
     return 0;
 }
@@ -64,7 +64,7 @@ int CLoRaNetwork::decodeMacMessage(mac_frame_st& src, uint8_t srcLen)
             continue;
         }
 
-        networkRxQueues[srcAddr - 2].push(*pNet);
+        m_networkRxQueues[srcAddr - 2].push(*pNet);
     }
 
     return pNet->control.payloadLen;
@@ -79,7 +79,7 @@ int CLoRaNetwork::composeMacMessage()
     network_frame_st txNetFrame;
 
     macLen = 0;
-    for (auto& networkTxQueue : networkTxQueues)
+    for (auto& networkTxQueue : m_networkTxQueues)
     {
         if (!networkTxQueue.try_pop(txNetFrame))
             continue;
@@ -175,4 +175,21 @@ void CLoRaNetwork::stateRx()
         NET_LOG("Received corrupted MAC Frame!\n");
         return;
     }
+}
+
+int CLoRaNetwork::receiveMessage(app_frame_st &appFrame, uint8_t src)
+{
+    network_frame_st netFrame;
+
+    if ((src < 2) || (src > 10))
+        return -EINVAL;
+
+    src -= 2;
+
+    if (!m_networkRxQueues[src].try_pop(netFrame))
+        return -ENODATA;
+
+    memcpy(&appFrame, netFrame.payload, netFrame.control.payloadLen);
+
+    return 0;
 }
