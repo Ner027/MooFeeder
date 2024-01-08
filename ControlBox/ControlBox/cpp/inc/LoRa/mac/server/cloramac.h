@@ -21,7 +21,7 @@ class CLoRaMac : public CThread
 {
 public:
     static CLoRaMac* getInstance();
-    static void killInstance();
+    void killInstance();
     bool waitOnReady(duration_t maxWait);
     int pushMessage(mac_frame_st& macFrame, uint8_t msgLen);
     int popMessage(mac_frame_st* macFrame);

@@ -7,6 +7,15 @@
 #include "LoRa/network/server/cloranetwork.h"
 #include "station_types.h"
 
+#define ENABLE_MANAGER_LOGS
+
+#ifdef ENABLE_MANAGER_LOGS
+#include "util/util.h"
+#define MANAGER_LOG(format, ...) print("Station Manager", format, ##__VA_ARGS__)
+#else
+#define MANAGER_LOG(format, ...) do{}while(0)
+#endif
+
 class CStationManager : public CThread
 {
 public:

@@ -48,7 +48,6 @@ typedef std::chrono::system_clock::time_point systick_t;
 #define MS_FROM_DURATION(x) ((std::chrono::milliseconds((x).count())).count())
 #define ENUM1B(name) enum name : unsigned char
 #define MAX_DELAY (std::chrono::time_point<std::chrono::system_clock>::max().time_since_epoch())
-#define null nullptr
 #elif defined(TARGET)
 #include "FreeRTOS.h"
 #include "queue.h"

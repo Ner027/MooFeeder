@@ -21,7 +21,7 @@ public:
     QJsonObject dumpToJson() override;
 
     int addNewToCloud(uint32_t parent);
-    int patchInCloud();
+    int reportConsumption(float consumedVolume);
 private:
     int getCalfFromCloud(QJsonObject* jsonObject);
     std::string m_phyTag;

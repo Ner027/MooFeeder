@@ -115,6 +115,8 @@ CLoRaNetwork *CLoRaNetwork::getInstance()
 
 void CLoRaNetwork::killInstance()
 {
+    m_macInstance->killInstance();
+
     m_keepRunning = false;
     delete m_instance;
     m_instance = nullptr;
@@ -126,7 +128,6 @@ CLoRaNetwork::CLoRaNetwork() : m_currentState()
     m_macInstance = nullptr;
     m_keepRunning = true;
     m_nextState = NETWORK_INIT;
-    this->start();
 }
 
 void CLoRaNetwork::stateInit()

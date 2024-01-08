@@ -40,7 +40,7 @@ set(PROJECT_SOURCES
         cpp/src/oswrapper/oswrapper.cpp
         cpp/src/ptwrapper/cmutex.cpp
         cpp/src/ptwrapper/cthread.cpp
-        cpp/src/ptwrapper/cuniquelock.cpp
+        cpp/src/ptwrapper/clockguard.cpp
         cpp/inc/util/csafequeue.hpp
         cpp/src/LoRa/network/server/cloranetwork.cpp
         cpp/src/app/cstationmanager.cpp

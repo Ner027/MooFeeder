@@ -1,6 +1,8 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include "../../inc/entities/ccontrolbox.h"
+#include "ptwrapper/clockguard.h"
+#include "LoRa/network/server/cloranetwork.h"
 
 CControlBox* CControlBox::m_instance = nullptr;
 
@@ -62,8 +64,17 @@ CloudReturnCode_et CControlBox::executeLogin(const std::string& username, const 
         return INTERNAL_ERROR;
 
     //If all the above checks succeed, save the session token and update the ControlBox Status
+    m_tokenMutex.lock();
     m_sessionToken = jObject[FIELD_TOKEN].toString().toStdString();
+    m_tokenMutex.unlock();
+
     m_status = ControlBoxStatus_et::LOGGED_IN;
+
+    CLoRaNetwork* loRaNetwork = CLoRaNetwork::getInstance();
+
+    loRaNetwork->start();
+    loRaNetwork->detach();
+    loRaNetwork->waitOnReady();
 
     return USER_OK;
 }
@@ -85,6 +96,7 @@ void CControlBox::executeLogout()
 
 std::string CControlBox::getSessionToken()
 {
+    CLockGuard lock(m_tokenMutex);
     return m_sessionToken;
 }
 

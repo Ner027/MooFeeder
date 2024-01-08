@@ -31,6 +31,8 @@ void* CLoRaMac::run(void* args)
         }
     }
 
+    serial_close(m_loraRadio.serialPort);
+
     return nullptr;
 }
 
@@ -304,7 +306,7 @@ CLoRaMac* CLoRaMac::getInstance()
 
 void CLoRaMac::killInstance()
 {
-    m_instance->m_keepRunning = false;
+    m_keepRunning = false;
     delete m_instance;
     m_instance = nullptr;
 }

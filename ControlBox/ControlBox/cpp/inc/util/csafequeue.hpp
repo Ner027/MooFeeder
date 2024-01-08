@@ -4,7 +4,7 @@
 #include <queue>
 #include <memory.h>
 #include "ptwrapper/cmutex.h"
-#include "ptwrapper/cuniquelock.h"
+#include "ptwrapper/clockguard.h"
 
 template <class T>
 class CQueue
@@ -32,7 +32,7 @@ bool CQueue<T>::isEmpty()
 template<class T>
 bool CQueue<T>::try_pop(T& ret)
 {
-    CUniqueLock lock(m_dataMutex);
+    CLockGuard lock(m_dataMutex);
 
     if (m_dataQueue.empty())
         return false;

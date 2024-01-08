@@ -7,6 +7,7 @@
 #include <string>
 #include "../cloudtypes.h"
 #include "../util/cnetworkmanager.h"
+#include "ptwrapper/cmutex.h"
 
 /***********************************************************************************************************************
  * Typedefs
@@ -58,6 +59,7 @@ private:
     std::string m_name;
     std::string m_username;
     ControlBoxStatus_et m_status;
+    CMutex m_tokenMutex;
 };
 
 

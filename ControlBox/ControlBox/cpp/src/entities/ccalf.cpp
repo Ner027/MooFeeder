@@ -104,7 +104,6 @@ bool CCalf::isValid()
 
 int CCalf::addNewToCloud(uint32_t stationPhyAddr)
 {
-    QJsonObject jObject;
     CHttpRequest request(ENDPOINT_CALF_ADD, HttpVerb_et::POST);
 
     //Assemble the request
@@ -127,6 +126,33 @@ int CCalf::addNewToCloud(uint32_t stationPhyAddr)
 
 float CCalf::getAllowedConsumption()
 {
-    return m_maxConsumption - m_currentConsumption;
+    float allowConsumption = m_maxConsumption - m_currentConsumption;
+
+    if (allowConsumption < 0)
+        return 0;
+
+    return allowConsumption;
+}
+
+int CCalf::reportConsumption(float consumedVolume)
+{
+    CHttpRequest request(ENDPOINT_CALF_ADD, HttpVerb_et::POST);
+
+    //Assemble the request
+    request.m_formData
+            .addField(FIELD_TOKEN, CControlBox::getInstance()->getSessionToken().c_str())
+            .addField(FIELD_PHY_TAG, m_phyTag.c_str())
+            .addField(FIELD_CONSUMPTION, QString::number(consumedVolume).toStdString().c_str());
+
+    int ret = request.execute();
+
+    //Check if the request executed properly
+    if (ret < 0)
+        return -EFAULT;
+
+    if (request.getStatus() != HttpStatusCode_et::OK)
+        return -EFAULT;
+
+    return 0;
 }
 

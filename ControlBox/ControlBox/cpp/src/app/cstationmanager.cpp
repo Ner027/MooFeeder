@@ -50,6 +50,18 @@ void* CStationManager::run(void* args)
                 }
                 case CONSUMPTION_REPORT:
                 {
+                    consumption_report_st* pConsumptionReport = (consumption_report_st*) appFrame.payload;
+
+                    CCalf calf(QByteArray((char*)pConsumptionReport->rfidTag).toHex().toStdString());
+                    float* pConsumedVolume;
+
+                    pConsumedVolume = (float*) &pConsumptionReport->volumeConsumed;
+
+                    MANAGER_LOG("Calf with tag: 0x%lx consumed %f liters!\n", *((uint32_t*)pConsumptionReport->rfidTag), *pConsumedVolume);
+
+                    ret = calf.reportConsumption(*pConsumedVolume);
+                    if (ret < 0)
+                        printf("Failed to update calf consumption!\n");
 
                     break;
                 }
@@ -62,7 +74,7 @@ void* CStationManager::run(void* args)
                     break;
                 }
                 default:
-                    printf("Received invalid app frame type! Type: (%d)\n", appFrame.control.frameType);
+                    MANAGER_LOG("Received invalid app frame type! Type: (%d)\n", appFrame.control.frameType);
             }
         }
     }

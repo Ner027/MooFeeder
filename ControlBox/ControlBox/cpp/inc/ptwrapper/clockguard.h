@@ -4,11 +4,11 @@
 
 #include "cmutex.h"
 
-class CUniqueLock
+class CLockGuard
 {
 public:
-    explicit CUniqueLock(CMutex& mutex);
-    ~CUniqueLock();
+    explicit CLockGuard(CMutex& mutex);
+    ~CLockGuard();
 private:
     CMutex& m_mutex;
 };
