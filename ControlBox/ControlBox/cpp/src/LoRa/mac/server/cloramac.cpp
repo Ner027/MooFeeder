@@ -1,9 +1,10 @@
 #include <thread>
 #include <cstring>
-#include "../inc/cloramac.h"
-#include "../../../rn2483/inc/rn2483.h"
-#include "../../../serial/inc/serial.h"
-#include "../../common/inc/mac_util.h"
+#include "serial/serial.h"
+#include "LoRa/mac/server/cloramac.h"
+#include "LoRa/mac/common/mac_util.h"
+#include "LoRa/phy/common/rn2483/rn2483.h"
+#include "oswrapper/oswrapper.h"
 
 CLoRaMac* CLoRaMac::m_instance = nullptr;
 

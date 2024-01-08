@@ -32,7 +32,21 @@ set(PROJECT_SOURCES
         cpp/src/util/chttpform.cpp
         cpp/src/util/cnetworkmanager.cpp
         cpp/src/util/chttprequest.cpp
+        cpp/src/serial/serial.cpp
+        cpp/src/util/util.cpp
+        cpp/src/LoRa/phy/common/rn2483/rn4283.cpp
+        cpp/src/strlib/strlib.cpp
+        cpp/src/LoRa/mac/server/cloramac.cpp
+        cpp/src/oswrapper/oswrapper.cpp
+        cpp/src/ptwrapper/cmutex.cpp
+        cpp/src/ptwrapper/cthread.cpp
+        cpp/src/ptwrapper/cuniquelock.cpp
+        cpp/inc/util/csafequeue.hpp
+        cpp/src/LoRa/network/server/cloranetwork.cpp
+        cpp/src/app/cstationmanager.cpp
 )
+
+include_directories(cpp/inc)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(ControlBox

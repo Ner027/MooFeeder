@@ -250,7 +250,9 @@ static void state_feed()
     ret = rfid_get_current_tag(&newTag);
     if (ret < 0)
     {
-        FSM_LOG("Failed to get current RFID Tag!\n");
+        if (ret != -ENODATA)
+            FSM_LOG("Failed to get current RFID Tag value! Exited with error code: (%d)\n", ret);
+
         nextState = ST_CLOSE;
     }
 

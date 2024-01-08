@@ -9,21 +9,25 @@
 class CCalf : public CSerializableObject
 {
 public:
-    explicit CCalf(const std::string phyTag);
-    CCalf(const std::string phyTag, float maxConsumption);
+    explicit CCalf(const std::string& phyTag);
+    CCalf(std::string phyTag, float maxConsumption);
 
     std::vector<CLog> getLatestLogs();
-    std::string getPhyTag();
     float getMaxConsumption();
-    float getCurrentConsumption();
+    float getAllowedConsumption();
+    bool isValid();
 
-    int loadFromJson(QJsonObject& jsonObject) override { return 0;}
+    int loadFromJson(QJsonObject& jsonObject) override;
     QJsonObject dumpToJson() override;
+
+    int addNewToCloud(uint32_t parent);
+    int patchInCloud();
 private:
     int getCalfFromCloud(QJsonObject* jsonObject);
     std::string m_phyTag;
     float m_maxConsumption;
     float m_currentConsumption;
+    bool m_isValid;
 };
 
 #endif

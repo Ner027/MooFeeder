@@ -6,6 +6,8 @@
 #define ENDPOINT_LOGIN "/box/login"
 #define ENDPOINT_REGISTER "/box/register"
 
+#define ENDPOINT_CALF_ADD "/calf/add"
+#define ENDPOINT_CALF_CHANGE "/calf/change"
 #define ENDPOINT_CALF_DATA "/calf/data"
 #define ENDPOINT_CALF_LIST "/calf/list"
 
@@ -17,6 +19,7 @@
 #define FIELD_RESERVED "reserved"
 #define FIELD_TOKEN "sessionToken"
 #define FIELD_PHY_TAG "phyId"
+#define FIELD_PARENT_STATION "parentStation"
 
 enum CloudReturnCode_et
 {

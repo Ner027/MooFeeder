@@ -1,4 +1,4 @@
-#include "../../inc/gui/cloginmenu.h"
+#include "gui/cloginmenu.h"
 
 CloudReturnCode_et CLoginMenu::loginUser(QString &username, QString &password)
 {

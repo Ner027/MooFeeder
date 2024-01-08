@@ -6,74 +6,81 @@
 #include <QJsonDocument>
 #include <QNetworkConfigurationManager>
 #include "../inc/gui/cqmlinterface.h"
-#include "../inc/entities/ccalf.h"
+#include "LoRa/network/server/cloranetwork.h"
+#include "LoRa/app/app_types.h"
 #include <iostream>
-#include <memory>
 
-std::string exec(const char* cmd)
+void loraTest()
 {
-    char buffer[128];
-    uint8_t rdIdx = 0;
-    std::string result;
-    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    CLoRaNetwork* loraNet = CLoRaNetwork::getInstance();
 
-    if (!pipe)
+    loraNet->waitOnReady();
+
+    app_frame_st appFrame;
+
+    loraNet->detach();
+
+    std::thread consumerThread([&loraNet]
     {
-        throw std::runtime_error("popen() failed!");
-    }
+       int ret;
+       while (1)
+       {
+           for (int i = 2; i < NR_OF_DEVICES + 2; ++i)
+           {
+               app_frame_st appMessage;
 
-    while (fgets(&buffer[rdIdx], (128 - rdIdx), pipe.get()))
-    {
-        result += buffer;
-    }
+               ret = loraNet->receiveMessage(appMessage, i);
+               if (ret < 0)
+                   continue;
 
-    return result;
-}
+               switch (appMessage.control.frameType)
+               {
+                   case BUDGET_REQUEST:
+                   {
+                       budget_request_st* pBudgetReq = (budget_request_st*) appMessage.payload;
+                       printf("Budget request for tag: 0x%.2lx\n", *((uint64_t*)pBudgetReq->rfidTag));
 
-struct NetworkInfo
-{
-    std::string ssid;
-    std::string authType;
-    int32_t signalStrength;
-};
+                       budget_response_st* pBudgetResponse = (budget_response_st*) appMessage.payload;
+                       float vAllowed = 10.0f;
+                       memcpy(pBudgetResponse->rfidTag, pBudgetReq->rfidTag, RFID_TAG_LEN);
+                       memcpy(&pBudgetResponse->allowedConsumption, &vAllowed, 4);
+                       appMessage.control.frameType = BUDGET_RESPONSE;
+                       loraNet->sendMessage(appMessage, SERVER_SLOT, i);
 
-std::vector<NetworkInfo> parseScanMessage(std::string src)
-{
-    std::string line, key;
-    size_t currentPosition = 0;
-    NetworkInfo networkInfo;
-    std::vector<NetworkInfo> ret;
+                       break;
+                   }
+                   case BUDGET_RESPONSE:
+                       break;
+                   case CONSUMPTION_REPORT:
+                   {
+                       consumption_report_st* pConsumptionRep = (consumption_report_st*) appMessage.payload;
+                       float vConsumed;
+                       memcpy(&vConsumed, &pConsumptionRep->volumeConsumed, 4);
+                       printf("Consumption Report from tag: 0x%lx with volume: %f\n",
+                              *((uint64_t*)pConsumptionRep->rfidTag),
+                              vConsumed);
+                       break;
+                   }
+                   case SENSOR_DATA:
+                       break;
+                   case TEXT_MESSAGE:
+                       text_msg_st* pTxtMsg = (text_msg_st*) appMessage.payload;
+                       printf("Client at Network Address: %d sent message: %.*s\n", i, pTxtMsg->messageSize, pTxtMsg->textMessage);
+                       break;
+               }
+           }
 
-    qDebug() << src.c_str();
+           THREAD_SLEEP_FOR(SYSTEM_TICK_FROM_MS(10));
+       }
+    });
 
-    currentPosition = src.find('\n');
-    while (currentPosition != std::string::npos)
-    {
-        currentPosition = src.find('\n');
-
-        line = src.substr(0, currentPosition);
-        src = src.substr(currentPosition + 1);
-
-        if (line.find("ESSID") != std::string::npos)
-        {
-            networkInfo.ssid = line.substr(line.find(':') + 1);
-        }
-        else if(line.find("Signal level") != std::string::npos)
-        {
-            networkInfo.signalStrength = (int32_t) strtol(line.substr(line.find("l=") + 1).c_str(), nullptr, 10);
-        }
-        else if (line.find("Authentication Suites") != std::string::npos)
-        {
-            networkInfo.authType = line.substr(line.find(':') + 1);
-            ret.push_back(networkInfo);
-        }
-    }
-
-    return ret;
+    consumerThread.join();
 }
 
 int main(int argc, char *argv[])
 {
+    loraTest();
+
     qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
 
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -86,19 +93,8 @@ int main(int argc, char *argv[])
     view.setSource(QUrl("qrc:/qml/Main.qml"));
     view.show();
 
-    /*
-    auto ret = parseScanMessage(exec("iwlist wlo1 scan | grep -E \"ESSID|Signal level|Authentication Suites\""));
-
-    for (const auto &item: ret)
-    {
-        qDebug() << "SSID: " << item.ssid.c_str();
-        qDebug() << "AuthType: " << item.authType.c_str();
-        qDebug() << "Signal Strength: " << item.signalStrength;
-    }
-
     //CControlBox::getInstance()->executeLogin("user", "mooFeeder");
     //qDebug() << "Session Token: " << CControlBox::getInstance()->getSessionToken().c_str();
-    */
 
     return QApplication::exec();
 }

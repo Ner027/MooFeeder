@@ -3,17 +3,23 @@
 #include "../../inc/entities/ccalf.h"
 #include "../../inc/entities/ccontrolbox.h"
 
-CCalf::CCalf(const std::string phyTag)
+CCalf::CCalf(const std::string& phyTag)
 {
-    m_phyTag = phyTag;
-
     QJsonObject calfData;
 
+    m_phyTag = phyTag;
+    m_isValid = false;
+
+    m_maxConsumption = 15.0f;
+    m_currentConsumption = 0.0f;
+
     if (getCalfFromCloud(&calfData) < 0)
-        return;//TODO: Throw exception
+        return;
 
     m_maxConsumption = (float) calfData["calfData"].toObject()["maxConsumption"].toDouble();
     m_currentConsumption = (float) calfData["calfData"].toObject()["currentConsumption"].toDouble();
+
+    m_isValid = true;
 }
 
 int CCalf::getCalfFromCloud(QJsonObject* jsonObject)
@@ -70,19 +76,9 @@ CCalf::CCalf(const std::string phyTag, float maxConsumption) : CCalf(phyTag)
     m_maxConsumption = maxConsumption;
 }
 
-std::string CCalf::getPhyTag()
-{
-    return m_phyTag;
-}
-
 float CCalf::getMaxConsumption()
 {
     return m_maxConsumption;
-}
-
-float CCalf::getCurrentConsumption()
-{
-    return m_currentConsumption;
 }
 
 QJsonObject CCalf::dumpToJson()
@@ -96,6 +92,41 @@ QJsonObject CCalf::dumpToJson()
     return jsonObject;
 }
 
+int CCalf::loadFromJson(QJsonObject &jsonObject)
+{
+    return 0;
+}
 
+bool CCalf::isValid()
+{
+    return m_isValid;
+}
 
+int CCalf::addNewToCloud(uint32_t stationPhyAddr)
+{
+    QJsonObject jObject;
+    CHttpRequest request(ENDPOINT_CALF_ADD, HttpVerb_et::POST);
+
+    //Assemble the request
+    request.m_formData
+                    .addField(FIELD_TOKEN, CControlBox::getInstance()->getSessionToken().c_str())
+                    .addField(FIELD_PHY_TAG, m_phyTag.c_str())
+                    .addField(FIELD_PARENT_STATION, QString::number(stationPhyAddr, 16).toStdString().c_str());
+
+    int ret = request.execute();
+
+    //Check if the request executed properly
+    if (ret < 0)
+        return -EFAULT;
+
+    if (request.getStatus() != HttpStatusCode_et::Created)
+        return -EFAULT;
+
+    return 0;
+}
+
+float CCalf::getAllowedConsumption()
+{
+    return m_maxConsumption - m_currentConsumption;
+}
 
