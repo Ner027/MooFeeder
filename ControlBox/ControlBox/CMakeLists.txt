@@ -13,9 +13,9 @@ set(CMAKE_PREFIX_PATH "/home/andre/Qt/5.15.15/gcc_64/lib/cmake")
 
 find_package(QT NAMES Qt5 REQUIRED COMPONENTS Core Quick VirtualKeyboard Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick VirtualKeyboard Widgets)
+include_directories(cpp/inc)
 
 set(PROJECT_SOURCES
-        qml.qrc
         cpp/src/main.cpp
         cpp/src/gui/cqmlinterface.cpp
         cpp/src/gui/cguimenu.cpp
@@ -44,9 +44,9 @@ set(PROJECT_SOURCES
         cpp/inc/util/csafequeue.hpp
         cpp/src/LoRa/network/server/cloranetwork.cpp
         cpp/src/app/cstationmanager.cpp
+        qml.qrc
 )
 
-include_directories(cpp/inc)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(ControlBox

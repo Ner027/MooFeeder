@@ -6,10 +6,6 @@
  **********************************************************************************************************************/
 #include "rn2483_types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /***********************************************************************************************************************
  * Defines
  **********************************************************************************************************************/
@@ -48,7 +44,4 @@ int rn2483_rx(rn2483_st *dev, uint8_t *pDst, uint8_t destLen);
 /// \return -EINVAL if invalid parameters are passed, -EFAULT if failed to set the new timeout, returns 0 on success
 int rn2483_set_wdt(rn2483_st* dev, uint64_t timeout);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

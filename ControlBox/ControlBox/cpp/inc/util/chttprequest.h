@@ -12,6 +12,7 @@ class CHttpRequest
 public:
     QNetworkReply* m_reply;
     CHttpForm m_formData;
+    CHttpRequest();
     CHttpRequest(std::string endpoint, HttpVerb_et verb);
     std::string& getEndpoint();
     HttpVerb_et getVerb();

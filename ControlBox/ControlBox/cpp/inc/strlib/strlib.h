@@ -7,10 +7,6 @@
 #include <cstdio>
 #include <sys/types.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /***********************************************************************************************************************
 * Strlib APIs
 **********************************************************************************************************************/
@@ -28,8 +24,4 @@ ssize_t strnchr(const char *pSrc, size_t srcLen, char ch);
 /// \param maxLen Max length to which the strings should be compared to
 /// \return -EINVAL if invalid parameters are passed, -ENOMSG if strings dont match, otherwise returns 0 if A = B
 int strncmp(const char *pA, const char *pB, size_t maxLen);
-
-#ifdef __cplusplus
-}
-#endif
 #endif

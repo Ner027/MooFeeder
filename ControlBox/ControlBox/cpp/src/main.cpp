@@ -7,6 +7,8 @@
 #include <QNetworkConfigurationManager>
 #include "../inc/gui/cqmlinterface.h"
 #include <iostream>
+#include "serial/serial.h"
+#include "LoRa/phy/common/rn2483/rn2483.h"
 
 
 int main(int argc, char *argv[])
@@ -23,6 +25,11 @@ int main(int argc, char *argv[])
     view.rootContext()->setContextProperty("QmlInterface", CQmlInterface::getInstance());
     view.setSource(QUrl("qrc:/qml/Main.qml"));
     view.show();
+
+    serial_port_st port;
+
+    serial_open("/dev/ttyUSB0", B57600, &port);
+
 
     return QApplication::exec();
 }

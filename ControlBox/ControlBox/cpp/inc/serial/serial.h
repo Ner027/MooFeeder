@@ -1,10 +1,6 @@
 #ifndef DD_SERIAL_H
 #define DD_SERIAL_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /***********************************************************************************************************************
  * Includes
  **********************************************************************************************************************/
@@ -75,7 +71,4 @@ int serial_set_terminator(serial_port_st *serialPort, const char *newTerminator,
 /// -EPERM if device was no initialized, or errno in case of an internal error
 int serial_flush(serial_port_st *serialPort);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

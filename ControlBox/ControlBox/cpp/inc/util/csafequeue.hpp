@@ -17,6 +17,7 @@ public:
 private:
     std::queue<T> m_dataQueue;
     CMutex m_dataMutex;
+    std::condition_variable m_cv;
 };
 
 template<class T>

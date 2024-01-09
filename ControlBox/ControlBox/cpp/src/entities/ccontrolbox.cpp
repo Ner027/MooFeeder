@@ -1,8 +1,9 @@
 #include <QJsonObject>
 #include <QJsonDocument>
-#include "../../inc/entities/ccontrolbox.h"
+#include "entities/ccontrolbox.h"
 #include "ptwrapper/clockguard.h"
 #include "LoRa/network/server/cloranetwork.h"
+#include "app/cstationmanager.h"
 
 CControlBox* CControlBox::m_instance = nullptr;
 
@@ -71,10 +72,14 @@ CloudReturnCode_et CControlBox::executeLogin(const std::string& username, const 
     m_status = ControlBoxStatus_et::LOGGED_IN;
 
     CLoRaNetwork* loRaNetwork = CLoRaNetwork::getInstance();
-
     loRaNetwork->start();
     loRaNetwork->detach();
     loRaNetwork->waitOnReady();
+
+    CStationManager* stationManager = CStationManager::getInstance();
+    stationManager->start();
+    stationManager->detach();
+
 
     return USER_OK;
 }
