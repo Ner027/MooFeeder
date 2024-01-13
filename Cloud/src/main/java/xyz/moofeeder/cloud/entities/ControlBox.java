@@ -32,7 +32,7 @@ public class ControlBox extends SerializableObject
 
     public String refreshSessionToken() throws SQLException, IllegalAccessException
     {
-        m_sessionToken = Util.generateRandomString(Consts.sessionTokenLen);
+        m_sessionToken = Util.generateRandomString(Consts.SESSION_TOKEN_LEN);
         update();
         return m_sessionToken;
     }

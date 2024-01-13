@@ -69,7 +69,7 @@ public class FeedingStation extends SerializableObject
 
     public boolean setHwId(String hwId)
     {
-        if (hwId.length() != Consts.hwIdLen)
+        if (hwId.length() != Consts.HW_ID_LEN)
             return false;
 
         this.m_hwId = hwId;

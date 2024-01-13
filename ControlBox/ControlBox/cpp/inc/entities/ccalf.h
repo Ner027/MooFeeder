@@ -23,7 +23,7 @@ public:
     int addNewToCloud(uint32_t parent);
     int reportConsumption(float consumedVolume);
 private:
-    int getCalfFromCloud(QJsonObject* jsonObject);
+    int getFromCloud(QJsonObject &jsonObject);
     std::string m_phyTag;
     float m_maxConsumption;
     float m_currentConsumption;

@@ -29,7 +29,7 @@ public class AddCalfHandler implements IHandler
         Util.validateString(phyTag, HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_PHY_ID);
         Util.validateString(parentHwId, HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_HWID);
 
-        if (phyTag.length() != Consts.phyIdLen)
+        if (phyTag.length() != Consts.PHY_ID_LEN)
             throw new RequestException(HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_PHY_ID);
 
         FeedingStation feedingStation = new FeedingStation();

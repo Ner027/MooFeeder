@@ -28,6 +28,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
+import static xyz.moofeeder.cloud.util.Consts.PASSWORD_FIELD;
+import static xyz.moofeeder.cloud.util.Consts.USERNAME_FIELD;
+
 public class Util
 {
     private static final String m_validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -110,15 +113,15 @@ public class Util
 
     public static ControlBox tryLoginBox(Context ctx) throws Exception
     {
-        String username = ctx.formParam("username");
-        String password = ctx.formParam("password");
+        String username = ctx.formParam(USERNAME_FIELD);
+        String password = ctx.formParam(PASSWORD_FIELD);
 
         ControlBox controlBox = new ControlBox();
 
         Util.validateString(username, HttpStatus.UNAUTHORIZED, RequestErrorCause.INVALID_USER);
         Util.validateString(password, HttpStatus.UNAUTHORIZED, RequestErrorCause.INVALID_PASSWORD);
 
-        controlBox.load("username", username);
+        controlBox.load(USERNAME_FIELD, username);
 
         if (controlBox.getId() < 0)
             throw new RequestException(HttpStatus.UNAUTHORIZED, RequestErrorCause.USER_NOT_FOUND);

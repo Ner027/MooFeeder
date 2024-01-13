@@ -2,6 +2,8 @@
 #include <QJsonArray>
 #include "../../inc/entities/ccalf.h"
 #include "../../inc/entities/ccontrolbox.h"
+#include "util/util.h"
+#include "util/hexutil.h"
 
 CCalf::CCalf(const std::string& phyTag)
 {
@@ -13,7 +15,7 @@ CCalf::CCalf(const std::string& phyTag)
     m_maxConsumption = 15.0f;
     m_currentConsumption = 0.0f;
 
-    if (getCalfFromCloud(&calfData) < 0)
+    if (this->getFromCloud(calfData) < 0)
         return;
 
     m_maxConsumption = (float) calfData["calfData"].toObject()["maxConsumption"].toDouble();
@@ -22,11 +24,8 @@ CCalf::CCalf(const std::string& phyTag)
     m_isValid = true;
 }
 
-int CCalf::getCalfFromCloud(QJsonObject* jsonObject)
+int CCalf::getFromCloud(QJsonObject &jsonObject)
 {
-    if (!jsonObject)
-        return -EINVAL;
-
     CHttpRequest request(ENDPOINT_CALF_DATA, HttpVerb_et::GET);
 
     //Assemble the request
@@ -56,7 +55,7 @@ std::vector<CLog> CCalf::getLatestLogs()
 
     QJsonObject calfData;
 
-    if (getCalfFromCloud(&calfData) < 0)
+    if (getFromCloud(calfData) < 0)
         return logs;
 
     QJsonArray logArray = calfData["logData"].toArray();
@@ -110,7 +109,7 @@ int CCalf::addNewToCloud(uint32_t stationPhyAddr)
     request.m_formData
                     .addField(FIELD_TOKEN, CControlBox::getInstance()->getSessionToken().c_str())
                     .addField(FIELD_PHY_TAG, m_phyTag.c_str())
-                    .addField(FIELD_PARENT_STATION, QString::number(stationPhyAddr, 16).toStdString().c_str());
+                    .addField(FIELD_PARENT_STATION, arrayToHex((uint8_t*)&stationPhyAddr, 4).c_str());
 
     int ret = request.execute();
 
@@ -136,7 +135,7 @@ float CCalf::getAllowedConsumption()
 
 int CCalf::reportConsumption(float consumedVolume)
 {
-    CHttpRequest request(ENDPOINT_CALF_ADD, HttpVerb_et::POST);
+    CHttpRequest request(ENDPOINT_CALF_CHANGE, HttpVerb_et::PATCH);
 
     //Assemble the request
     request.m_formData

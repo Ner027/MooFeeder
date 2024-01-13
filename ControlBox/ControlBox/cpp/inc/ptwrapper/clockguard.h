@@ -1,7 +1,6 @@
 #ifndef PTHREADSWRAPPER_CUNIQUELOCK_H
 #define PTHREADSWRAPPER_CUNIQUELOCK_H
 
-
 #include "cmutex.h"
 
 class CLockGuard
@@ -12,6 +11,5 @@ public:
 private:
     CMutex& m_mutex;
 };
-
 
 #endif

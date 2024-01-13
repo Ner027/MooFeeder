@@ -6,9 +6,9 @@
 
 #define NOF_READS 3
 #define READ_WINDOW_SIZE 4
-#define SAMPLE_TIME_MS 250
+#define SAMPLE_TIME_MS 200
 
-#define RFID_PRIO 8
+#define RFID_PRIO 10
 #define RFID_STACK_SIZE 512
 
 #define ENABLE_RFID_LOGS
@@ -34,7 +34,6 @@ static void rfid_thread(void* args)
     uint64_t temp;
     yrm100x_ret_st yrmRet;
     yrm100x_inv_ut yrmInv;
-    systick_t currentTime, nextSampleTime;
 
     RFID_LOG("Started RFID Thread!\n");
 

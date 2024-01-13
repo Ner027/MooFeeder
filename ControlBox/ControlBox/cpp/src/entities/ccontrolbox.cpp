@@ -46,7 +46,7 @@ CloudReturnCode_et CControlBox::executeLogin(const std::string& username, const 
         return INTERNAL_ERROR;
 
     //If unable to extract a JSON Object from the request response, it was corrupted
-    if (request.getJsonData(&jObject) < 0)
+    if (request.getJsonData(jObject) < 0)
         return INTERNAL_ERROR;
 
     //If logged in successful the request should return HTTP Code Accepted
@@ -73,12 +73,11 @@ CloudReturnCode_et CControlBox::executeLogin(const std::string& username, const 
 
     CLoRaNetwork* loRaNetwork = CLoRaNetwork::getInstance();
     loRaNetwork->start();
-    loRaNetwork->detach();
-    loRaNetwork->waitOnReady();
+    (void)loRaNetwork->detach();
 
     CStationManager* stationManager = CStationManager::getInstance();
     stationManager->start();
-    stationManager->detach();
+    (void)stationManager->detach();
 
 
     return USER_OK;

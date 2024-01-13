@@ -1,5 +1,10 @@
+#include <QJsonArray>
 #include "app/cstationmanager.h"
 #include "entities/ccalf.h"
+#include "util/chttprequest.h"
+#include "cloudtypes.h"
+#include "entities/ccontrolbox.h"
+#include "util/hexutil.h"
 
 #define CONVERT_VBAT(x) (x)
 #define CONVERT_TEMP(x) (x)
@@ -33,10 +38,13 @@ void* CStationManager::run(void* args)
                 {
                     budget_request_st* pBudgetRequest = (budget_request_st*) appFrame.payload;
 
-                    CCalf calf(QByteArray((char*)pBudgetRequest->rfidTag).toHex().toStdString());
+                    CCalf calf(arrayToHex(pBudgetRequest->rfidTag, RFID_TAG_LEN));
 
                     if (!calf.isValid())
+                    {
+                        CLockGuard lock(m_activeStationsMutex);
                         calf.addNewToCloud(m_activeStations[i].phyAddr);
+                    }
 
                     float allowedConsumption = calf.getAllowedConsumption();
                     budget_response_st* pBudgetResponse = (budget_response_st*) appFrame.payload;
@@ -45,14 +53,14 @@ void* CStationManager::run(void* args)
                     memcpy(&pBudgetResponse->allowedConsumption, &allowedConsumption, 4);
                     appFrame.control.frameType = BUDGET_RESPONSE;
 
-                    m_networkInstance->sendMessage(appFrame, i, SERVER_SLOT);
+                    m_networkInstance->sendMessage(appFrame, SERVER_SLOT, i);
                     break;
                 }
                 case CONSUMPTION_REPORT:
                 {
                     consumption_report_st* pConsumptionReport = (consumption_report_st*) appFrame.payload;
 
-                    CCalf calf(QByteArray((char*)pConsumptionReport->rfidTag).toHex().toStdString());
+                    CCalf calf(arrayToHex(pConsumptionReport->rfidTag, RFID_TAG_LEN));
                     float* pConsumedVolume;
 
                     pConsumedVolume = (float*) &pConsumptionReport->volumeConsumed;
@@ -85,4 +93,70 @@ void* CStationManager::run(void* args)
 CStationManager::CStationManager()
 {
     m_networkInstance = CLoRaNetwork::getInstance();
+    m_keepRunning = true;
+}
+
+int CStationManager::registerStation(station_data_st &newStation)
+{
+    CLockGuard lock(m_activeStationsMutex);
+
+    if (m_activeStations.find(newStation.netAddr) != m_activeStations.end())
+        m_activeStations.erase(newStation.netAddr);
+
+    m_activeStations[newStation.netAddr] = newStation;
+
+    auto stationList = getStationList();
+
+    for (auto &item: stationList)
+    {
+        if (item.getPhyAddress() == newStation.phyAddr)
+        {
+            item.setNetworkAddr(newStation.netAddr);
+            return 0;
+        }
+    }
+
+    CFeedingStation::addNewToCloud(arrayToHex((uint8_t*)&newStation.phyAddr, 4));
+
+    return 0;
+}
+
+std::vector<CFeedingStation> CStationManager::getStationList()
+{
+    QJsonObject jsonObject;
+    std::vector<CFeedingStation> stationList;
+
+    CHttpRequest request(ENDPOINT_STATION_LIST, HttpVerb_et::GET);
+
+    //Assemble the request
+    request.m_formData
+            .addField(FIELD_TOKEN, QByteArray(CControlBox::getInstance()->getSessionToken().c_str()));
+
+    int ret = request.execute();
+
+    if (request.getStatus() != HttpStatusCode_et::OK)
+        return stationList;
+
+    //Check if the request executed properly
+    if (ret < 0)
+        return stationList;
+
+    //If unable to extract a JSON Object from the request response, it was corrupted
+    if (request.getJsonData(jsonObject) < 0)
+        return stationList;
+
+    QJsonArray stationArray = jsonObject["list"].toArray();
+
+    for (const auto& item: stationArray)
+    {
+        QJsonObject stationJson = item.toObject();
+        CFeedingStation currentStation;
+
+        if (currentStation.loadFromJson(stationJson) <= 0)
+            continue;
+
+        stationList.push_back(currentStation);
+    }
+
+    return stationList;
 }

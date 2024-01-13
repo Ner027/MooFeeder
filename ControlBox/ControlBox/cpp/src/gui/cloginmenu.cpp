@@ -27,7 +27,7 @@ CloudReturnCode_et CLoginMenu::registerUser(QString &username, QString &password
         return INTERNAL_ERROR;
 
     //If unable to extract a JSON Object from the request response, it was corrupted
-    if (request.getJsonData(&jObject) < 0)
+    if (request.getJsonData(jObject) < 0)
         return INTERNAL_ERROR;
 
     //If registration was successful the request should return HTTP Code Created

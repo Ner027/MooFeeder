@@ -14,14 +14,17 @@ import xyz.moofeeder.cloud.util.Util;
 
 import java.util.logging.Logger;
 
+import static xyz.moofeeder.cloud.util.Consts.PASSWORD_FIELD;
+import static xyz.moofeeder.cloud.util.Consts.USERNAME_FIELD;
+
 public class RegisterBoxHandler implements IHandler
 {
     private final Logger m_logger = Logger.getLogger(getClass().getName());
     @Override
     public void handle(@NotNull Context ctx) throws Exception
     {
-        String username = ctx.formParam("username");
-        String password = ctx.formParam("password");
+        String username = ctx.formParam(USERNAME_FIELD);
+        String password = ctx.formParam(PASSWORD_FIELD);
 
         Util.validateString(username, HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_USER);
         Util.validateString(password, HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_PASSWORD);
@@ -30,7 +33,7 @@ public class RegisterBoxHandler implements IHandler
 
         ControlBox controlBox = new ControlBox();
 
-        controlBox.load("username", username);
+        controlBox.load(USERNAME_FIELD, username);
 
         if (controlBox.getId() > 0)
         {
@@ -40,7 +43,7 @@ public class RegisterBoxHandler implements IHandler
 
         if (!controlBox.setUsername(username))
         {
-            Util.log("Username invalid!");
+            Util.log("Invalid username!");
             throw new RequestException(HttpStatus.FORBIDDEN, RequestErrorCause.INVALID_USER);
         }
 

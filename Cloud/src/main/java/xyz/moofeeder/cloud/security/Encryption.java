@@ -10,14 +10,16 @@ import java.security.SecureRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static xyz.moofeeder.cloud.util.Consts.*;
+
 public class Encryption
 {
     private static final Argon2PasswordEncoder m_encoder = new Argon2PasswordEncoder(
-            Consts.saltLen,
-            Consts.hashLen,
-            Consts.encryptionMaxCores,
-            Consts.encryptionMaxMemory,
-            Consts.encryptionMaxRuns);
+            LEN_SALT,
+            LEN_HASH,
+            ENCRYPTION_MAX_CORES,
+            ENCRYPTION_MAX_MEMORY,
+            ENCRYPTION_MAX_RUNS);
     private static final SecureRandom m_rng = new SecureRandom();
     private static final String m_pepper = System.getenv("KEY_PEPPER");
     private static final Logger m_logger = Logger.getLogger(Encryption.class.getName());
@@ -31,10 +33,11 @@ public class Encryption
         }
 
         //Generate random salt
-        byte[] saltBytes = new byte[Consts.saltLen];
+        byte[] saltBytes = new byte[LEN_SALT];
         m_rng.nextBytes(saltBytes);
         String saltString = new String(saltBytes, StandardCharsets.US_ASCII);
 
+        //Return the randomly generated salt string and the encrypted password
         return new Pair<>(saltString, m_encoder.encode(getComposedPassword(src, saltString)));
     }
 

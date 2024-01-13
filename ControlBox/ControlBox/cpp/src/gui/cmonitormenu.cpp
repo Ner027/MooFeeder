@@ -21,7 +21,7 @@ std::vector<CCalf> CMonitorMenu::getCalfList()
         return calfList;
 
     //If unable to extract a JSON Object from the request response, it was corrupted
-    if (request.getJsonData(&jsonObject) < 0)
+    if (request.getJsonData(jsonObject) < 0)
         return calfList;
 
     QJsonArray calfArray = jsonObject["list"].toArray();

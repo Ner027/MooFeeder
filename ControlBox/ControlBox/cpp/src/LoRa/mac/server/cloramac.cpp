@@ -5,6 +5,7 @@
 #include "LoRa/mac/common/mac_util.h"
 #include "LoRa/phy/common/rn2483/rn2483.h"
 #include "oswrapper/oswrapper.h"
+#include "app/cstationmanager.h"
 
 CLoRaMac* CLoRaMac::m_instance = nullptr;
 
@@ -60,8 +61,11 @@ void CLoRaMac::stateInit()
     int ret;
     mac_frame_st* pMacFrame;
 
+    //std::string portName = "/dev/ttyUSB0";
+    std::string portName = "/dev/ttyAMA0";
+
     //TODO: Replace hardcode port in favor of a more flexible approach
-    ret = serial_open("/dev/ttyUSB0", B57600, &m_radioPort);
+    ret = serial_open((char*)portName.c_str(), B57600, &m_radioPort);
     if (ret < 0)
     {
         MAC_LOG("Failed to open RN2483 Serial Port!\n");
@@ -171,6 +175,7 @@ void CLoRaMac::stateRx()
     switch (pMacFrame->control.header)
     {
         case HDR_UP_LINK:
+        {
             ret = findDevice(&pMacFrame->control.srcAddr);
             if (ret < 0)
             {
@@ -193,9 +198,9 @@ void CLoRaMac::stateRx()
 
             timeSinceSync = GET_CURRENT_TIME() - m_lastTxTime;
             timeMs = std::chrono::duration_cast<std::chrono::milliseconds>(timeSinceSync).count();
-            clientSlot = timeMs / TIME_SLOT_MS;
 
-            MAC_LOG("Time since last sync message: %ld ms... This is slot: %d\n", timeMs, clientSlot);
+            clientSlot = timeMs / TIME_SLOT_MS;
+            MAC_LOG("Time since last sync message: %ld ms... This is slot: %u\n", timeMs, clientSlot);
 
             //Check if the client is transmitting in the wrong time slot, this can be caused by clock skews, or restarts
             //From both the client and the server
@@ -208,8 +213,9 @@ void CLoRaMac::stateRx()
             m_rxQueue.push(phyFrame);
 
             return;
-
+        }
         case HDR_JOIN_REQ:
+        {
             if (strncmp((char*) pMacFrame->control.destAddr, (char*) &m_loraRadio.phyAddr[4], ADDR_LEN) != 0)
             {
                 MAC_LOG("Received Join Request targeted at other server! Dest address: 0x%x", *((uint32_t*) pMacFrame->control.destAddr));
@@ -233,6 +239,12 @@ void CLoRaMac::stateRx()
                 }
 
                 clientSlot = ret + 2;
+
+                station_data_st newStation;
+                newStation.netAddr = clientSlot;
+                memcpy(&newStation.phyAddr, pMacFrame->control.srcAddr, 4);
+
+                CStationManager::getInstance()->registerStation(newStation);
             }
 
             pMacFrame->control.header = HDR_JOIN_ACP;
@@ -254,6 +266,7 @@ void CLoRaMac::stateRx()
 
             MAC_LOG("Device with address: 0x%x added to network at slot: %d!\n", *((uint32_t*)pMacFrame->control.destAddr), clientSlot);
             break;
+        }
         default:
             MAC_LOG("Unknown header received!\n");
             break;

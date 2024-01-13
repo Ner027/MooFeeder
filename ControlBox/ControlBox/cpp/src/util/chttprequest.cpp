@@ -2,8 +2,9 @@
 #include "../../inc/util/chttprequest.h"
 #include "../../inc/util/cnetworkmanager.h"
 
-CHttpRequest::CHttpRequest(std::string endpoint, HttpVerb_et verb)
+CHttpRequest::CHttpRequest(const std::string& endpoint, HttpVerb_et verb)
 {
+    m_reply = nullptr;
     m_endpoint = endpoint;
     m_verb = verb;
     m_ready = false;
@@ -19,12 +20,12 @@ int CHttpRequest::execute()
     return ret;
 }
 
-std::string &CHttpRequest::getEndpoint()
+std::string CHttpRequest::getEndpoint() const
 {
     return m_endpoint;
 }
 
-HttpVerb_et CHttpRequest::getVerb()
+HttpVerb_et CHttpRequest::getVerb() const
 {
     return m_verb;
 }
@@ -37,18 +38,14 @@ HttpStatusCode_et CHttpRequest::getStatus() const
     return static_cast<HttpStatusCode_et>(m_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
 }
 
-int CHttpRequest::getJsonData(QJsonObject* jsonObject)
+int CHttpRequest::getJsonData(QJsonObject& jsonObject) const
 {
-    if (!jsonObject)
-        return -EINVAL;
-
     QJsonDocument jDoc = QJsonDocument::fromJson(m_reply->readAll());
 
     if (jDoc.isEmpty())
         return -ENODATA;
 
-    *jsonObject = jDoc.object();
+    jsonObject = jDoc.object();
 
     return 0;
 }
-

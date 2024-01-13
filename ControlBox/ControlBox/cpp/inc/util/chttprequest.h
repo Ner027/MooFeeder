@@ -6,19 +6,17 @@
 #include "chttpform.h"
 #include "networktypes.h"
 
-
 class CHttpRequest
 {
 public:
+    CHttpRequest(const std::string& endpoint, HttpVerb_et verb);
+    [[nodiscard]] int execute();
+    [[nodiscard]] std::string getEndpoint() const;
+    [[nodiscard]] HttpVerb_et getVerb() const;
+    [[nodiscard]] HttpStatusCode_et getStatus() const;
+    [[nodiscard]] int getJsonData(QJsonObject& jsonObject) const;
     QNetworkReply* m_reply;
     CHttpForm m_formData;
-    CHttpRequest();
-    CHttpRequest(std::string endpoint, HttpVerb_et verb);
-    std::string& getEndpoint();
-    HttpVerb_et getVerb();
-    HttpStatusCode_et getStatus() const;
-    int execute();
-    int getJsonData(QJsonObject* jsonObject);
 private:
     bool m_ready;
     std::string m_endpoint;

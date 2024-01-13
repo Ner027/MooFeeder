@@ -1,7 +1,7 @@
 #ifndef CONTROLBOX_CLOUDTYPES_H
 #define CONTROLBOX_CLOUDTYPES_H
 
-#define CLOUD_URL               "http://localhost:8017"
+#define CLOUD_URL               "http://192.168.216.118:8017"
 
 #define ENDPOINT_LOGIN          "/box/login"
 #define ENDPOINT_REGISTER       "/box/register"
@@ -11,6 +11,7 @@
 #define ENDPOINT_CALF_DATA      "/calf/data"
 #define ENDPOINT_CALF_LIST      "/calf/list"
 
+#define ENDPOINT_STATION_CREATE "/station/create"
 #define ENDPOINT_STATION_LIST   "/station/list"
 
 #define FIELD_USER              "username"
@@ -19,6 +20,8 @@
 #define FIELD_RESERVED          "reserved"
 #define FIELD_TOKEN             "sessionToken"
 #define FIELD_PHY_TAG           "phyId"
+#define FIELD_HW_ID             "hwId"
+#define FIELD_NAME              "name"
 #define FIELD_PARENT_STATION    "parentStation"
 #define FIELD_CONSUMPTION       "consumption"
 

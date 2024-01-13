@@ -38,7 +38,7 @@ CHttpForm &CHttpForm::addField(std::string fieldName, QByteArray fieldValue)
     return *this;
 }
 
-QHttpMultiPart *CHttpForm::getMultiPart()
+QHttpMultiPart* CHttpForm::getMultiPart() const
 {
     return m_multiPart;
 }

@@ -20,7 +20,6 @@ CNetworkManager* CNetworkManager::getInstance()
 
 void CNetworkManager::killInstance()
 {
-    m_keepRunning = false;
     delete m_instance;
     m_instance = nullptr;
 }
@@ -28,18 +27,13 @@ void CNetworkManager::killInstance()
 CNetworkManager::~CNetworkManager()
 {
     delete m_networkAccessManager;
+    delete m_request;
 }
 
 CNetworkManager::CNetworkManager()
 {
-    m_keepRunning = true;
-    m_networkAccessManager = new QNetworkAccessManager;
     m_request = new QNetworkRequest;
-    SemaphoreInit(&m_pendingSem);
-    SemaphoreInit(&m_readySem);
-
-    this->start();
-    this->detach();
+    m_networkAccessManager = nullptr;
 }
 
 int CNetworkManager::executeRequest(CHttpRequest& httpRequest)
@@ -47,47 +41,32 @@ int CNetworkManager::executeRequest(CHttpRequest& httpRequest)
     if (httpRequest.getVerb() >= HttpVerb_et::MAX)
         return -EINVAL;
 
-    m_currentRequest = &httpRequest;
+    CLockGuard lock(m_requestMutex);
 
-    SemaphoreGive(&m_pendingSem);
-    SemaphoreTake(&m_readySem);
+    std::stringstream urlBuilder;
+    urlBuilder << CLOUD_URL << httpRequest.getEndpoint();
+
+    QUrl fullUrl(QString::fromStdString(urlBuilder.str()));
+
+    m_request->setUrl(fullUrl);
+
+    QEventLoop loop;
+
+    if (m_networkAccessManager)
+    {
+        delete m_networkAccessManager;
+        m_networkAccessManager = nullptr;
+    }
+
+    m_networkAccessManager = new QNetworkAccessManager;
+
+    httpRequest.m_reply = m_networkAccessManager->sendCustomRequest(*m_request,
+                                                       g_verbLut[httpRequest.getVerb()].c_str(),
+                                                       httpRequest.m_formData.getMultiPart());
+
+    QObject::connect(httpRequest.m_reply, SIGNAL(finished()), &loop, SLOT(quit()));
+
+    loop.exec();
 
     return 0;
 }
-
-void* CNetworkManager::run(void* args)
-{
-    m_networkAccessManager->setParent(this);
-
-    while (m_keepRunning)
-    {
-        SemaphoreTake(&m_pendingSem);
-
-        std::stringstream urlBuilder;
-        urlBuilder << CLOUD_URL << m_currentRequest->getEndpoint();
-
-        QUrl fullUrl(QString::fromStdString(urlBuilder.str()));
-
-        m_request->setUrl(fullUrl);
-        QEventLoop loop;
-
-        m_currentRequest->m_reply = m_networkAccessManager->sendCustomRequest(*m_request,
-                                                                        g_verbLut[m_currentRequest->getVerb()].c_str(),
-                                                                        m_currentRequest->m_formData.getMultiPart());
-
-        QObject::connect(m_currentRequest->m_reply, SIGNAL(finished()), &loop, SLOT(quit()));
-
-        loop.exec();
-
-        m_requestLock.unlock();
-
-        SemaphoreGive(&m_readySem);
-    }
-
-    return nullptr;
-}
-
-
-
-
-

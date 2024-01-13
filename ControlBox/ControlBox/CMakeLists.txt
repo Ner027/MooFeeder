@@ -44,6 +44,7 @@ set(PROJECT_SOURCES
         cpp/inc/util/csafequeue.hpp
         cpp/src/LoRa/network/server/cloranetwork.cpp
         cpp/src/app/cstationmanager.cpp
+        cpp/src/util/hexutil.cpp
         qml.qrc
 )
 

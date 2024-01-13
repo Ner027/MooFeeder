@@ -2,7 +2,7 @@
 #define CONTROLBOX_CSTATIONMENU_H
 
 #include "cguimenu.h"
-#include "cfeedingstation.h"
+#include "entities/cfeedingstation.h"
 
 class CStationMenu : public CGuiMenu
 {

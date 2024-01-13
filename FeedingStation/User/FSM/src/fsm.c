@@ -1,12 +1,14 @@
 #include <sys/errno.h>
 #include <memory.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "../inc/fsm.h"
 #include "FreeRTOS.h"
 #include "semphr.h"
 #include "main.h"
 
 #define ENABLE_FSM_LOGS
+#define DUMMY_CONSUMPTION
 
 #ifdef ENABLE_FSM_LOGS
 #include "../../util/inc/util.h"
@@ -112,6 +114,10 @@ static void state_init()
 {
     int ret;
 
+#ifdef DUMMY_CONSUMPTION
+    srand(xTaskGetTickCount());
+#endif
+
     nextState = ST_EVAL;
 
     ret = rfid_init();
@@ -144,7 +150,7 @@ static void state_request_budget()
     int ret;
 
     app_frame_st* pAppFrame = (app_frame_st*) currentNetFrame.payload;
-    budget_request_st* pBudgetReq = (budget_request_st*) pAppFrame;
+    budget_request_st* pBudgetReq = (budget_request_st*) pAppFrame->payload;
 
     memcpy(pBudgetReq->rfidTag, &currentRfidTag, RFID_TAG_LEN);
     pAppFrame->control.frameType = BUDGET_REQUEST;
@@ -180,6 +186,10 @@ static void state_report_consumption()
     pAppFrame = (app_frame_st*) currentNetFrame.payload;
     pAppFrame->control.frameType = CONSUMPTION_REPORT;
     pReport = (consumption_report_st*) pAppFrame->payload;
+
+#ifdef DUMMY_CONSUMPTION
+     consumedVolume = (float) (rand() % (uint32_t)currentAllowedConsumption);
+#endif
 
     memcpy(&pReport->volumeConsumed, &consumedVolume, sizeof(uint32_t));
     memcpy(&pReport->rfidTag, &currentRfidTag, RFID_TAG_LEN);
@@ -231,7 +241,7 @@ static void state_get_budget()
 
     FSM_LOG("Received budget response to calf: 0x%llx with allowed consumption of: %f\n", currentRfidTag, currentAllowedConsumption);
 
-    if (currentAllowedConsumption <= 0.0f)
+    if (currentAllowedConsumption <= 0.01f)
     {
         FSM_LOG("Current calf exceeded consumption budget!\n");
         nextState = ST_IDLE;
@@ -262,7 +272,7 @@ static void state_feed()
         return;
     }
 
-    consumedVolume += 1.0f;
+    consumedVolume += 0.1f;
 
     if (consumedVolume >= currentAllowedConsumption)
         nextState = ST_CLOSE;
@@ -284,7 +294,7 @@ static void state_close()
 
 static void state_idle()
 {
-    vTaskDelay(1000/portTICK_PERIOD_MS);
+    vTaskDelay(500/portTICK_PERIOD_MS);
     nextState = ST_EVAL;
 }
 
