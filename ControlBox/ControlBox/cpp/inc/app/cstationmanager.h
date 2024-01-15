@@ -6,6 +6,7 @@
 #include "ptwrapper/cthread.h"
 #include "LoRa/network/server/cloranetwork.h"
 #include "station_types.h"
+#include <QString>
 
 #define ENABLE_MANAGER_LOGS
 
@@ -23,13 +24,14 @@ class CStationManager : public CThread
 public:
     CStationManager();
     static CStationManager* getInstance();
-    int registerStation(station_data_st& newStation);
+    int getStationData(QString& phyTag, station_data_st* pStationData);
+    int registerStation(station_data_st &newStation);
     std::vector<CFeedingStation> getStationList();
 private:
     static CStationManager* m_instance;
-    CMutex m_activeStationsMutex;
     std::atomic<bool> m_keepRunning;
     CLoRaNetwork* m_networkInstance;
+    CMutex m_activeStationsMutex;
     std::map<uint8_t, station_data_st> m_activeStations;
     void* run(void *) override;
 };

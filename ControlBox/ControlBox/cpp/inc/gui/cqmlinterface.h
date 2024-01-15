@@ -73,9 +73,12 @@ public slots:
 
     void selectCalf(QString phyTag);
 
+    void selectStation(QString hwId, QString name);
+
     void updateCalfList();
 
     void updateStationList();
+
 signals:
     /// \brief This signal is emitted when the current GUI menu is changed
     /// \param newMenu The menu that the GUI changed to
@@ -108,5 +111,6 @@ signals:
 
     void addPointToGraph(int timestamp, float volume);
 
+    void stationSelected(float temperature, float battery, int networkAddr, QString name, QString macAddr, QString status);
 };
 #endif

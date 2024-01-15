@@ -4,6 +4,7 @@
 #include "../../inc/gui/cloginmenu.h"
 #include "../../inc/gui/cmonitormenu.h"
 #include "../../inc/gui/cstationmenu.h"
+#include "app/cstationmanager.h"
 #include <QJsonArray>
 
 CQmlInterface* CQmlInterface::m_instance = nullptr;
@@ -248,5 +249,21 @@ void CQmlInterface::updateCalfList()
 void CQmlInterface::updateStationList()
 {
     onMenuLoaded(STATION_MENU);
+}
+
+void CQmlInterface::selectStation(QString hwId, QString name)
+{
+    int ret;
+    station_data_st stationData {0};
+
+    ret = CStationManager::getInstance()->getStationData(hwId, &stationData);
+
+    QString str = QString("FAFEDEAD");
+
+    emit stationSelected(stationData.currTemperature,
+                         stationData.currBattery,
+                         stationData.netAddr,
+                         name,
+                         str, (ret >= 0) ? "Connected" : "Not Connected");
 }
 

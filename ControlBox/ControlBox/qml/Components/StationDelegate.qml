@@ -33,7 +33,7 @@ Item
 
             onClicked: () =>
                        {
-                           //TODO: Call C++ select from here
+                           QmlInterface.selectStation(model.phyId, model.selfName);
                            isSelected = true;
                        }
         }

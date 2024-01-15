@@ -1,8 +1,6 @@
 #ifndef OS_WRAPPER_H
 #define OS_WRAPPER_H
 
-//#define ENABLE_TU
-
 #define HOST
 
 #ifdef HOST
@@ -158,70 +156,4 @@ int SemaphoreTake(SemaphoreHandle_st *p_sem);
 
 int SemaphoreGive(SemaphoreHandle_st *p_sem);
 
-/// \brief This function initializes a list using a pre allocated buffer
-/// \param pList Pointer to the list handler
-/// \param pBuffer Pointer to the pre allocated buffer
-/// \param listSize Max number of items the list can contain (Should be set set accordingly to the given buffer size)
-/// \param itemSize Size (in bytes) of each of the lists item
-/// \return -EINVAL if invalid parameters are passed, 0 on success
-int ListUnsafeInitStatic(ListHandle_st* pList, void* pBuffer, uint32_t listSize, uint32_t itemSize);
-
-int ListUnsafeInit(ListHandle_st* pList, uint32_t listSize, uint32_t itemSize);
-
-/// \brief This function destroys a list by setting its size to 0
-/// \param pList Pointer to the list handler
-/// \return -EINVAL if invalid parameters are passed, 0 on success
-int ListUnsafeDestroy(ListHandle_st* pList);
-
-/// \brief This functions allows to set an item of the list at a given position
-/// \param pList Pointer to the list handler
-/// \param index List index to set the item to
-/// \param pItem Item to write to the list
-/// \return -EINVAL if invalid parameters are passed, -EPERM if trying to set an item that exceeds the list size,
-/// returns 0 on success
-int ListUnsafeSet(ListHandle_st* pList, uint32_t index, void* pItem);
-
-/// \brief This function allows to retrieve an item from a list at a given position
-/// \param pList Pointer to the list handler
-/// \param index Index to retrieve the item from
-/// \param pRet Pointer to return the read item to
-/// \return -EINVAL if invalid parameters are passed, -EPERM if trying to access a position that exceeds the current
-/// list size, returns 0 on success
-int ListUnsafeGet(ListHandle_st* pList, uint32_t index, void* pRet);
-
-/// \brief This function retries the last item of a list and removes it
-/// \param pList Pointer to the list handler
-/// \param pRet Pointer to return the read item to
-/// \return -EINVAL if invalid parameters are passed, -ENODATA if list is empty, returns 0 on success
-int ListUnsafePopBack(ListHandle_st* pList, void* pRet);
-
-/// \brief This functions pushes an item to the end a list
-/// \param pList Pointer to list handler
-/// \param pItem Pointer to item to be insert
-/// \return -EINVAL if invalid parameters are passed, -ENOSPC if the list is full, returns 0 on success
-int ListUnsafePushBack(ListHandle_st* pList, void* pItem);
-
-/// \brief This functions allows to remove an item from a list at a given position
-/// \param pList Pointer to the list handler
-/// \param index Index of the item to remove
-/// \return -EINVAL if invalid parameters are passed, -EPERM if trying to remove an item at a position that exceeds the
-/// current list size, returns 0 on success
-int ListUnsafeRemove(ListHandle_st* pList, uint32_t index);
-
-/// \brief This functions allows to insert an item in a list at a given position
-/// \param pList Pointer to the list handler
-/// \param index Index to insert the item in
-/// \param pItem Pointer to the item that should be inserted
-/// \return -EINVAL if invalid parameters are passed, -EPERM if trying to insert an item at an invalid position, -ENOSPC
-/// if list is full, returns 0 on success
-int ListUnsafeInsert(ListHandle_st* pList, uint32_t index, void* pItem);
-
-#ifdef ENABLE_TU
-void tu_semaphores();
-void tu_queues();
-void tu_queues_mt();
-void tu_queue_ptr();
-void tu_list();
 #endif
-#endif
-

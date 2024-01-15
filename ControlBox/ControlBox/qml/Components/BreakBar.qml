@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtQuick.Layouts 1.3
 
 Item
 {
@@ -7,6 +8,9 @@ Item
     width: parent.width
     height: textContainer.height + bar.height
     implicitHeight: height
+
+    Layout.preferredHeight: height
+    Layout.preferredWidth: width
 
     Text
     {

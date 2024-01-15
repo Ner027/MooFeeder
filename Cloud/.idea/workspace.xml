@@ -5,73 +5,248 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="251cfa72-8255-43a5-8848-79dee7290c63" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../Host/LoRa/network/client/inc/network_client.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Host/LoRa/network/client/src/network_client.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Host/LoRa/network/common/inc/network_util.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Host/LoRa/oswrapper/inc/oswrapper.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Host/LoRa/oswrapper/src/oswrapper.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/.mxproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/Backup/FreeRTOSConfig.h.bak" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Inc/Backup/FreeRTOSConfig.h.bak" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/Backup/main.h.bak" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Inc/Backup/main.h.bak" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/Backup/stm32l4xx_hal_conf.h.bak" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Inc/Backup/stm32l4xx_hal_conf.h.bak" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/Backup/stm32l4xx_it.h.bak" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Inc/Backup/stm32l4xx_it.h.bak" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/adc.h" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Inc/adc.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/gpio.h" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Inc/gpio.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/i2c.h" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Inc/i2c.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/usart.h" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Inc/usart.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/freertos.c.bak" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/freertos.c.bak" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/main.c.bak" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/main.c.bak" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/stm32l4xx_hal_msp.c.bak" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/stm32l4xx_hal_msp.c.bak" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/stm32l4xx_hal_timebase_tim.c.bak" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/stm32l4xx_hal_timebase_tim.c.bak" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/stm32l4xx_it.c.bak" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/stm32l4xx_it.c.bak" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/system_stm32l4xx.c.bak" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/system_stm32l4xx.c.bak" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/adc.c" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Src/adc.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/freertos.c" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Src/freertos.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/gpio.c" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Src/gpio.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/i2c.c" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Src/i2c.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/usart.c" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/Core/Src/usart.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/FeedingStation.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/FeedingStation.ioc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/STM32L412CBTXP_FLASH.ld" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/STM32L412CBTXP_FLASH.ld" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/mac/client/src/mac_client.c" beforeDir="false" afterPath="$PROJECT_DIR$/../FeedingStation/User/LoRa/mac/client/src/mac_client.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/app/common/inc/app_types.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/app/common/inc/app_types.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/.cmake/api/v1/reply/cache-v2-e8fb425f5280ce4a6eb0.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/.cmake/api/v1/reply/cmakeFiles-v1-960e2392203cecc651d0.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/.cmake/api/v1/reply/codemodel-v2-e8284cee3f94d83099a6.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/.cmake/api/v1/reply/index-2023-12-12T00-05-57-0506.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/.cmake/api/v1/reply/target-LoRa-Debug-749209635f030928cda5.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/.cmake/api/v1/reply/toolchains-v1-7096c62e23c342eb06a8.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/3.27.0/CMakeCCompiler.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/3.27.0/CMakeCCompiler.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/3.27.0/CMakeCXXCompiler.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/3.27.0/CMakeCXXCompiler.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/3.27.0/CMakeDetermineCompilerABI_C.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/3.27.0/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/3.27.0/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/3.27.0/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/3.27.0/CMakeSystem.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/3.27.0/CMakeSystem.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/3.27.0/CompilerIdC/a.out" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/3.27.0/CompilerIdC/a.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/3.27.0/CompilerIdCXX/a.out" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/3.27.0/CompilerIdCXX/a.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/CMakeConfigureLog.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/CMakeConfigureLog.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/rules.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/CMakeFiles/rules.ninja" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/LoRa" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/LoRa" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/cmake-build-debug/build.ninja" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/common/inc/oswrap.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/mac/client/src/mac_client.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/mac/client/src/mac_client.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/mac/common/inc/mac_types.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/mac/common/inc/mac_types.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/mac/common/inc/mac_util.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/mac/common/inc/mac_util.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/mac/server/inc/cloramac.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/mac/server/inc/cloramac.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/mac/server/src/cloramac.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/mac/server/src/cloramac.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/network/server/inc/cloranetwork.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/network/server/inc/cloranetwork.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/network/server/src/cloranetwork.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/network/server/src/cloranetwork.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/queue/inc/queue.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/queue/inc/queue.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/serial/inc/serial.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/serial/inc/serial.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/serial/src/serial.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/serial/src/serial.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Host/LoRa/strlib/inc/strlib.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Host/LoRa/strlib/inc/strlib.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ControlBox/ControlBox/cpp/inc/LoRa/phy/common/rn2483/rn2483.h" beforeDir="false" afterPath="$PROJECT_DIR$/../ControlBox/ControlBox/cpp/inc/LoRa/phy/common/rn2483/rn2483.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ControlBox/ControlBox/cpp/inc/app/cstationmanager.h" beforeDir="false" afterPath="$PROJECT_DIR$/../ControlBox/ControlBox/cpp/inc/app/cstationmanager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ControlBox/ControlBox/cpp/inc/cloudtypes.h" beforeDir="false" afterPath="$PROJECT_DIR$/../ControlBox/ControlBox/cpp/inc/cloudtypes.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ControlBox/ControlBox/cpp/inc/gui/cqmlinterface.h" beforeDir="false" afterPath="$PROJECT_DIR$/../ControlBox/ControlBox/cpp/inc/gui/cqmlinterface.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ControlBox/ControlBox/cpp/inc/oswrapper/oswrapper.h" beforeDir="false" afterPath="$PROJECT_DIR$/../ControlBox/ControlBox/cpp/inc/oswrapper/oswrapper.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ControlBox/ControlBox/cpp/src/app/cstationmanager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../ControlBox/ControlBox/cpp/src/app/cstationmanager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ControlBox/ControlBox/cpp/src/gui/cqmlinterface.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../ControlBox/ControlBox/cpp/src/gui/cqmlinterface.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ControlBox/ControlBox/cpp/src/oswrapper/oswrapper.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../ControlBox/ControlBox/cpp/src/oswrapper/oswrapper.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ControlBox/ControlBox/qml/Components/BreakBar.qml" beforeDir="false" afterPath="$PROJECT_DIR$/../ControlBox/ControlBox/qml/Components/BreakBar.qml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ControlBox/ControlBox/qml/Components/StationDelegate.qml" beforeDir="false" afterPath="$PROJECT_DIR$/../ControlBox/ControlBox/qml/Components/StationDelegate.qml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ControlBox/ControlBox/qml/MonitorMenu.qml" beforeDir="false" afterPath="$PROJECT_DIR$/../ControlBox/ControlBox/qml/MonitorMenu.qml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ControlBox/ControlBox/qml/StationMenu.qml" beforeDir="false" afterPath="$PROJECT_DIR$/../ControlBox/ControlBox/qml/StationMenu.qml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/.cproject" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/.mxproject" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/.project" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/CMakeLists_template.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/Backup/FreeRTOSConfig.h.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/Backup/adc.h.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/Backup/gpio.h.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/Backup/i2c.h.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/Backup/main.h.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/Backup/stm32l4xx_hal_conf.h.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/Backup/stm32l4xx_it.h.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/Backup/usart.h.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/FreeRTOSConfig.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/adc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/gpio.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/i2c.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/main.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/stm32l4xx_hal_conf.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/stm32l4xx_it.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Inc/usart.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/adc.c.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/freertos.c.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/gpio.c.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/i2c.c.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/main.c.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/stm32l4xx_hal_msp.c.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/stm32l4xx_hal_timebase_tim.c.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/stm32l4xx_it.c.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/syscalls.c.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/sysmem.c.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/system_stm32l4xx.c.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/Backup/usart.c.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/adc.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/freertos.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/gpio.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/i2c.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/main.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/stm32l4xx_hal_msp.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/stm32l4xx_hal_timebase_tim.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/stm32l4xx_it.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/syscalls.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/sysmem.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/system_stm32l4xx.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Src/usart.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Core/Startup/startup_stm32l412cbtxp.s" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l412xx.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l4xx.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Device/ST/STM32L4xx/Include/system_stm32l4xx.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Device/ST/STM32L4xx/LICENSE.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Device/ST/STM32L4xx/License.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/cmsis_armcc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/cmsis_armclang.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/cmsis_armclang_ltm.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/cmsis_compiler.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/cmsis_gcc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/cmsis_iccarm.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/cmsis_version.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/core_armv81mml.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/core_armv8mbl.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/core_armv8mml.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/core_cm0.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/core_cm0plus.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/core_cm1.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/core_cm23.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/core_cm3.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/core_cm33.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/core_cm35p.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/core_cm4.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/core_cm7.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/core_sc000.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/core_sc300.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/mpu_armv7.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/mpu_armv8.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/Include/tz_context.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/CMSIS/LICENSE.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_adc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_adc_ex.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_cortex.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_def.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_dma.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_dma_ex.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_exti.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_flash.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_flash_ex.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_flash_ramfunc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_gpio.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_gpio_ex.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_i2c.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_i2c_ex.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pcd.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pcd_ex.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pwr.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pwr_ex.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_rcc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_rcc_ex.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_tim.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_tim_ex.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_adc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_bus.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_cortex.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_crs.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_dma.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_dmamux.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_exti.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_gpio.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_i2c.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_lpuart.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_pwr.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_rcc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_system.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_usart.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_usb.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_utils.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/LICENSE.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/License.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_adc.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_adc_ex.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma_ex.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_exti.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ex.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ramfunc.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart_ex.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/FeedingStation.ioc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/freertos_mpool.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/freertos_os2.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/croutine.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/StackMacros.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/atomic.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/croutine.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/list.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/message_buffer.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/mpu_prototypes.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/portable.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/queue.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/stack_macros.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/stream_buffer.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/task.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/include/timers.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/list.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/queue.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/tasks.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/Middlewares/Third_Party/FreeRTOS/Source/timers.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/STM32L412CBTXP_FLASH.ld" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/USB_DEVICE/App/usb_device.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/USB_DEVICE/App/usb_device.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/USB_DEVICE/App/usbd_cdc_if.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/USB_DEVICE/App/usbd_cdc_if.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/USB_DEVICE/App/usbd_desc.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/USB_DEVICE/App/usbd_desc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/USB_DEVICE/Target/usbd_conf.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/USB_DEVICE/Target/usbd_conf.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/FSM/inc/fsm.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/FSM/src/fsm.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/common/inc/lora_timmings.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/mac/client/inc/mac_client.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/mac/client/src/mac_client.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/mac/common/inc/mac_types.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/mac/common/inc/mac_util.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/mac/common/src/mac_util.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/network/client/inc/network_client.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/network/client/src/network_client.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/network/common/inc/network_types.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/network/common/inc/network_util.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/oswrapper/inc/oswrapper.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/oswrapper/src/oswrapper.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/phy/common/inc/phy_types.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/phy/common/inc/rn2483.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/phy/common/inc/rn2483_commands.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/phy/common/inc/rn2483_types.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/LoRa/phy/common/src/rn4283.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/RFID/inc/rfid.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/RFID/src/rfid.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/Serial/inc/serial.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/Serial/src/serial.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/common.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/platform/inc/platform.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/strlib/inc/strlib.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/strlib/src/strlib.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/util/inc/util.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/util/src/util.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/yrm100x/inc/yrm100x.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/yrm100x/inc/yrm100x_types.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FeedingStation/User/yrm100x/src/yrm100x.c" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -151,8 +326,15 @@
     </configuration>
     <configuration name="MooFeederCloud.jar" type="JarApplication" temporary="true">
       <option name="JAR_PATH" value="$PROJECT_DIR$/build/libs/MooFeederCloud.jar" />
-      <method v="2" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method v="2">
+        <option name="Gradle.BeforeRunTask" enabled="true" tasks="shadowJar" externalProjectPath="$PROJECT_DIR$" vmOptions="" scriptParameters="" />
+      </method>
     </configuration>
+    <list>
+      <item itemvalue="Gradle.Cloud [shadowJar]" />
+      <item itemvalue="JAR Application.MooFeederCloud.jar" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="JAR Application.MooFeederCloud.jar" />
@@ -177,6 +359,10 @@
       <workItem from="1698773365686" duration="3454000" />
       <workItem from="1698803725088" duration="2466000" />
       <workItem from="1702646032047" duration="110000" />
+      <workItem from="1704903945970" duration="1951000" />
+      <workItem from="1705173459931" duration="617000" />
+      <workItem from="1705254189120" duration="1988000" />
+      <workItem from="1705322576067" duration="4000" />
     </task>
     <servers />
   </component>

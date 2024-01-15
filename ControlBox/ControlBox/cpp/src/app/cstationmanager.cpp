@@ -5,6 +5,7 @@
 #include "cloudtypes.h"
 #include "entities/ccontrolbox.h"
 #include "util/hexutil.h"
+#include "entities/cfeedingstation.h"
 
 #define CONVERT_VBAT(x) (x)
 #define CONVERT_TEMP(x) (x)
@@ -94,6 +95,26 @@ CStationManager::CStationManager()
 {
     m_networkInstance = CLoRaNetwork::getInstance();
     m_keepRunning = true;
+}
+
+
+int CStationManager::getStationData(QString &phyTag, station_data_st * pStationData)
+{
+    if (!pStationData)
+        return -EINVAL;
+
+    uint32_t hwAddr = strtol(phyTag.toStdString().c_str(), nullptr, 16);
+
+    for (const auto &item: m_activeStations)
+    {
+        if (item.second.phyAddr == hwAddr)
+        {
+            memcpy(pStationData, &item.second, sizeof(station_data_st));
+            return 0;
+        }
+    }
+
+    return -ENODEV;
 }
 
 int CStationManager::registerStation(station_data_st &newStation)

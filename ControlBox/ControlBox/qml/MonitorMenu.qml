@@ -105,7 +105,6 @@ Item
 
         function onCalfSelected(maxConsumption, notes)
         {
-            notesText.titleText = notes;
             consumptionText.titleText = "Max daily consumption: " + maxConsumption + "L"
         }
     }
@@ -236,7 +235,7 @@ Item
                         anchors
                         {
                             horizontalCenter: parent.horizontalCenter
-                            bottom: notesText.top
+                            bottom: consumptionText.top
                             bottomMargin: 10
                         }
 
@@ -245,23 +244,9 @@ Item
 
                     TextIcon
                     {
-                        id: notesText
-                        anchors.centerIn: parent
-                        titleText: "Notes"
-                        iconImage.source: "../../resources/images/Milk.png"
-                    }
-
-                    TextIcon
-                    {
                         id: consumptionText
-                        anchors
-                        {
-                            horizontalCenter: parent.horizontalCenter
-                            top: notesText.bottom
-                            topMargin: 10
-                        }
-
-                        titleText: "Max Daily Consumption"
+                        anchors.centerIn: parent
+                        titleText: "Max daily consumption"
                         iconImage.source: "../../resources/images/Milk.png"
                     }
                 }
