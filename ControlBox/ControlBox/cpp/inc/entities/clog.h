@@ -1,7 +1,6 @@
 #ifndef CONTROLBOX_CLOG_H
 #define CONTROLBOX_CLOG_H
 
-
 class CLog
 {
 public:

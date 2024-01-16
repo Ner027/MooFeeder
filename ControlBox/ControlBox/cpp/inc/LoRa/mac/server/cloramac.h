@@ -1,6 +1,9 @@
 #ifndef LORA_MAC_H
 #define LORA_MAC_H
 
+/***********************************************************************************************************************
+ * Includes
+ ******************************************************************************************************************++**/
 #include <atomic>
 #include "ptwrapper/cthread.h"
 #include "oswrapper/oswrapper.h"
@@ -9,6 +12,10 @@
 #include "LoRa/phy/common/phy_types.h"
 #include "util/csafequeue.hpp"
 
+
+/***********************************************************************************************************************
+ * Typedefs
+ ******************************************************************************************************************++**/
 typedef enum
 {
     ST_INIT,
@@ -20,12 +27,31 @@ typedef enum
 class CLoRaMac : public CThread
 {
 public:
+    /// \brief This method allows to return a singleton instance of the LoRa MAC
+    /// \return Pointer to LoRa MAC singleton instance
     static CLoRaMac* getInstance();
+
+    /// \brief This method allows to destroy the LoRa MAC instance, stopping all MAC operations beforehand
     void killInstance();
+
+    /// \brief This method waits for a set period of time for the LoRa MAC Layer to be read
+    /// \param maxWait Max wait time
+    /// \return True if MAC was ready before time expired, otherwise returns false
     bool waitOnReady(duration_t maxWait);
+
+    /// \brief This method allows to push a new MAC message to the MAC transmission queue
+    /// \param macFrame MAC Frame to add to transmission queue
+    /// \param msgLen Length of the MAC Frame being inserted
+    /// \return Returns the length of the physical frame needed for encapsulating this MAC Frame
     int pushMessage(mac_frame_st& macFrame, uint8_t msgLen);
+
+    /// \brief This method tries to retrieve a message from the MAC reception queue
+    /// \param macFrame
+    /// \return -EINVAL if invalid parameters are passed, -ENODATA if no message is available, returns 0 on sucess
     int popMessage(mac_frame_st* macFrame);
 private:
+    /// \brief Default constructor
+    /// \note Made private to only allow instantiation from singleton
     CLoRaMac();
     static CLoRaMac* m_instance;
     systick_t m_txTimeBegin;

@@ -33,6 +33,9 @@ void* CLoRaNetwork::run(void*)
 
 int CLoRaNetwork::sendMessage(app_frame_st& appFrame, uint8_t src, uint8_t dest)
 {
+    if ((src > NR_OF_SLOTS) || (dest > NR_OF_SLOTS))
+        return -EINVAL;
+
     network_frame_st netFrame;
 
     netFrame.control.netAddrs = ((dest << 4) & 0xF0) | (src & 0x0F) ;
@@ -155,11 +158,6 @@ void CLoRaNetwork::stateTx()
 {
     composeMacMessage();
     m_nextState = NETWORK_RX;
-}
-
-bool CLoRaNetwork::waitOnReady()
-{
-    return (SemaphoreTake(&m_networkReady) == 0);
 }
 
 void CLoRaNetwork::stateRx()

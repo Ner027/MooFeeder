@@ -18,8 +18,7 @@ CCalf::CCalf(const std::string& phyTag)
     if (this->getFromCloud(calfData) < 0)
         return;
 
-    m_maxConsumption = (float) calfData["calfData"].toObject()["maxConsumption"].toDouble();
-    m_currentConsumption = (float) calfData["calfData"].toObject()["currentConsumption"].toDouble();
+    loadFromJson(calfData);
 
     m_isValid = true;
 }
@@ -93,7 +92,23 @@ QJsonObject CCalf::dumpToJson()
 
 int CCalf::loadFromJson(QJsonObject &jsonObject)
 {
-    return 0;
+    int ret = 0;
+
+    if (!jsonObject.contains("calfData"))
+        return -EFAULT;
+
+    QJsonObject tempObject = jsonObject["calfData"].toObject();
+
+    if (tempObject.contains("maxConsumption"))
+        ret++;
+
+    if (tempObject.contains("currentConsumption"))
+        ret++;
+
+    m_maxConsumption = (float) tempObject["maxConsumption"].toDouble();
+    m_currentConsumption = (float) tempObject["currentConsumption"].toDouble();
+
+    return ret;
 }
 
 bool CCalf::isValid()

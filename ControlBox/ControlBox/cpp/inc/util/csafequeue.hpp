@@ -1,10 +1,14 @@
 #ifndef LORA_QUEUE_HPP
 #define LORA_QUEUE_HPP
 
+/***********************************************************************************************************************
+ * Includes
+ ******************************************************************************************************************++**/
 #include <queue>
 #include <memory.h>
 #include "ptwrapper/cmutex.h"
 #include "ptwrapper/clockguard.h"
+
 
 template <class T>
 class CQueue

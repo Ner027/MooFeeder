@@ -91,26 +91,34 @@ signals:
     /// vice-versa
     void boxStatusChanged(int newStatus);
 
+    /// \brief This signal is emitted for clearing the Monitor menu Calf list
     void clearCalfList();
 
+    /// \brief This signal is emitted for clearing the Station menu station list
     void clearStationList();
 
+    /// \brief This signal is emitted for setting the Monitor menu calf list
     void setCalfList(QJsonArray calfList);
 
+    /// \brief This signal is emitted for setting the Station menu station list
     void setStationList(QJsonArray stationList);
 
-    void addCalfToList(QString phyTag, float currentConsumption, float maxConsumption);
-
+    /// \brief This signal is emitted for clearing the Monitor menu consumption graph
     void clearGraph();
 
+    /// \brief This signal is emitted for de-selecting a Calf
     void clearCalfSelection();
 
+    /// \brief This signal is emitted for de-selecting a Station
     void clearStationSelection();
 
+    /// \brief This signal is emitted when a new Calf is selected
     void calfSelected(float maxConsumption, QString notes);
 
+    /// \brief This signal is emitted for adding a point to the consumption graph
     void addPointToGraph(int timestamp, float volume);
 
+    /// \brief This signal is emitted when a new Station is selected
     void stationSelected(float temperature, float battery, int networkAddr, QString name, QString macAddr, QString status);
 };
 #endif
